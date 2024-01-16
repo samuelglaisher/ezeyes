@@ -1,6 +1,7 @@
 import type { Config } from 'jest';
 
 const config: Config = {
+  collectCoverage: true,
   verbose: true,
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
@@ -10,6 +11,21 @@ const config: Config = {
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
     "uuid": require.resolve('uuid'),  
   },
+  coverageThreshold: {
+    global: {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90
+    }
+  },
+  collectCoverageFrom: [
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts"
+  ],
+  coveragePathIgnorePatterns: [
+    "./src/main.ts"
+  ]
 };
 
 export default config;

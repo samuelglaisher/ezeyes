@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:coverage": "jest --coverage"
   },
   "keywords": [],
@@ -46,6 +46,7 @@
     "eslint-plugin-import": "^2.25.0",
     "fork-ts-checker-webpack-plugin": "^7.2.13",
     "html-webpack-plugin": "^5.6.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^29.7.0",
