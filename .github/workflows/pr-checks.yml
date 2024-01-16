@@ -1,0 +1,25 @@
+name: Pull Request Tests
+
+on:
+  pull_request:
+    branches: [ dev, main ]  # Replace with your default branch if it's not 'main'
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Specify the Node.js version
+
+    - name: Install Dependencies
+      run: yarn install
+
+    - name: Run Tests
+      run: yarn test

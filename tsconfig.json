@@ -12,6 +12,7 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "types": ["jest", "@testing-library/jest-dom"],
     "paths": {
       "*": ["node_modules/*"]
     }
