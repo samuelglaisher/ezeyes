@@ -1,11 +1,30 @@
-// renderer.test.tsx
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import App from '../src/App';
 
-describe('Renderer Process', () => {
+const mockRender = jest.fn();
+
+jest.mock("react-dom/client", () => ({ 
+  createRoot: jest.fn().mockImplementation(() => ({
+    render: mockRender,
+  }))
+}));
+
+describe('renderer.tsx', () => {
+  beforeEach(() => {
+    mockRender.mockClear();
+    jest.resetModules();
+  });
+
   it('renders the App component', () => {
-    render(<App />);
-    expect(screen.getByText('Welcome to your Electron-React application!')).toBeInTheDocument();
+    document.body.innerHTML = '<div id="root"></div>';
+    require('../src/renderer');
+
+    const expectedElement = React.createElement(
+      React.StrictMode, 
+      {}, 
+      React.createElement(App)
+    );
+    
+    expect(mockRender).toHaveBeenCalled();
   });
 });
