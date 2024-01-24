@@ -1,5 +1,5 @@
 import React from 'react';
-import App from '../src/App';
+import App from '../../src/react/App';
 
 const mockRender = jest.fn();
 
@@ -17,7 +17,7 @@ describe('renderer.tsx', () => {
 
   it('renders the App component', () => {
     document.body.innerHTML = '<div id="root"></div>';
-    require('../src/renderer');
+    require('../../src/react/renderer');
 
     const expectedElement = React.createElement(
       React.StrictMode, 

@@ -10,8 +10,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test": "jest --clearCache && jest --no-coverage",
+    "test:coverage": "jest --clearCache && jest --coverage"
   },
   "keywords": [],
   "author": {
