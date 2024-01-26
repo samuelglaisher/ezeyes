@@ -1,40 +1,45 @@
-import { useEffect, useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
-import { useSettings } from '../contexts/SettingsContext';
+import { usePlaybackControl } from './usePlaybackControl';
+import { SettingsContext } from '../contexts/SettingsContext';
 
 export const usePanel = () => {
   const { textContent, setCurWordSequence } = useContext(PanelContext);
-  const { settings } = useSettings();
+  const { settings } = useContext(SettingsContext);
+
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  
-  useEffect(() => {
-    const words = textContent.replace(/\n/g, ' ').split(' ').filter(word => word.length !== 0);
-    setCurWordSequence(words.slice(currentWordIndex, currentWordIndex + settings.panels.wordSequenceLength));
-  }, [textContent, currentWordIndex, settings.panels.wordSequenceLength, setCurWordSequence]);
-
-  const navigateToStart = () => {
-    setCurrentWordIndex(0);
-  };
-  
-  const navigateForward = () => {
+  const navigateForward = (): void => {
     setCurrentWordIndex(prevIndex => prevIndex + settings.panels.wordSequenceLength);
   };
 
-  const navigateToPreviousParagraph = () => {
-     
-  };
-
-  const navigateToNextParagraph = () => {
-
-  };
-
-  const navigateBackward = () => {
+  const navigateBackward = (): void => {
     setCurrentWordIndex(prevIndex => Math.max(prevIndex - settings.panels.wordSequenceLength, 0));
   };
 
-  return { 
+  const speed = 1000 / (settings.panels.wpm / 60);
+  const { togglePlayPause } = usePlaybackControl(navigateForward, speed);
+
+  useEffect(() => {
+    const words = textContent.replace(/\n/g, ' ').split(' ').filter(word => word.length !== 0);
+    const wordSequenceLength = settings.panels.wordSequenceLength;
+    const highlightedWords = words.slice(currentWordIndex, currentWordIndex + wordSequenceLength).join(' ');
+    
+    setCurWordSequence([highlightedWords]);
+  }, [textContent, currentWordIndex, settings.panels.wordSequenceLength, setCurWordSequence]);
+
+  const usePanelContext = () => {
+    const context = useContext(PanelContext);
+    if (!context) {
+      throw new Error('usePanelContext must be used within a PanelProvider');
+    }
+    return context;
+  };
+
+  return {
+    usePanelContext,
     navigateForward,
-    navigateBackward
+    navigateBackward,
+    togglePlayPause,
   };
 };
