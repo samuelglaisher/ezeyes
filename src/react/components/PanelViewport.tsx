@@ -1,57 +1,40 @@
-import React, { useEffect, useState } from "react";
-import HorizontalPanel from "../components/panelviews/HorizontalPanel";
-import ZoomView from "../components/panelviews/ZoomView";
-import FlashcardView from "../components/panelviews/FlashcardView";
+import React, { useContext } from "react";
+import HorizontalPanel from "./panelviews/HorizontalPanel";
+import ZoomView from "./panelviews/ZoomView";
+import FlashcardView from "./panelviews/FlashcardView";
 import VerticalPanel from "./panelviews/VerticalPanel";
-import { useSettings } from "../hooks/useSettings";
 import { PanelDisplayType } from "../SettingsSchema";
-import { usePlaybackControl } from '../hooks/usePlaybackControl';
 import { usePanel } from '../hooks/usePanel';
+import { usePanelViewport } from "../hooks/usePanelViewport";
+import { PanelContext } from "../contexts/PanelContext";
+import { PanelViewportContext } from "../contexts/PanelViewportContext";
 import "../styles/index.css";
 
 const PanelViewport: React.FC = () => {
-  const settingsContext = useSettings();
-  const [activeView, setActiveView] = useState(settingsContext.settings.panels.displayType);
-  const { navigateForward } = usePanel();
-  const { isPlaying, startPlayback, stopPlayback } = usePlaybackControl(navigateForward, 1000 / (settingsContext.settings.panels.wpm / 60));
+    const { isPlaying } = useContext(PanelContext);
+    const { activeView } = useContext(PanelViewportContext);
 
-  useEffect(() => {
-    setActiveView(settingsContext.settings.panels.displayType);
-  }, []);
+    const { togglePlayPause, navigateForward, navigateBackward} = usePanel();
+    const { switchView } = usePanelViewport();
 
-  const switchView = () => {
-    setActiveView(prevView => {
-      const viewOrder = [PanelDisplayType.HORIZONTAL, PanelDisplayType.VERTICAL, PanelDisplayType.ZOOM, PanelDisplayType.FLASHCARD];
-      const nextIndex = (viewOrder.indexOf(prevView) + 1) % viewOrder.length;
-      return viewOrder[nextIndex];
-    });
-  };
-
-  const togglePlayPause = () => {
-    if (isPlaying) {
-      stopPlayback();
-    } else {
-      startPlayback();
-    }
-  };
-
-
-  return (
-    <div>
-      <main>
-        <div id="panel-viewport">
-          <button onClick={switchView}>Switch View</button>
-          {activeView === PanelDisplayType.HORIZONTAL && <HorizontalPanel />}
-          {activeView === PanelDisplayType.VERTICAL && <VerticalPanel />}
-          {activeView === PanelDisplayType.ZOOM && <ZoomView />}
-          {activeView === PanelDisplayType.FLASHCARD && <FlashcardView />}
+    return (
+        <div>
+            <main>
+                <div id="panel-viewport">
+                    <button onClick={switchView}>Switch View</button>
+                    {activeView === PanelDisplayType.HORIZONTAL && <HorizontalPanel />}
+                    {activeView === PanelDisplayType.VERTICAL && <VerticalPanel />}
+                    {activeView === PanelDisplayType.ZOOM && <ZoomView />}
+                    {activeView === PanelDisplayType.FLASHCARD && <FlashcardView />}
+                </div>
+            </main>
+            <footer>
+                <button onClick={navigateBackward}>Previous Sequence</button>
+                <button onClick={togglePlayPause}>{isPlaying ? 'Pause' : 'Play'}</button>
+                <button onClick={navigateForward}>Next Sequence</button>
+            </footer>
         </div>
-      </main>
-      <footer>
-        <button onClick={togglePlayPause}>{isPlaying ? 'Pause' : 'Play'}</button>
-      </footer>
-    </div>
-  );
+    );
 };
 
 export default PanelViewport;
