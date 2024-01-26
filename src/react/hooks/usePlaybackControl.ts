@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import { PanelContext } from '../contexts/PanelContext';
 
-//speed (in ms)
 export const usePlaybackControl = (updateFunction: () => void, speed: number) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  const startPlayback = () => {
-    if (!isPlaying) {
-      const id = setInterval(updateFunction, speed);
-      setIntervalId(id);
-      setIsPlaying(true);
-    }
-  };
-
-  const stopPlayback = () => {
-    if (intervalId) clearInterval(intervalId);
-    setIsPlaying(false);
-  };
+  const { isPlaying, setIsPlaying } = useContext(PanelContext);
 
   useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (isPlaying) {
+      intervalId = setInterval(updateFunction, speed);
+    }
+
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [intervalId]);
+  }, [isPlaying, updateFunction, speed]);
 
-  return { isPlaying, startPlayback, stopPlayback };
+  const togglePlayPause = () => {
+    setIsPlaying(isPlaying => !isPlaying);
+  };
+
+  return { togglePlayPause };
 };
