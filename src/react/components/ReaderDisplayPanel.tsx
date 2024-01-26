@@ -7,8 +7,9 @@ interface ReaderDisplayProps {
 
 const ReaderDisplay: React.FC<ReaderDisplayProps> = ({ style }) => {
     const { curWordSequence } = useContext(PanelContext);
+
     return (
-        <div id="reader-display-panel" style={style}>
+        <div id="reader-display-panel" style={style} tabIndex={0}>
             {curWordSequence.join(' ')}
         </div>
     );
