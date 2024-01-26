@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSettings } from '../hooks/useSettings';
+import { SettingsContext } from '../contexts/SettingsContext';
 
 const SettingsMenu: React.FC = () => {
-  const { settings, dispatch } = useSettings();
+  const { settings, showSettingsMenu } = useContext(SettingsContext);
 
-//   const handleSettingChange = (key: string, value: any) => {
-//     dispatch({ type: 'UPDATE_SETTING', key, value });
-//   };
+  const { changePanelSetting } = useSettings();
+
+  if (!showSettingsMenu) {
+    return null;
+  }
 
   return (
     <div>
-      {/* <input 
-        type="text" 
-        value={settings.theme}
-        onChange={(e) => handleSettingChange('theme', e.target.value)}
-      /> */}
+      <label>
+        WPM:
+        <select 
+          value={settings.panels.wpm}
+          onChange={(e) => changePanelSetting("wpm", e.target.value)}
+        >
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="300">300</option>
+        </select>
+      </label>
     </div>
   );
 };
