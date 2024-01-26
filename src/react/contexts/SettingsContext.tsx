@@ -1,35 +1,31 @@
-import React, { createContext, useReducer, ReactNode, useContext } from 'react';
+import React, { createContext, useState } from 'react';
 import { Settings, initialSettings } from '../SettingsSchema';
-import { settingsReducer } from '../hooks/settingsReducer';
 
 interface SettingsContextType {
   settings: Settings;
-  dispatch: React.Dispatch<any>;
+  showSettingsMenu: boolean;
+  setShowSettingsMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  setSettings: React.Dispatch<React.SetStateAction<Settings>>;
 }
 
-const SettingsContext = createContext<SettingsContextType>({
+export const SettingsContext = createContext<SettingsContextType>({
   settings: initialSettings,
-  dispatch: () => {}
+  showSettingsMenu: false,
+  setShowSettingsMenu: () => {},
+  setSettings: () => {}
 });
 
 interface SettingsProviderProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, dispatch] = useReducer(settingsReducer, initialSettings);
+  const [settings, setSettings] = useState<Settings>(initialSettings);
+  const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
   return (
-    <SettingsContext.Provider value={{ settings, dispatch }}>
+    <SettingsContext.Provider value={{ settings, setSettings, showSettingsMenu, setShowSettingsMenu }}>
       {children}
     </SettingsContext.Provider>
   );
-};
-
-export const useSettings = (): SettingsContextType => {
-  const context = useContext(SettingsContext);
-  if (!context) {
-    throw new Error('useSettings must be used within a SettingsProvider');
-  }
-  return context;
 };
