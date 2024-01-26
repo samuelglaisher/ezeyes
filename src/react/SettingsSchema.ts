@@ -1,7 +1,10 @@
 export interface Keybindings {
+    play: string;
+    pause: string;
     nextWord: string;
     prevWord: string;
     openSettings: string;
+    switchView: string;
 }
 
 export enum PanelDisplayType {
@@ -26,9 +29,12 @@ export interface Settings {
 
 export const initialSettings: Settings = {
     keybindings: {
-        'nextWord': 'ArrowRight',
-        'prevWord': 'ArrowLeft',
-        'openSettings': 'Ctrl+O',
+        play: 'space',
+        pause: 'space',
+        nextWord: 'right',
+        prevWord: 'left',
+        openSettings: 'ctrl+o',
+        switchView: "p",
     },
     panels: {
         textInputPanel: {
