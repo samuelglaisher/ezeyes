@@ -1,38 +1,24 @@
-import React, { useState, createContext } from "react";
+import React from "react";
 import PanelViewport from "./components/PanelViewport";
-import HorizontalPanel from "./components/panelviews/HorizontalPanel";
-import ZoomView from "./components/panelviews/ZoomView";
-import FlashcardView from "./components/panelviews/FlashcardView";
-import { SettingsProvider } from './components/SettingsProvider';
 import SettingsMenu from './components/SettingsMenu';
-import "./styles/index.css";
+import KeybindingManager from "./components/KeybindingManager";
 import { PanelProvider } from "./contexts/PanelContext";
+import { SettingsProvider } from './contexts/SettingsContext';
+import { PanelViewportProvider } from "./contexts/PanelViewportContext";
+import "./styles/index.css";
 
 const App: React.FC = () => {
   return (
     <SettingsProvider>
       <PanelProvider>
-      {/* <KeybindingProvider> */}
+        <PanelViewportProvider>
         <SettingsMenu />
         <PanelViewport />
-      {/* </KeybindingProvider> */}
+        <KeybindingManager />
+        </PanelViewportProvider>
       </PanelProvider>
     </SettingsProvider>
   );
 };
 
 export default App;
-
-
-
-// const App = () => {
-//   // const textInputDisplayPanel = new TextInputDisplayPanel("Initial text content");
-//   // const textInputDisplayPanel = createContext(new TextInputDisplayPanel("Initial text content"));
-//   // const ReaderContext = createContext(new ReaderDisplayPanel(textInputDisplayPanel));
-
-//   return (
-//     <PanelViewport textInputDisplayPanel={textInputDisplayPanel}/>
-//   );
-// };
-
-// export default App;
