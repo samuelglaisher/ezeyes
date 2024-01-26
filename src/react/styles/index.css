@@ -17,7 +17,7 @@ body, html, #root {
   min-width: 200px;
   border: 2px solid #ddd;
   background-color: #f0f0f0;
-  user-select: none;
+  /* user-select: none; */
   overflow: auto;
   box-sizing: border-box;
   text-align: left;
@@ -56,16 +56,21 @@ body, html, #root {
 
 .horizontal-panel-container #text-input-panel {
   display: flex;
+  align-items: center; /* Vertically center the content */
+  justify-content: center; /* Horizontally center the content */
   background-color: #f0f0f0;
-  padding-left: 10%;
-  padding-right: 10%;
+  padding: 10%; /* Adjust padding as necessary */
   box-sizing: border-box;
-  justify-content: center;
   min-height: 200px;
   min-width: 200px;
   border: 2px solid #ddd;
-  user-select: none;
-  overflow: auto;
+  overflow: auto; /* Handle overflow */
+}
+
+.horizontal-panel-container #text-input-panel p {
+  margin: 0;
+  padding: 0;
+  /* Removed white-space: nowrap; to allow text wrapping */
 }
 
 .horizontal-panel-container #text-input-panel p {
@@ -187,7 +192,6 @@ body, html, #root {
   height: 100%;
   display: flex;
 }
-
 
 .flashcard-container > :first-child {
   transform: rotateY(0deg);
