@@ -1,31 +1,39 @@
-import React, { useContext } from 'react';
-import { useSettings } from '../hooks/useSettings';
+import React, { useContext, useState } from 'react';
+import { ActionMenu, Item, MenuTrigger, ActionButton, Dialog, Heading, Content, Divider, Text, ButtonGroup, Button, TextField, Form, Checkbox, Flex, Slider } from '@adobe/react-spectrum';
 import { SettingsContext } from '../contexts/SettingsContext';
+import { useSettings } from '../hooks/useSettings';
+import {useMenuManager} from '../hooks/useMenuManager';
 
-const SettingsMenu: React.FC = () => {
-  const { settings, showSettingsMenu } = useContext(SettingsContext);
+interface SettingsMenuProps {
+    onClose: () => void;
+}
 
-  const { changePanelSetting } = useSettings();
+function SettingsMenu(props: SettingsMenuProps) {
+    const { settings } = useContext(SettingsContext);
+    const { changePanelSetting } = useSettings();
+    const { closeMenu } = useMenuManager();
 
-  if (!showSettingsMenu) {
-    return null;
-  }
-
-  return (
-    <div>
-      <label>
-        WPM:
-        <select 
-          value={settings.panels.wpm}
-          onChange={(e) => changePanelSetting("wpm", e.target.value)}
-        >
-          <option value="100">100</option>
-          <option value="200">200</option>
-          <option value="300">300</option>
-        </select>
-      </label>
-    </div>
-  );
-};
+    return (
+        (
+            <>
+                <Heading>Settings</Heading>
+                <Divider />
+                <Content>
+                <Flex direction="column" maxWidth="size-5000" gap="size-300">
+                    <Slider onChange={(value) => {changePanelSetting('wpm', value); alert(settings.panels.wpm)}} label="WPM" labelPosition="side" minValue={settings.panels.wpm.slowWpm.min} maxValue={settings.panels.wpm.slowWpm.max} defaultValue={settings.panels.wpm.slowWpm.min} step={10} />
+                </Flex>
+                <Form>
+                    <TextField label="Name" />
+                    <TextField label="Email address" />
+                    <Checkbox>Make profile private</Checkbox>
+                </Form>
+                </Content>
+                <ButtonGroup>
+                    <Button variant="secondary" onPress={() => closeMenu()}>Cancel</Button>
+                </ButtonGroup>
+            </>
+        )
+    );
+}
 
 export default SettingsMenu;
