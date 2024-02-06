@@ -1,12 +1,3 @@
-export interface Keybindings {
-    play: string;
-    pause: string;
-    nextWord: string;
-    prevWord: string;
-    openSettings: string;
-    switchView: string;
-}
-
 export enum PanelDisplayType {
     HORIZONTAL,
     VERTICAL,
@@ -14,17 +5,64 @@ export enum PanelDisplayType {
     FLASHCARD
 }
 
+export interface Keybindings {
+    play: string;
+    pause: string;
+    nextWord: string;
+    prevWord: string;
+    openSettings: string;
+    switchView: string;
+    focus: string;
+    select: string;
+    importFile: string;
+}
+
+// Define the appearance interface
+export interface Appearance {
+    fontSize: string;
+    theme: string;
+}
+
+// Define the panel interface
+export interface Panel {
+    textInputPanel: {
+        appearance: Appearance;
+    };
+    readerPanel: {
+        appearance: Appearance;
+    };
+}
+
+// Define the WPM range interface
+export interface WpmRange {
+    min: number;
+    max: number;
+}
+
+// Define the WPM settings interface
+export interface WpmSettings {
+    curWpm: number;
+    slowWpm: WpmRange;
+    fastWpm: WpmRange;
+}
+
+// Define the panels settings interface
 export interface Panels {
-    textInputPanel: Object;
-    readerPanel: Object;
-    wpm: number;
+    textInputPanel: {
+        appearance: Appearance;
+    };
+    readerPanel: {
+        appearance: Appearance;
+    };
+    wpm: WpmSettings;
     wordSequenceLength: number;
     displayType: PanelDisplayType;
 }
 
+// Define the settings interface
 export interface Settings {
     keybindings: Keybindings;
-    panels: Panels
+    panels: Panels;
 }
 
 export const initialSettings: Settings = {
@@ -34,7 +72,10 @@ export const initialSettings: Settings = {
         nextWord: 'right',
         prevWord: 'left',
         openSettings: 'ctrl+o',
-        switchView: "p",
+        switchView: 'p',
+        focus: 'tab',
+        select: 'enter',
+        importFile: 'ctrl+i',
     },
     panels: {
         textInputPanel: {
@@ -49,8 +90,18 @@ export const initialSettings: Settings = {
                 theme: 'light',
             }
         },
-        wpm: 120,
+        wpm: {
+            curWpm: 120,
+            slowWpm: {
+                min: 10,
+                max: 100,
+            },
+            fastWpm: {
+                min: 10,
+                max: 100,
+            }
+        },
         wordSequenceLength: 4,
-        displayType: PanelDisplayType.ZOOM
+        displayType: PanelDisplayType.ZOOM,
     },
 };
