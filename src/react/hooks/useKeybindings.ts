@@ -1,19 +1,17 @@
+var Mousetrap = require('mousetrap-pause')(require('mousetrap'));
 import { useContext, useEffect } from 'react';
 import { usePanel } from './usePanel';
-import { useSettings } from './useSettings';
 import { usePanelViewport } from '../hooks/usePanelViewport';
-import Mousetrap from 'mousetrap';
 import { SettingsContext } from '../contexts/SettingsContext';
-
-const openSettingsAction = () => {
-    alert('Yahallo');
-};
+import { useMenuManager } from './useMenuManager';
+import { MenuType } from '../contexts/MenuManagerContext';
 
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
 
     const { navigateForward, navigateBackward, togglePlayPause } = usePanel();
     const { switchView } = usePanelViewport();
+    const { openMenu } = useMenuManager();
 
     useEffect(() => {
         Mousetrap.bind(settings.keybindings.nextWord, () => {
@@ -24,7 +22,7 @@ const useKeybindings = () => {
             navigateBackward();
             return false;
         });
-        Mousetrap.bind(settings.keybindings.openSettings, openSettingsAction);
+        Mousetrap.bind(settings.keybindings.openSettings, () => openMenu(MenuType.SETTINGS));
         Mousetrap.bind(settings.keybindings.play, () => {
             togglePlayPause();
             return false;
