@@ -1,8 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { PanelDisplayType } from '../SettingsSchema';
-import { usePanel } from './usePanel';
 import { PanelViewportContext } from '../contexts/PanelViewportContext';
-import { PanelContext } from '../contexts/PanelContext';
 import { SettingsContext } from '../contexts/SettingsContext';
 
 export const usePanelViewport = () => {
