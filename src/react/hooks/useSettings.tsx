@@ -1,14 +1,16 @@
-import { useContext, useReducer } from 'react';
-import { SettingsContext } from '../contexts/SettingsContext';
+import { useReducer } from 'react';
 import { PanelDisplayType, Settings, Keybindings, Panels, initialSettings } from '../SettingsSchema';
 
 type SettingsAction = 
+  | { type: 'LOAD_SETTINGS'; payload: Settings }
   | { type: 'CHANGE_PANEL_TYPE'; panelType: PanelDisplayType }
   | { type: 'CHANGE_KEYBINDING'; key: keyof Keybindings; value: string }
   | { type: 'CHANGE_PANEL_SETTING'; key: keyof Panels; value: any };
 
-function settingsReducer(state: Settings, action: SettingsAction): Settings {
+export function settingsReducer(state: Settings, action: SettingsAction): Settings {
   switch (action.type) {
+    case 'LOAD_SETTINGS':
+      return action.payload;
     case 'CHANGE_PANEL_TYPE':
       return { ...state, panels: { ...state.panels, displayType: action.panelType } };
     case 'CHANGE_KEYBINDING':
