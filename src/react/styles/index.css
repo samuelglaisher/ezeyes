@@ -15,65 +15,35 @@ body, html, #root {
   flex-direction: column;
   min-height: 200px;
   min-width: 200px;
-  border: 2px solid #ddd;
-  background-color: #f0f0f0;
-  /* user-select: none; */
   overflow: auto;
   box-sizing: border-box;
   text-align: left;
 }
 
-
-#text-input-panel p {
-  margin: 0.5em 0.5em 0.5em 0;
-}
-
-@media (max-width: 600px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-@media (min-width: 1200px) {
-  html {
-    font-size: 18px;
-  }
-}
-
-.horizontal-panel-container, .flashcard-container {
+.horizontal-panel-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-.horizontal-panel-container #reader-display-panel {
+.horizontal-panel-container > :nth-child(1) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
   position: relative;
 }
 
-.horizontal-panel-container #text-input-panel {
+.horizontal-panel-container > :nth-child(3) {
   display: flex;
-  align-items: center; /* Vertically center the content */
-  justify-content: center; /* Horizontally center the content */
-  background-color: #f0f0f0;
-  padding: 10%; /* Adjust padding as necessary */
+  align-items: center;
+  justify-content: center;
+  padding: 10%;
   box-sizing: border-box;
   min-height: 200px;
   min-width: 200px;
-  border: 2px solid #ddd;
-  overflow: auto; /* Handle overflow */
 }
 
-.horizontal-panel-container #text-input-panel p {
-  margin: 0;
-  padding: 0;
-  /* Removed white-space: nowrap; to allow text wrapping */
-}
-
-.horizontal-panel-container #text-input-panel p {
+.horizontal-panel-container > :nth-child(3) .text {
   margin: 0.5em 0.5em 0.5em 0;
   max-height: 100vh;
 }
@@ -85,17 +55,15 @@ body, html, #root {
   width: 100vw;
 }
 
-.vertical-panel-container #reader-display-panel {
+.vertical-panel-container > :nth-child(1) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
   position: relative;
 }
 
-.vertical-panel-container #text-input-panel {
+.vertical-panel-container > :nth-child(3) {
   display: flex;
-  background-color: #f0f0f0;
   position: relative;
   padding-left: 30%;
   padding-right: 30%;
@@ -108,15 +76,25 @@ body, html, #root {
   z-index: 10;
 }
 
+
 .resize-bar-vertical {
   width: 5px;
   cursor: col-resize;
+  background-color: #888;
+  user-select: none;
+  z-index: 10;
+  border-radius: 10px;
 }
 
 .resize-bar-horizontal {
   height: 5px;
   cursor: row-resize;
+  background-color: #888;
+  user-select: none;
+  z-index: 10;
+  border-radius: 10px;
 }
+
 
 .zoom-container {
   display: flex;
@@ -125,15 +103,13 @@ body, html, #root {
   position: relative;
 }
 
-.zoom-container #reader-display-panel {
+.zoom-container > :nth-child(1) {
   width: 100%;
   height: 100%;
-  border: 2px solid white;
   transition: transform 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
   position: relative
 }
 
@@ -143,9 +119,7 @@ body, html, #root {
   right: 10px;
   width: 100px;
   height: 100px;
-  border: 2px solid #ddd;
   overflow: auto;
-  background-color: #f0f0f0;
   padding: 4px;
   box-sizing: border-box;
   display: flex;
@@ -154,17 +128,20 @@ body, html, #root {
   justify-content: flex-start;
 }
 
-.zoom-container > :nth-child(2) > span {
+.zoom-container > :nth-child(2) {
   align-self: stretch;
   display: inline;
 }
 
 .flashcard-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
   perspective: 1000px;
   position: relative;
 }
 
-.flashcard-container > :first-child {
+.flashcard-container > :nth-child(1) {
   position: absolute;
   backface-visibility: hidden;
   transition: transform 0.0s;
@@ -175,16 +152,11 @@ body, html, #root {
   justify-content: center;
 }
 
-.flashcard-container #text-input-panel {
+.flashcard-container > :nth-child(2) {
   display: flex;
-  background-color: #f0f0f0;
-  position: relative;
   padding-left: 30%;
   padding-right: 30%;
   box-sizing: border-box;
-}
-
-.flashcard-container > :last-child {
   position: absolute;
   backface-visibility: hidden;
   transition: transform 0.0s;
@@ -193,18 +165,18 @@ body, html, #root {
   display: flex;
 }
 
-.flashcard-container > :first-child {
+.flashcard-container > :nth-child(1) {
   transform: rotateY(0deg);
 }
 
-.flashcard-container > :last-child {
+.flashcard-container > :nth-child(2) {
   transform: rotateY(180deg);
 }
 
-.flashcard-container.flipped > :first-child {
+.flashcard-container.flipped > :nth-child(1) {
   transform: rotateY(-180deg);
 }
 
-.flashcard-container.flipped > :last-child {
+.flashcard-container.flipped > :nth-child(1) {
   transform: rotateY(0deg);
 }
