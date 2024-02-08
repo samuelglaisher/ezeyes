@@ -10,8 +10,8 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx .",
-    "test": "jest --clearCache && jest --no-coverage",
-    "test:coverage": "jest --clearCache && jest --coverage"
+    "test": "jest --clearCache && jest --no-coverage --runInBand",
+    "test:coverage": "jest --clearCache && jest --coverage --runInBand"
   },
   "keywords": [],
   "author": {
@@ -31,12 +31,13 @@
     "@electron-forge/maker-zip": "^7.2.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
     "@electron-forge/plugin-webpack": "^7.2.0",
-    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^29.5.11",
     "@types/mousetrap": "^1.6.15",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
+    "@types/testing-library__jest-dom": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
