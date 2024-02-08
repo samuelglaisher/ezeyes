@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { ActionMenu, Item, MenuTrigger, ActionButton, Dialog, Heading, Content, Divider, Text, ButtonGroup, Button, TextField, Form, Checkbox, Flex, Slider } from '@adobe/react-spectrum';
+import React, { useContext } from 'react';
+import { Heading, Content, Divider, ButtonGroup, Button, TextField, Form, Checkbox, Flex, Slider } from '@adobe/react-spectrum';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useSettings } from '../hooks/useSettings';
 import {useMenuManager} from '../hooks/useMenuManager';
