@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
 import TextInputDisplayPanel from '../../../src/react/components/TextInputDisplayPanel';
+import { render, screen } from '@testing-library/react';
 import { PanelContext } from '../../../src/react/contexts/PanelContext';
 
 const mockContext = (textContent: string) => ({

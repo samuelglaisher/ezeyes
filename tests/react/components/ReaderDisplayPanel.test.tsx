@@ -1,8 +1,8 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import ReaderDisplay from '../../../src/react/components/ReaderDisplayPanel';
-import { PanelContext } from '../../../src/react/contexts/PanelContext';
 import '@testing-library/jest-dom';
+import React from 'react';
+import ReaderDisplay from '../../../src/react/components/ReaderDisplayPanel';
+import { render } from '@testing-library/react';
+import { PanelContext } from '../../../src/react/contexts/PanelContext';
 import { screen } from '@testing-library/react';
 
 const mockContext = (curWordSequence: string[]) => ({
@@ -33,7 +33,6 @@ describe('ReaderDisplay', () => {
       </PanelContext.Provider>
     );
 
-    // Use container.querySelector to find the element with class "text"
     const textElement = container.querySelector('.text');
     expect(textElement).toBeInTheDocument();
     expect(textElement).toHaveTextContent('');

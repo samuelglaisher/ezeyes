@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
-import { render, RenderOptions, fireEvent } from '@testing-library/react';
 import PanelViewport from '../../../src/react/components/PanelViewport';
+import { render, RenderOptions } from '@testing-library/react';
 import { PanelContext } from '../../../src/react/contexts/PanelContext';
 import { PanelViewportContext } from '../../../src/react/contexts/PanelViewportContext';
 import { Provider, defaultTheme } from '@adobe/react-spectrum';
@@ -8,7 +8,6 @@ import { PanelDisplayType } from '../../../src/react/SettingsSchema';
 
 interface ProviderProps {
     theme?: typeof defaultTheme;
-    // Include other props as necessary
 }
 
 const renderWithProviders = (
@@ -41,10 +40,8 @@ describe('PanelViewport component', () => {
                     <PanelViewport />
                 </PanelViewportContext.Provider>
             </PanelContext.Provider>, 
-            {} // This is where you could pass additional render options or provider props
+            {}
         );
         expect(container).toBeTruthy();
     });
-
-    // Add other tests here
 });
