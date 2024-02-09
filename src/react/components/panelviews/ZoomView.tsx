@@ -5,7 +5,7 @@ import "../../styles/index.css";
 
 const ZoomView = () => {
   return (
-    <div className="zoom-container">
+    <div id="zoom-container">
         <ReaderDisplayPanel />
         <TextInputDisplayPanel />
     </div>
