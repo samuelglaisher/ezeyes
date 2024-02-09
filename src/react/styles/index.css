@@ -20,20 +20,20 @@ body, html, #root {
   text-align: left;
 }
 
-.horizontal-panel-container {
+#horizontal-panel-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-.horizontal-panel-container > :nth-child(1) {
+#horizontal-panel-container > :nth-child(1) {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
 
-.horizontal-panel-container > :nth-child(3) {
+#horizontal-panel-container > :nth-child(3) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,26 +43,26 @@ body, html, #root {
   min-width: 200px;
 }
 
-.horizontal-panel-container > :nth-child(3) .text {
+#horizontal-panel-container > :nth-child(3) .text {
   margin: 0.5em 0.5em 0.5em 0;
   max-height: 100vh;
 }
 
-.vertical-panel-container {
+#vertical-panel-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
 }
 
-.vertical-panel-container > :nth-child(1) {
+#vertical-panel-container > :nth-child(1) {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 }
 
-.vertical-panel-container > :nth-child(3) {
+#vertical-panel-container > :nth-child(3) {
   display: flex;
   position: relative;
   padding-left: 30%;
@@ -96,14 +96,14 @@ body, html, #root {
 }
 
 
-.zoom-container {
+#zoom-container {
   display: flex;
   height: 100vh;
   width: 100vw;
   position: relative;
 }
 
-.zoom-container > :nth-child(1) {
+#zoom-container > :nth-child(1) {
   width: 100%;
   height: 100%;
   transition: transform 0.3s ease;
@@ -113,7 +113,7 @@ body, html, #root {
   position: relative
 }
 
-.zoom-container > :nth-child(2) {
+#zoom-container > :nth-child(2) {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -128,12 +128,12 @@ body, html, #root {
   justify-content: flex-start;
 }
 
-.zoom-container > :nth-child(2) {
+#zoom-container > :nth-child(2) {
   align-self: stretch;
   display: inline;
 }
 
-.flashcard-container {
+#flashcard-container {
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -141,7 +141,7 @@ body, html, #root {
   position: relative;
 }
 
-.flashcard-container > :nth-child(1) {
+#flashcard-container > :nth-child(1) {
   position: absolute;
   backface-visibility: hidden;
   transition: transform 0.0s;
@@ -152,7 +152,7 @@ body, html, #root {
   justify-content: center;
 }
 
-.flashcard-container > :nth-child(2) {
+#flashcard-container > :nth-child(2) {
   display: flex;
   padding-left: 30%;
   padding-right: 30%;
@@ -165,18 +165,18 @@ body, html, #root {
   display: flex;
 }
 
-.flashcard-container > :nth-child(1) {
+#flashcard-container > :nth-child(1) {
   transform: rotateY(0deg);
 }
 
-.flashcard-container > :nth-child(2) {
+#flashcard-container > :nth-child(2) {
   transform: rotateY(180deg);
 }
 
-.flashcard-container.flipped > :nth-child(1) {
-  transform: rotateY(-180deg);
+#flashcard-container.flipped > :nth-child(1) {
+  transform: rotateY(180deg);
 }
 
-.flashcard-container.flipped > :nth-child(1) {
+#flashcard-container.flipped > :nth-child(2) {
   transform: rotateY(0deg);
 }
