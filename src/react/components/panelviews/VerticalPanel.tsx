@@ -34,7 +34,7 @@ const VerticalPanel: React.FC = () => {
     }, [isResizing]);
 
     return (
-        <div className="vertical-panel-container">
+        <div id="vertical-panel-container">
             <ReaderDisplayPanel style={{ height: `${topHeight}%` }} />
             <div className="resize-bar-horizontal" onMouseDown={handleMouseDown} />
             <TextInputDisplayPanel style={{ height: `${100 - topHeight}%` }} />
