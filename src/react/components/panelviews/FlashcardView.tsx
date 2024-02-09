@@ -12,7 +12,8 @@ const FlashcardView = () => {
 
   return (
     <div
-      className={flipped ? "flashcard-container flipped" : "flashcard-container"}
+      id="flashcard-container"
+      className={flipped ? "flipped" : ""}
       onClick={handleFlip}
     >
       <ReaderDisplayPanel />
