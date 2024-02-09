@@ -20,7 +20,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                 <Divider />
                 <Content>
                 <Flex direction="column" maxWidth="size-5000" gap="size-300">
-                    <Slider onChange={(value) => {changePanelSetting('wpm', value); alert(settings.panels.wpm)}} label="WPM" labelPosition="side" minValue={settings.panels.wpm.slowWpm.min} maxValue={settings.panels.wpm.slowWpm.max} defaultValue={settings.panels.wpm.slowWpm.min} step={10} />
+                    <Slider onChange={(value) => {changePanelSetting('wpm', value)}} label="WPM" labelPosition="side" minValue={settings.panels.wpm.slowWpm.min} maxValue={settings.panels.wpm.slowWpm.max} defaultValue={settings.panels.wpm.slowWpm.min} step={10} />
                 </Flex>
                 <Form>
                     <TextField label="Name" />
