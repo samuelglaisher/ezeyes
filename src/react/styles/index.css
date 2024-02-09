@@ -1,0 +1,182 @@
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.panel-viewport {
+  height: 100vh;
+  width: 100vw;
+}
+
+#reader-display-panel, #text-input-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  min-width: 200px;
+  overflow: auto;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+#horizontal-panel-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+#horizontal-panel-container > :nth-child(1) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#horizontal-panel-container > :nth-child(3) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10%;
+  box-sizing: border-box;
+  min-height: 200px;
+  min-width: 200px;
+}
+
+#horizontal-panel-container > :nth-child(3) .text {
+  margin: 0.5em 0.5em 0.5em 0;
+  max-height: 100vh;
+}
+
+#vertical-panel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+#vertical-panel-container > :nth-child(1) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+#vertical-panel-container > :nth-child(3) {
+  display: flex;
+  position: relative;
+  padding-left: 30%;
+  padding-right: 30%;
+  box-sizing: border-box;
+}
+
+.resize-bar-vertical, .resize-bar-horizontal {
+  background-color: #888;
+  user-select: none;
+  z-index: 10;
+}
+
+
+.resize-bar-vertical {
+  width: 5px;
+  cursor: col-resize;
+  background-color: #888;
+  user-select: none;
+  z-index: 10;
+  border-radius: 10px;
+}
+
+.resize-bar-horizontal {
+  height: 5px;
+  cursor: row-resize;
+  background-color: #888;
+  user-select: none;
+  z-index: 10;
+  border-radius: 10px;
+}
+
+
+#zoom-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+#zoom-container > :nth-child(1) {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative
+}
+
+#zoom-container > :nth-child(2) {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 100px;
+  height: 100px;
+  overflow: auto;
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+#zoom-container > :nth-child(2) {
+  align-self: stretch;
+  display: inline;
+}
+
+#flashcard-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  perspective: 1000px;
+  position: relative;
+}
+
+#flashcard-container > :nth-child(1) {
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.0s;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#flashcard-container > :nth-child(2) {
+  display: flex;
+  padding-left: 30%;
+  padding-right: 30%;
+  box-sizing: border-box;
+  position: absolute;
+  backface-visibility: hidden;
+  transition: transform 0.0s;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+#flashcard-container > :nth-child(1) {
+  transform: rotateY(0deg);
+}
+
+#flashcard-container > :nth-child(2) {
+  transform: rotateY(180deg);
+}
+
+#flashcard-container.flipped > :nth-child(1) {
+  transform: rotateY(180deg);
+}
+
+#flashcard-container.flipped > :nth-child(2) {
+  transform: rotateY(0deg);
+}

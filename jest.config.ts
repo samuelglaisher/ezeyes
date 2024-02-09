@@ -24,7 +24,7 @@ const config: Config = {
     "!src/**/*.d.ts"
   ],
   coveragePathIgnorePatterns: [
-    "./src/main.ts"
+    "./src/electron/main.ts"
   ]
 };
 
