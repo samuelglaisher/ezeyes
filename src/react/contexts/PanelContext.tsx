@@ -7,6 +7,20 @@ export interface PanelContextType {
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
   isPlaying: boolean;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  prevParagraphIndex: number;
+  setPrevParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextParagraphIndex: number;
+  setNextParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
+  prevSentenceIndex: number;
+  setPrevSentenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextSentenceIndex: number;
+  setNextSentenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  prevWordSequenceIndex: number;
+  setPrevWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  curWordSequenceIndex: number;
+  setCurWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextWordSequenceIndex: number;
+  setNextWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const defaultContextValue: PanelContextType = {
@@ -33,7 +47,21 @@ const defaultContextValue: PanelContextType = {
   `,
   setTextContent: () => {},
   isPlaying: false,
-  setIsPlaying: () => {}
+  setIsPlaying: () => { },
+  prevParagraphIndex: 0,
+  setPrevParagraphIndex: () => {},
+  nextParagraphIndex: 0,
+  setNextParagraphIndex: () => {},
+  prevSentenceIndex: 0,
+  setPrevSentenceIndex: () => {},
+  nextSentenceIndex: 0,
+  setNextSentenceIndex: () => {},
+  prevWordSequenceIndex: 0,
+  setPrevWordSequenceIndex: () => {},
+  curWordSequenceIndex: 0,
+  setCurWordSequenceIndex: () => {},
+  nextWordSequenceIndex: 0,
+  setNextWordSequenceIndex: () => {},
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
@@ -42,9 +70,27 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [curWordSequence, setCurWordSequence] = useState<string[]>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);
+  const [prevParagraphIndex, setPrevParagraphIndex] = useState<number>(defaultContextValue.prevParagraphIndex);
+  const [nextParagraphIndex, setNextParagraphIndex] = useState<number>(defaultContextValue.nextParagraphIndex);
+  const [prevSentenceIndex, setPrevSentenceIndex] = useState<number>(defaultContextValue.prevSentenceIndex);
+  const [nextSentenceIndex, setNextSentenceIndex] = useState<number>(defaultContextValue.nextSentenceIndex);
+  const [prevWordSequenceIndex, setPrevWordSequenceIndex] = useState<number>(defaultContextValue.prevWordSequenceIndex);
+  const [curWordSequenceIndex, setCurWordSequenceIndex] = useState<number>(defaultContextValue.curWordSequenceIndex);
+  const [nextWordSequenceIndex, setNextWordSequenceIndex] = useState<number>(defaultContextValue.nextWordSequenceIndex);
 
   return (
-    <PanelContext.Provider value={{ curWordSequence, setCurWordSequence, textContent, setTextContent, isPlaying, setIsPlaying }}>
+    <PanelContext.Provider value={{
+      curWordSequence, setCurWordSequence, 
+      textContent, setTextContent, 
+      isPlaying, setIsPlaying, 
+      prevParagraphIndex, setPrevParagraphIndex, 
+      nextParagraphIndex, setNextParagraphIndex, 
+      prevSentenceIndex, setPrevSentenceIndex, 
+      nextSentenceIndex, setNextSentenceIndex, 
+      prevWordSequenceIndex, setPrevWordSequenceIndex, 
+      curWordSequenceIndex, setCurWordSequenceIndex, 
+      nextWordSequenceIndex, setNextWordSequenceIndex 
+    }}>
       {children}
     </PanelContext.Provider>
   );
