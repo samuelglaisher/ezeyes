@@ -1,8 +1,8 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
 export interface PanelContextType {
-  curWordSequence: string[];
-  setCurWordSequence: React.Dispatch<React.SetStateAction<string[]>>;
+  curWordSequence: string;
+  setCurWordSequence: React.Dispatch<React.SetStateAction<string>>;
   textContent: string;
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
   isPlaying: boolean;
@@ -21,10 +21,12 @@ export interface PanelContextType {
   setCurWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
   nextWordSequenceIndex: number;
   setNextWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  formattedTextContent: React.JSX.Element;
+  setFormattedTextContent: React.Dispatch<React.SetStateAction<React.JSX.Element>>;
 }
 
 const defaultContextValue: PanelContextType = {
-  curWordSequence: [],
+  curWordSequence: '',
   setCurWordSequence: () => {},
   textContent: `
     Brightly dressed in a red-and-white starry jacket, Melinda Tourangeau was waiting eagerly at Grill 603, a casual diner in small-town New Hampshire, for a US presidential candidate not named Donald Trump.
@@ -39,7 +41,7 @@ const defaultContextValue: PanelContextType = {
 
     But if Iowa played to Trump’s strengths among evangelical Christians and rural conservatives, New Hampshire is a different proposition. Its voters pride themselves on an independent streak – the state motto is “Live free or die” – and are generally wealthier, more educated and less religious. Both states are about 90% white.
 
-    Voters who are registered without a party affiliation make up about 40% of the electorate in New Hampshire and are eligible to cast a Republican primary ballot, which makes them more moderate than in Iowa. New voters can also register at the polls on Tuesday.
+    Voters who are registered without a party affiliation make up about 40% of the electorate in New Hampshire and are eligible to cat a Republican primary ballot, which makes them more moderate than in Iowa. New voters can also register at the polls on Tuesday.
 
     For Trump, whose authoritarian language, criminal charges and brash populism play less well among college-educated voters, this represents something of an away game. Even in the Iowa suburbs last week, he won only a third of the votes.
 
@@ -62,12 +64,14 @@ const defaultContextValue: PanelContextType = {
   setCurWordSequenceIndex: () => {},
   nextWordSequenceIndex: 0,
   setNextWordSequenceIndex: () => {},
+  formattedTextContent: <></>,
+  setFormattedTextContent: () => {}
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
 
 export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [curWordSequence, setCurWordSequence] = useState<string[]>(defaultContextValue.curWordSequence);
+  const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);
   const [prevParagraphIndex, setPrevParagraphIndex] = useState<number>(defaultContextValue.prevParagraphIndex);
@@ -77,6 +81,7 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [prevWordSequenceIndex, setPrevWordSequenceIndex] = useState<number>(defaultContextValue.prevWordSequenceIndex);
   const [curWordSequenceIndex, setCurWordSequenceIndex] = useState<number>(defaultContextValue.curWordSequenceIndex);
   const [nextWordSequenceIndex, setNextWordSequenceIndex] = useState<number>(defaultContextValue.nextWordSequenceIndex);
+  const [formattedTextContent, setFormattedTextContent] = useState<React.JSX.Element>(defaultContextValue.formattedTextContent);
 
   return (
     <PanelContext.Provider value={{
@@ -89,7 +94,8 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       nextSentenceIndex, setNextSentenceIndex, 
       prevWordSequenceIndex, setPrevWordSequenceIndex, 
       curWordSequenceIndex, setCurWordSequenceIndex, 
-      nextWordSequenceIndex, setNextWordSequenceIndex 
+      nextWordSequenceIndex, setNextWordSequenceIndex,
+      formattedTextContent, setFormattedTextContent,
     }}>
       {children}
     </PanelContext.Provider>
