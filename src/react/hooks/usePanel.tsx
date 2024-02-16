@@ -9,8 +9,8 @@ export const usePanel = () => {
   const [paragraphIndices, setParagraphIndices] = useState<number[]>([]);
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>([]);
 
-  const paragraphIndicesRef: React.MutableRefObject<number[]>  = useRef();
-  paragraphIndicesRef.current = paragraphIndices;
+  const paragraphIndicesRef: React.MutableRefObject<number[]>  = useRef(paragraphIndices);
+  const wordSequenceIndicesRef: React.MutableRefObject<number[]>  = useRef(wordSequenceIndices);
 
   const {
     curWordSequence,
@@ -55,6 +55,8 @@ export const usePanel = () => {
     prevWordSequenceIndexRef.current = prevWordSequenceIndex;
     curWordSequenceIndexRef.current = curWordSequenceIndex;
     nextWordSequenceIndexRef.current = nextWordSequenceIndex;
+    paragraphIndicesRef.current = paragraphIndices;
+    wordSequenceIndicesRef.current = wordSequenceIndices;
   }, [
     curWordSequence,
     textContent,
@@ -65,12 +67,47 @@ export const usePanel = () => {
     prevWordSequenceIndex,
     curWordSequenceIndex,
     nextWordSequenceIndex,
+    paragraphIndices,
+    wordSequenceIndices,
   ]);
 
   const { settings } = useContext(SettingsContext);
 
   const speed = 1000 / (settings.panels.wpm.curWpm / 60);
 
+
+  /**
+   * Generates a list of word sequence starting indices in the text
+   * @param words - parsed list of words from the text content
+   * @returns list of word sequence indices
+   */
+  const generateWordSequenceIndices = (words: string[]) => {
+    const wordSequenceIndices: number[] = [];
+    let marker = 0;
+    for (let i = 0; i < words.length; i += settings.panels.wordSequenceLength) {
+      const sequence = words.slice(i, i + settings.panels.wordSequenceLength);
+      let seqStartingWordIndex = textContent.indexOf(sequence[0], marker);
+
+      if (seqStartingWordIndex !== -1) {
+        marker = seqStartingWordIndex + sequence[0].length;
+
+        for (let j = 1; j < sequence.length; j++) {
+          const nextWordIndex = textContent.indexOf(sequence[j], marker);
+
+          if (nextWordIndex !== -1) {
+            marker = nextWordIndex + sequence[j].length;
+          } else {
+            break;
+          }
+        }
+
+        wordSequenceIndices.push(seqStartingWordIndex);
+      }
+    }
+
+    return wordSequenceIndices;
+  };
+  
   /**
    * Obtains the indices to every sentence, paragraph, and word sequence
    * when new text content is inserted into the application.
@@ -99,14 +136,7 @@ export const usePanel = () => {
       curIndex = index + paragraph.length;
     });
 
-    curIndex = 0;
-    for (let i = 0; i < words.length; i += settings.panels.wordSequenceLength) {
-      const word = words[i];
-      const index = textContent.indexOf(word, curIndex);
-      newWordSequenceIndices.push(index);
-      curIndex = index + words.slice(i, i + settings.panels.wordSequenceLength).join('').length;
-    }
-
+    newWordSequenceIndices = generateWordSequenceIndices(words);
     setSentenceIndices(newSentenceIndices);
     setParagraphIndices(newParagraphIndices);
     setWordSequenceIndices(newWordSequenceIndices);
@@ -114,7 +144,6 @@ export const usePanel = () => {
     //In case we have leading spaces or tabs, set to the start of the first word sequence index!
     setCurWordSequenceIndex(newWordSequenceIndices[0]);
   };
-
 
   function getLargestLesserValue(elems: number[], target: number) {
     let max = -1;
@@ -174,47 +203,24 @@ export const usePanel = () => {
     setWordSequenceIndices([]);
     const document = nlp(textContent);
     const words = document.terms().out('array');
-    const newWordSequenceIndices: number[] = [];
-    let curTextContentIndex = 0;
+    let newWordSequenceIndices: number[] = [];
 
     //Need to calculate relative to current word sequence index!!!!! (FIX)
-    for (let i = 0; i < words.length; i += settings.panels.wordSequenceLength) {
-      const startingWord = words[i];
-      console.log("--------------------------------------")
-      console.log("Finding index to word: ", startingWord);
-      console.log("here's what we currently see: " + textContent.slice(curTextContentIndex));
-      console.log("Index of the first word of sequence in text: " + textContent.indexOf(startingWord, curTextContentIndex) + "; repositioning in the text: " + textContent.slice(textContent.indexOf(startingWord, curTextContentIndex)));
-      console.log("identified word sequence: " + words.slice(i, i + settings.panels.wordSequenceLength));
-      console.log("first word of the NEXT sequence: " + words[i + settings.panels.wordSequenceLength]);
-      const wordSequenceStartIndex = textContent.indexOf(startingWord, curTextContentIndex);
-      console.log("Here's the identified starting index of the word sequence in the text: " + wordSequenceStartIndex);
-      console.log("New text structure with word sequence as starting sentence: " + textContent.slice(wordSequenceStartIndex));
-      newWordSequenceIndices.push(wordSequenceStartIndex);
-      console.log("Length of the current word sequence to be added: " + words.slice(i, i + settings.panels.wordSequenceLength).join('').length);
-      curTextContentIndex = wordSequenceStartIndex + words.slice(i, i + settings.panels.wordSequenceLength).join('').length;
-      console.log("We add " + words.slice(i, i + settings.panels.wordSequenceLength).join('').length + " to get to: " + textContent.slice(curTextContentIndex))
-      console.log("Set the cur text content index to start at: " + textContent.slice(curTextContentIndex));
-    }
-
+    newWordSequenceIndices = generateWordSequenceIndices(words);
     setWordSequenceIndices(newWordSequenceIndices);
-
-    //Find the CLOSEST matching index entry!!!
 
     //Set relative word sequence indices
     setPrevWordSequenceIndex(Math.max(getLargestLesserValue(newWordSequenceIndices, curWordSequenceIndex), newWordSequenceIndices[0]));
-    const nextWordSeqIdx = Math.min(getSmallestLargerValue(newWordSequenceIndices, curWordSequenceIndex), textContent.length - 1);
+    const nextWordSeqIdx = Math.min(getSmallestLargerValue(newWordSequenceIndices, curWordSequenceIndex), textContent.length);
     setNextWordSequenceIndex(nextWordSeqIdx);
 
     //Set the new word sequence
-    console.log(wordSequenceIndices)
-    console.log(curWordSequenceIndex, nextWordSeqIdx)
-    console.log(textContent.slice(curWordSequenceIndex, nextWordSeqIdx))
     setCurWordSequence(textContent.slice(curWordSequenceIndex, nextWordSeqIdx));
   };
 
   const navigateForward = () => {
-    console.log(nextWordSequenceIndexRef.current);
-    setCurWordSequenceIndex(nextWordSequenceIndexRef.current);
+    if (nextWordSequenceIndexRef.current !== textContent.length)
+      setCurWordSequenceIndex(nextWordSequenceIndexRef.current);
   };
 
   const navigateBackward = () => {

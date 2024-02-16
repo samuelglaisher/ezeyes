@@ -41,7 +41,7 @@ const defaultContextValue: PanelContextType = {
 
     But if Iowa played to Trump’s strengths among evangelical Christians and rural conservatives, New Hampshire is a different proposition. Its voters pride themselves on an independent streak – the state motto is “Live free or die” – and are generally wealthier, more educated and less religious. Both states are about 90% white.
 
-    Voters who are registered without a party affiliation make up about 40% of the electorate in New Hampshire and are eligible to cat a Republican primary ballot, which makes them more moderate than in Iowa. New voters can also register at the polls on Tuesday.
+    Voters who are registered without a party affiliation make up about 40% of the electorate in New Hampshire and are eligible to cast a Republican primary ballot, which makes them more moderate than in Iowa. New voters can also register at the polls on Tuesday.
 
     For Trump, whose authoritarian language, criminal charges and brash populism play less well among college-educated voters, this represents something of an away game. Even in the Iowa suburbs last week, he won only a third of the votes.
 
