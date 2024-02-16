@@ -1,8 +1,10 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, ReactElement } from 'react';
 
 export interface PanelContextType {
   curWordSequence: string[];
   setCurWordSequence: React.Dispatch<React.SetStateAction<string[]>>;
+  curWordIndex: number;
+  setCurWordIndex: React.Dispatch<React.SetStateAction<number>>;
   textContent: string;
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
   isPlaying: boolean;
@@ -12,6 +14,8 @@ export interface PanelContextType {
 const defaultContextValue: PanelContextType = {
   curWordSequence: [],
   setCurWordSequence: () => {},
+  curWordIndex: 0,
+  setCurWordIndex: () => {},
   textContent: `
     Brightly dressed in a red-and-white starry jacket, Melinda Tourangeau was waiting eagerly at Grill 603, a casual diner in small-town New Hampshire, for a US presidential candidate not named Donald Trump.
 
@@ -40,11 +44,12 @@ export const PanelContext = createContext<PanelContextType>(defaultContextValue)
 
 export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [curWordSequence, setCurWordSequence] = useState<string[]>(defaultContextValue.curWordSequence);
+  const [curWordIndex, setCurWordIndex] = useState<number>(defaultContextValue.curWordIndex);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);
 
   return (
-    <PanelContext.Provider value={{ curWordSequence, setCurWordSequence, textContent, setTextContent, isPlaying, setIsPlaying }}>
+    <PanelContext.Provider value={{ curWordSequence, setCurWordSequence, curWordIndex, setCurWordIndex, textContent, setTextContent, isPlaying, setIsPlaying }}>
       {children}
     </PanelContext.Provider>
   );

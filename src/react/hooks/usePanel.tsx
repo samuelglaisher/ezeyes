@@ -5,6 +5,7 @@ import { SettingsContext } from '../contexts/SettingsContext';
 
 export const usePanel = () => {
   const { textContent, setCurWordSequence } = useContext(PanelContext);
+  const { curWordIndex, setCurWordIndex } = useContext(PanelContext);
   const { settings } = useContext(SettingsContext);
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -25,8 +26,17 @@ export const usePanel = () => {
     const wordSequenceLength = settings.panels.wordSequenceLength;
     const highlightedWords = words.slice(currentWordIndex, currentWordIndex + wordSequenceLength).join(' ');
 
+    setCurWordIndex(currentWordIndex);
     setCurWordSequence([highlightedWords]);
   }, [textContent, currentWordIndex, settings.panels.wordSequenceLength, setCurWordSequence]);
+
+  useEffect(() => {
+    if(curWordIndex == 0){
+      setCurrentWordIndex(0);
+    } else {
+      setCurrentWordIndex(curWordIndex);
+    }
+  }, [curWordIndex])
 
   const usePanelContext = () => {
     const context = useContext(PanelContext);
