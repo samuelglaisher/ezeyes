@@ -16,6 +16,9 @@ export interface Keybindings {
     select: string;
     importFile: string;
     prevParagraph: string;
+    nextParagraph: string;
+    prevSentence: string,
+    nextSentence: string,
 }
 
 // Define the appearance interface
@@ -77,7 +80,10 @@ export const initialSettings: Settings = {
         focus: 'tab',
         select: 'enter',
         importFile: 'ctrl+i',
-        prevParagraph: "q"
+        prevParagraph: "q",
+        nextParagraph: "w",
+        prevSentence: "a",
+        nextSentence: "s",
     },
     panels: {
         textInputPanel: {

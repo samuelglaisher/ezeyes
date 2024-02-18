@@ -9,7 +9,7 @@ import { MenuType } from '../contexts/MenuManagerContext';
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
 
-    const { navigateForward, navigateBackward, navigateToPrevParagraph, togglePlayPause } = usePanel();
+    const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause } = usePanel();
     const { switchView } = usePanelViewport();
     const { openMenu } = useMenuManager();
 
@@ -25,6 +25,21 @@ const useKeybindings = () => {
 
         Mousetrap.bind(settings.keybindings.prevParagraph, () => {
             navigateToPrevParagraph();
+            return false;
+        });
+
+        Mousetrap.bind(settings.keybindings.nextParagraph, () => {
+            navigateToNextParagraph();
+            return false;
+        });
+
+        Mousetrap.bind(settings.keybindings.prevSentence, () => {
+            navigateToPrevSentence();
+            return false;
+        });
+
+        Mousetrap.bind(settings.keybindings.nextSentence, () => {
+            navigateToNextSentence();
             return false;
         });
 
