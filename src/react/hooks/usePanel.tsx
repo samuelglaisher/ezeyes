@@ -10,6 +10,7 @@ export const usePanel = () => {
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>([]);
 
   const paragraphIndicesRef: React.MutableRefObject<number[]>  = useRef(paragraphIndices);
+  const sentenceIndicesRef: React.MutableRefObject<number[]> = useRef(sentenceIndices);
   const wordSequenceIndicesRef: React.MutableRefObject<number[]>  = useRef(wordSequenceIndices);
 
   const {
@@ -56,6 +57,7 @@ export const usePanel = () => {
     curWordSequenceIndexRef.current = curWordSequenceIndex;
     nextWordSequenceIndexRef.current = nextWordSequenceIndex;
     paragraphIndicesRef.current = paragraphIndices;
+    sentenceIndicesRef.current = sentenceIndices;
     wordSequenceIndicesRef.current = wordSequenceIndices;
   }, [
     curWordSequence,
@@ -76,8 +78,8 @@ export const usePanel = () => {
   const speed = 1000 / (settings.panels.wpm.curWpm / 60);
 
   /**
-   * 
-   * @param words 
+   * Generates a list of word sequences relative to the current index into the text content.
+   * @param text - Input text
    * @param index - Starting index aligned on a word boundary and relative to the text content.
    */
   const generateWordSequenceIndicesFromIndex = (text: string, index: number) => {
@@ -207,9 +209,12 @@ export const usePanel = () => {
 
     curIndex = 0;
     paragraphs.forEach(paragraph => {
-      const index = textContent.indexOf(paragraph, curIndex);
-      newParagraphIndices.push(index);
-      curIndex = index + paragraph.length;
+      const trimmedParagraph = paragraph.trimStart();
+      const index = textContent.indexOf(trimmedParagraph, curIndex);
+      if (index !== -1) {
+        newParagraphIndices.push(index);
+        curIndex = index + paragraph.length;
+      }
     });
 
     newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, 0);
@@ -256,17 +261,6 @@ export const usePanel = () => {
    * has been updated.
    */
   const calculateIndicesOnUpdate = () => {
-    //store new relative paragraph indices
-    //store new relative sentence indices
-    //generate the new list of word sequence indices (since they may have changed depending whether our alignment is on a sentence start, paragraph start, etc.)
-    //   - In other words, moving our word sequence index marker to another location may change the word sequences relative to that index
-    //   - Moving to the previous paragraph may mean that our previous word sequence no longer exists and is a part of another word sequence RELATIVE to that point
-    // once new word seq indices generated, store new relative word sequence indices
-
-    /**
-     * ALL OF THESE MUST BE CALCULATED RELATIVE TO THE CURRENT WORD SEQ INDEX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     */
-
     //Set relative paragraph indices
     setPrevParagraphIndex(Math.max(getLargestLesserValue(paragraphIndices, curWordSequenceIndex), 0));
     setNextParagraphIndex(Math.min(getSmallestLargerValue(paragraphIndices, curWordSequenceIndex), textContent.length - 1));
@@ -278,10 +272,8 @@ export const usePanel = () => {
     //Generate the new list of word sequence indices
     setWordSequenceIndices([]);
     const document = nlp(textContent);
-    const words = document.terms().out('array');
     let newWordSequenceIndices: number[] = [];
 
-    //Need to calculate relative to current word sequence index!!!!! (FIX)
     newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, curWordSequenceIndexRef.current);
     setWordSequenceIndices(newWordSequenceIndices);
 
@@ -304,19 +296,23 @@ export const usePanel = () => {
   };
 
   const navigateToPrevParagraph = () => {
-    setCurWordSequenceIndex(prevParagraphIndexRef.current);
+    if (curWordSequenceIndexRef.current !== paragraphIndicesRef.current[0])
+      setCurWordSequenceIndex(prevParagraphIndexRef.current);
   };
 
   const navigateToNextParagraph = () => {
-    setCurWordSequenceIndex(nextParagraphIndexRef.current);
+    if (curWordSequenceIndexRef.current !== paragraphIndicesRef.current[paragraphIndicesRef.current.length - 1])
+      setCurWordSequenceIndex(nextParagraphIndexRef.current);
   };
 
   const navigateToPrevSentence = () => {
-    setCurWordSequenceIndex(prevSentenceIndexRef.current);
+    if (curWordSequenceIndexRef.current !== sentenceIndicesRef.current[0])
+      setCurWordSequenceIndex(prevSentenceIndexRef.current);
   };
 
   const navigateToNextSentence = () => {
-    setCurWordSequenceIndex(nextSentenceIndexRef.current);
+  if (curWordSequenceIndexRef.current !== sentenceIndicesRef.current[sentenceIndicesRef.current.length - 1])
+      setCurWordSequenceIndex(nextSentenceIndexRef.current);
   };
 
   const generateHighlightedText = () => {
