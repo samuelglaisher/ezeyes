@@ -22,13 +22,15 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
   };
 
   let r = 0;
-  const render = () => Array.from(textContent.split('\n').join(' \n ').split(' ').filter(word => word.length !== 0)).map((word, i) => {
+  const render = () => Array.from(textContent.split(/\n+/).join(' \n ').split(' ').filter(word => word.length !== 0)).map((word, i) => {
     const dex_value = i-r;
     if (word == '\n') {
       r += 1;
-      return <Text UNSAFE_className="text" key={Math.random()}>{word+' '}</Text>
-    } else if (dex_value >= curWordIndex && dex_value < curWordIndex+wordSequenceLength) {
+      return <span><br></br><br></br></span>
+    } else if (dex_value >= curWordIndex && dex_value < curWordIndex+wordSequenceLength-1) {
       return <mark data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word+' '}</Text></mark>
+    } else if (dex_value >= curWordIndex && dex_value < curWordIndex+wordSequenceLength) {
+      return <span><mark data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word}</Text></mark><Text UNSAFE_className="text" key={Math.random()}>{' '}</Text></span>
     } else {
       return <span data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word+' '}</Text></span>
     }
