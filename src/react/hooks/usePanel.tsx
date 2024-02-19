@@ -82,7 +82,7 @@ export const usePanel = () => {
    * @param text - Input text
    * @param index - Starting index aligned on a word boundary and relative to the text content.
    */
-  const generateWordSequenceIndicesFromIndex = (text: string, index: number) => {
+  const generateWordSequenceIndicesFromIndex = (text: string, index: number, wordSeqLen: number) => {
     const wordSequenceIndices: number[] = [];
     let marker = index;
 
@@ -95,12 +95,10 @@ export const usePanel = () => {
     const frontwords = document.terms().out('array');
 
     //Backwards search
-    for (let i = backwords.length - 1; i >= 0; i -= settings.panels.wordSequenceLength) {
+    for (let i = backwords.length - 1; i >= 0; i -= wordSeqLen) {
       //Grab the sequence in reversed order (last word comes first)
       //This is used to find word sequences from the current index to the beggining of the text
-      const sequenceStartIndex = (i - settings.panels.wordSequenceLength + 1)
-        ? i - settings.panels.wordSequenceLength + 1
-        : 0;
+      const sequenceStartIndex = (i - wordSeqLen + 1) >= 0 ? i - wordSeqLen + 1 : 0;
   
       const wordSequence = backwords.slice(sequenceStartIndex, i + 1).reverse();
 
@@ -117,8 +115,6 @@ export const usePanel = () => {
           if (nextWordIndex !== -1) {
             marker = nextWordIndex;
             seqEndingWordIndex = marker;
-          } else {
-              break;
           }
         }
 
@@ -128,8 +124,8 @@ export const usePanel = () => {
 
     //Frontwards search
     marker = index;
-    for (let i = 0; i < frontwords.length; i += settings.panels.wordSequenceLength) {
-      const sequence = frontwords.slice(i, i + settings.panels.wordSequenceLength);
+    for (let i = 0; i < frontwords.length; i += wordSeqLen) {
+      const sequence = frontwords.slice(i, i + wordSeqLen);
       let seqStartingWordIndex = text.indexOf(sequence[0], marker);
 
       if (seqStartingWordIndex !== -1) {
@@ -140,46 +136,11 @@ export const usePanel = () => {
 
           if (nextWordIndex !== -1) {
             marker = nextWordIndex + sequence[j].length;
-          } else {
-            break;
           }
         }
         
         if (seqStartingWordIndex >= index)
           wordSequenceIndices.push(seqStartingWordIndex);
-      }
-    }
-
-    return wordSequenceIndices;
-  };
-
-  /**
-   * Generates a list of word sequence starting indices in the text
-   * @param words - parsed list of words from the text content
-   * @returns list of word sequence indices
-   */
-  const generateWordSequenceIndices = (text: string, words: string[]) => {
-    const wordSequenceIndices: number[] = [];
-    let marker = 0;
-
-    for (let i = 0; i < words.length; i += settings.panels.wordSequenceLength) {
-      const sequence = words.slice(i, i + settings.panels.wordSequenceLength);
-      let seqStartingWordIndex = text.indexOf(sequence[0], marker);
-
-      if (seqStartingWordIndex !== -1) {
-        marker = seqStartingWordIndex + sequence[0].length;
-
-        for (let j = 1; j < sequence.length; j++) {
-          const nextWordIndex = text.indexOf(sequence[j], marker);
-
-          if (nextWordIndex !== -1) {
-            marker = nextWordIndex + sequence[j].length;
-          } else {
-            break;
-          }
-        }
-
-        wordSequenceIndices.push(seqStartingWordIndex);
       }
     }
 
@@ -217,7 +178,7 @@ export const usePanel = () => {
       }
     });
 
-    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, 0);
+    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, 0, settings.panels.wordSequenceLength);
 
     setSentenceIndices(newSentenceIndices);
     setParagraphIndices(newParagraphIndices);
@@ -228,27 +189,25 @@ export const usePanel = () => {
   };
 
   function getLargestLesserValue(elems: number[], target: number) {
-    let max = -1;
-
-    for (let i = 0; elems[i] < target; i++) {
-      if (elems[i] > max && elems[i] < target) {
-        max = elems[i];
+    elems = elems.sort((a,b) => a - b);
+    for (let i = 0; i < elems.length; i++) {
+      if (elems[i] === target) {
+        return elems[i-1];
       }
     }
 
-    return max;
+    return undefined;
   }
 
   function getSmallestLargerValue(elems: number[], target: number) {
-    let min = Infinity;
-
-    for (let i = elems.length - 1; elems[i] > target; i--) {
-      if (elems[i] < min && elems[i] > target) {
-        min = elems[i];
+    elems = elems.sort((a,b) => a - b);
+    for (let i = 0; i < elems.length; i++) {
+      if (elems[i] === target) {
+        return elems[i+1];
       }
     }
 
-    return min;
+    return undefined;
   }
 
   /**
@@ -274,7 +233,7 @@ export const usePanel = () => {
     const document = nlp(textContent);
     let newWordSequenceIndices: number[] = [];
 
-    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, curWordSequenceIndexRef.current);
+    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContentRef.current, curWordSequenceIndexRef.current, settings.panels.wordSequenceLength);
     setWordSequenceIndices(newWordSequenceIndices);
 
     //Set relative word sequence indices
@@ -287,31 +246,32 @@ export const usePanel = () => {
   };
 
   const navigateForward = () => {
-    if (nextWordSequenceIndexRef.current !== textContent.length)
+    if (curWordSequenceIndexRef.current < wordSequenceIndicesRef.current[wordSequenceIndicesRef.current.length - 1])
       setCurWordSequenceIndex(nextWordSequenceIndexRef.current);
   };
 
   const navigateBackward = () => {
-    setCurWordSequenceIndex(prevWordSequenceIndexRef.current);
+    if (curWordSequenceIndexRef.current > wordSequenceIndicesRef.current[0])
+      setCurWordSequenceIndex(prevWordSequenceIndexRef.current);
   };
 
   const navigateToPrevParagraph = () => {
-    if (curWordSequenceIndexRef.current !== paragraphIndicesRef.current[0])
+    if (curWordSequenceIndexRef.current > paragraphIndicesRef.current[0])
       setCurWordSequenceIndex(prevParagraphIndexRef.current);
   };
 
   const navigateToNextParagraph = () => {
-    if (curWordSequenceIndexRef.current !== paragraphIndicesRef.current[paragraphIndicesRef.current.length - 1])
+    if (curWordSequenceIndexRef.current < paragraphIndicesRef.current[paragraphIndicesRef.current.length - 1])
       setCurWordSequenceIndex(nextParagraphIndexRef.current);
   };
 
   const navigateToPrevSentence = () => {
-    if (curWordSequenceIndexRef.current !== sentenceIndicesRef.current[0])
+    if (curWordSequenceIndexRef.current > sentenceIndicesRef.current[0])
       setCurWordSequenceIndex(prevSentenceIndexRef.current);
   };
 
   const navigateToNextSentence = () => {
-  if (curWordSequenceIndexRef.current !== sentenceIndicesRef.current[sentenceIndicesRef.current.length - 1])
+  if (curWordSequenceIndexRef.current < sentenceIndicesRef.current[sentenceIndicesRef.current.length - 1])
       setCurWordSequenceIndex(nextSentenceIndexRef.current);
   };
 
@@ -339,6 +299,9 @@ export const usePanel = () => {
   }, [curWordSequenceIndex]);
 
   return {
+    getLargestLesserValue,
+    getSmallestLargerValue,
+    generateWordSequenceIndicesFromIndex,
     navigateToPrevParagraph,
     navigateToNextParagraph,
     navigateToPrevSentence,
