@@ -125,4 +125,3 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     </PanelContext.Provider>
   );
 };
-
