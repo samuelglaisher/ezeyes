@@ -23,6 +23,14 @@ export interface PanelContextType {
   setNextWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
   formattedTextContent: React.JSX.Element;
   setFormattedTextContent: React.Dispatch<React.SetStateAction<React.JSX.Element>>;
+  sentenceIndices: number[];
+  setSentenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  paragraphIndices: number[];
+  setParagraphIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  wordSequenceIndices: number[];
+  setWordSequenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  wordIndices: number[];
+  setWordIndices: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const defaultContextValue: PanelContextType = {
@@ -65,7 +73,15 @@ const defaultContextValue: PanelContextType = {
   nextWordSequenceIndex: 0,
   setNextWordSequenceIndex: () => {},
   formattedTextContent: <></>,
-  setFormattedTextContent: () => {}
+  setFormattedTextContent: () => {},
+  sentenceIndices: [],
+  setSentenceIndices: () => {},
+  paragraphIndices: [],
+  setParagraphIndices: () => {},
+  wordSequenceIndices: [],
+  setWordSequenceIndices: () => {},
+  wordIndices: [],
+  setWordIndices: () => {},
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
@@ -82,6 +98,10 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [curWordSequenceIndex, setCurWordSequenceIndex] = useState<number>(defaultContextValue.curWordSequenceIndex);
   const [nextWordSequenceIndex, setNextWordSequenceIndex] = useState<number>(defaultContextValue.nextWordSequenceIndex);
   const [formattedTextContent, setFormattedTextContent] = useState<React.JSX.Element>(defaultContextValue.formattedTextContent);
+  const [sentenceIndices, setSentenceIndices] = useState<number[]>(defaultContextValue.sentenceIndices);
+  const [paragraphIndices, setParagraphIndices] = useState<number[]>(defaultContextValue.paragraphIndices);
+  const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
+  const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
 
   return (
     <PanelContext.Provider value={{
@@ -96,6 +116,10 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       curWordSequenceIndex, setCurWordSequenceIndex, 
       nextWordSequenceIndex, setNextWordSequenceIndex,
       formattedTextContent, setFormattedTextContent,
+      sentenceIndices, setSentenceIndices,
+      paragraphIndices, setParagraphIndices,
+      wordSequenceIndices, setWordSequenceIndices,
+      wordIndices, setWordIndices
     }}>
       {children}
     </PanelContext.Provider>
