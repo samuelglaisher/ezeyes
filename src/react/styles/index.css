@@ -3,11 +3,19 @@ body, html, #root {
   padding: 0;
   height: 100%;
   width: 100%;
+  overflow: hidden;
+
 }
+
 
 .panel-viewport {
   height: 100vh;
   width: 100vw;
+}
+
+.panel-viewport, #horizontal-panel-container, #vertical-panel-container, #zoom-container, #flashcard-container {
+  max-height: calc(100vh - 100px);
+  overflow: auto;
 }
 
 .highlight {
@@ -22,12 +30,16 @@ body, html, #root {
   overflow: auto;
   box-sizing: border-box;
   text-align: left;
+  position: absolute;
+  bottom: 0; /* Align to the bottom */
+  right: 0;
 }
 
 #horizontal-panel-container {
   display: flex;
   height: 100vh;
   width: 100vw;
+  overflow: auto;
 }
 
 #horizontal-panel-container > :nth-child(1) {
@@ -39,9 +51,7 @@ body, html, #root {
 
 #horizontal-panel-container > :nth-child(3) {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10%;
+  padding: 5%;
   box-sizing: border-box;
   min-height: 200px;
   min-width: 200px;
@@ -111,6 +121,8 @@ mark {
   display: flex;
   height: 100vh;
   width: 100vw;
+  overflow: auto;
+  align-items: center;
   position: relative;
 }
 
@@ -148,7 +160,9 @@ mark {
   display: flex;
   height: 100vh;
   width: 100vw;
+  overflow: auto;
   perspective: 1000px;
+  align-items: center;
   position: relative;
 }
 
@@ -157,10 +171,12 @@ mark {
   backface-visibility: hidden;
   transition: transform 0.0s;
   width: 100%;
-  height: 100%;
+  overflow: auto;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 
 #flashcard-container > :nth-child(2) {
@@ -172,8 +188,8 @@ mark {
   backface-visibility: hidden;
   transition: transform 0.0s;
   width: 100%;
-  height: 100%;
-  display: flex;
+  overflow: auto;
+  height: auto;
 }
 
 #flashcard-container > :nth-child(1) {
