@@ -189,25 +189,29 @@ export const usePanel = () => {
   };
 
   function getLargestLesserValue(elems: number[], target: number) {
+    let max = -Infinity;
     elems = elems.sort((a,b) => a - b);
+
     for (let i = 0; i < elems.length; i++) {
-      if (elems[i] === target) {
-        return elems[i-1];
+      if (elems[i] < target && elems[i] > max) {
+        max = elems[i];
       }
     }
 
-    return undefined;
+    return max;
   }
 
   function getSmallestLargerValue(elems: number[], target: number) {
+    let min = Infinity;
     elems = elems.sort((a,b) => a - b);
+
     for (let i = 0; i < elems.length; i++) {
-      if (elems[i] === target) {
-        return elems[i+1];
+      if (elems[i] > target && elems[i] < min) {
+        min = elems[i];
       }
     }
 
-    return undefined;
+    return min;
   }
 
   /**
