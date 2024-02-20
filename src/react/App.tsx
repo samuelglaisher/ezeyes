@@ -7,11 +7,11 @@ import { SettingsProvider } from './contexts/SettingsContext';
 import { PanelViewportProvider } from "./contexts/PanelViewportContext";
 import "./styles/index.css";
 import { MenuManagerProvider } from "./contexts/MenuManagerContext";
-import { Provider, darkTheme } from "@adobe/react-spectrum";
+import { Provider, darkTheme, lightTheme } from "@adobe/react-spectrum";
 
 const App: React.FC = () => {
   return (
-    <Provider theme={darkTheme}>
+    <Provider theme={lightTheme}>
       <PanelViewportProvider>
         <SettingsProvider>
           <PanelProvider>

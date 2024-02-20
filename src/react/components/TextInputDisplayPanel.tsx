@@ -1,49 +1,66 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
-import { SettingsContext } from '../contexts/SettingsContext';
 import { View, Text } from '@adobe/react-spectrum';
 
-const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ style }) => {
-  const { textContent, setTextContent } = useContext(PanelContext);
-  const { curWordIndex, setCurWordIndex } = useContext(PanelContext);
-  const { settings } = useContext(SettingsContext);
+const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = React.memo(({ style }) => {
+
+  const { textContent, setTextContent, setCurWordSequenceIndex, curWordSequenceIndex, nextWordSequenceIndex, wordIndices, paragraphIndices } = useContext(PanelContext);
 
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
     const pastedText = event.clipboardData.getData('text');
     setTextContent(pastedText);
-    setCurWordIndex(0);
+    setCurWordSequenceIndex(0);
   };
 
-  const wordSequenceLength = settings.panels.wordSequenceLength;
+  const startHere = useMemo(() => (i: number) => {
+    setCurWordSequenceIndex(i);
+  }, [setCurWordSequenceIndex]);
 
-  const startHere = (word: string, i: number) => {
-    setCurWordIndex(i);
-  };
+  const render = useMemo(() => () => {
+    const renderHtml: React.JSX.Element[] = [];
 
-  let r = 0;
-  const render = () => Array.from(textContent.split(/\n+/).join(' \n ').split(' ').filter(word => word.length !== 0)).map((word, i) => {
-    const dex_value = i-r;
-    if (word == '\n') {
-      r += 1;
-      return <span><br></br><br></br></span>
-    } else if (dex_value >= curWordIndex && dex_value < curWordIndex+wordSequenceLength-1) {
-      return <mark data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word+' '}</Text></mark>
-    } else if (dex_value >= curWordIndex && dex_value < curWordIndex+wordSequenceLength) {
-      return <span><mark data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word}</Text></mark><Text UNSAFE_className="text" key={Math.random()}>{' '}</Text></span>
-    } else {
-      return <span data-dex={dex_value} key={Math.random()} onClick={() => startHere(word, dex_value)}><Text UNSAFE_className="text" key={Math.random()}>{word+' '}</Text></span>
+    //Traverse each word in the text
+    for (let i = 0; i < wordIndices.length; i++) {
+      const word = textContent.slice(wordIndices[i], wordIndices[i + 1]).trimEnd();
+
+      //If the word index aligns on a paragraph index, add a line break
+      if (paragraphIndices.includes(wordIndices[i])) {
+        renderHtml.push(<span key={`paragraph-${i}`}><br /><br /></span>);
+      }
+
+      const key = `word-${wordIndices[i]}-${i}`;
+
+      //If the word index aligns on the current word sequence index, highlight the word, otherwise just add the regular word
+      if (wordIndices[i] >= curWordSequenceIndex && wordIndices[i] < nextWordSequenceIndex) {
+        renderHtml.push(
+          <mark key={key} onClick={() => startHere(wordIndices[i])}>
+            <Text UNSAFE_className="text">
+              {word + ' '}
+            </Text>
+          </mark>
+        );
+      } else {
+        renderHtml.push(
+          <span key={key} onClick={() => startHere(wordIndices[i])}>
+            <Text UNSAFE_className="text">
+              {word + ' '}
+            </Text>
+          </span>
+        );
+      }
     }
-  });
+
+    return renderHtml;
+  }, [wordIndices, textContent, paragraphIndices, curWordSequenceIndex, nextWordSequenceIndex, startHere]);
 
   return (
     <div id="text-input-panel" style={style} onPaste={handlePaste} tabIndex={0}>
       <View>
-        {/* <Text UNSAFE_className="text">{textContent}</Text> */}
         { render() }
       </View>
     </div>
   );
-};
+});
 
 export default TextInputDisplayPanel;

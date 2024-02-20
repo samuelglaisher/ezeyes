@@ -8,10 +8,10 @@ const TestPanelContextComponent = () => {
 
   return (
     <div>
-      <div data-testid="curWordSequence">{curWordSequence.join(',')}</div>
+      <div data-testid="curWordSequence">{curWordSequence}</div>
       <div data-testid="textContent">{textContent}</div>
       <div data-testid="isPlaying">{isPlaying.toString()}</div>
-      <button onClick={() => setCurWordSequence(['test', 'sequence'])}>Update Sequence</button>
+      {/* <button onClick={() => setCurWordSequence(['test', 'sequence'])}>Update Sequence</button> */}
       <button onClick={() => setTextContent('Updated text content')}>Update Text</button>
       <button onClick={() => setIsPlaying(!isPlaying)}>Toggle Playing</button>
     </div>
