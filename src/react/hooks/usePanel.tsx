@@ -5,14 +5,6 @@ import { SettingsContext } from '../contexts/SettingsContext';
 import nlp from 'compromise';
 
 export const usePanel = () => {
-  const [sentenceIndices, setSentenceIndices] = useState<number[]>([]);
-  const [paragraphIndices, setParagraphIndices] = useState<number[]>([]);
-  const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>([]);
-
-  const paragraphIndicesRef: React.MutableRefObject<number[]>  = useRef(paragraphIndices);
-  const sentenceIndicesRef: React.MutableRefObject<number[]> = useRef(sentenceIndices);
-  const wordSequenceIndicesRef: React.MutableRefObject<number[]>  = useRef(wordSequenceIndices);
-
   const {
     curWordSequence,
     setCurWordSequence,
@@ -32,7 +24,15 @@ export const usePanel = () => {
     setCurWordSequenceIndex,
     nextWordSequenceIndex,
     setNextWordSequenceIndex,
-    setFormattedTextContent
+    setFormattedTextContent,
+    paragraphIndices,
+    setParagraphIndices,
+    sentenceIndices,
+    setSentenceIndices,
+    wordSequenceIndices,
+    setWordSequenceIndices,
+    wordIndices,
+    setWordIndices
   } = useContext(PanelContext);
 
   const curWordSequenceRef = useRef(curWordSequence);
@@ -44,6 +44,10 @@ export const usePanel = () => {
   const prevWordSequenceIndexRef = useRef(prevWordSequenceIndex);
   const curWordSequenceIndexRef = useRef(curWordSequenceIndex);
   const nextWordSequenceIndexRef = useRef(nextWordSequenceIndex);
+  const paragraphIndicesRef = useRef(paragraphIndices);
+  const sentenceIndicesRef = useRef(sentenceIndices);
+  const wordSequenceIndicesRef = useRef(wordSequenceIndices);
+  const wordIndicesRef = useRef(wordIndices);
 
   // Synchronize each ref with its corresponding state in the context
   useEffect(() => {
@@ -59,6 +63,7 @@ export const usePanel = () => {
     paragraphIndicesRef.current = paragraphIndices;
     sentenceIndicesRef.current = sentenceIndices;
     wordSequenceIndicesRef.current = wordSequenceIndices;
+    wordIndicesRef.current = wordIndices;
   }, [
     curWordSequence,
     textContent,
@@ -71,6 +76,8 @@ export const usePanel = () => {
     nextWordSequenceIndex,
     paragraphIndices,
     wordSequenceIndices,
+    sentenceIndices,
+    wordIndices,
   ]);
 
   const { settings } = useContext(SettingsContext);
@@ -162,6 +169,17 @@ export const usePanel = () => {
     let newWordSequenceIndices = [];
     let curIndex = 0;
 
+    const wordIndices: number[] = [];
+    words.forEach((word: string) => {
+      const index = textContent.indexOf(word, curIndex);
+      if (index !== -1) {
+        wordIndices.push(index);
+        curIndex = index + word.length;
+      }
+    });
+    setWordIndices(wordIndices);
+
+    curIndex = 0;
     sentences.forEach((sentence: string) => {
       const index = textContent.indexOf(sentence, curIndex);
       newSentenceIndices.push(index);
