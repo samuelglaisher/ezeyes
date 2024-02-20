@@ -1,16 +1,40 @@
 import React, { createContext, useState, ReactNode } from 'react';
 
 export interface PanelContextType {
-  curWordSequence: string[];
-  setCurWordSequence: React.Dispatch<React.SetStateAction<string[]>>;
+  curWordSequence: string;
+  setCurWordSequence: React.Dispatch<React.SetStateAction<string>>;
   textContent: string;
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
   isPlaying: boolean;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  prevParagraphIndex: number;
+  setPrevParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextParagraphIndex: number;
+  setNextParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
+  prevSentenceIndex: number;
+  setPrevSentenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextSentenceIndex: number;
+  setNextSentenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  prevWordSequenceIndex: number;
+  setPrevWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  curWordSequenceIndex: number;
+  setCurWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  nextWordSequenceIndex: number;
+  setNextWordSequenceIndex: React.Dispatch<React.SetStateAction<number>>;
+  formattedTextContent: React.JSX.Element;
+  setFormattedTextContent: React.Dispatch<React.SetStateAction<React.JSX.Element>>;
+  sentenceIndices: number[];
+  setSentenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  paragraphIndices: number[];
+  setParagraphIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  wordSequenceIndices: number[];
+  setWordSequenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  wordIndices: number[];
+  setWordIndices: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const defaultContextValue: PanelContextType = {
-  curWordSequence: [],
+  curWordSequence: '',
   setCurWordSequence: () => {},
   textContent: `
     Brightly dressed in a red-and-white starry jacket, Melinda Tourangeau was waiting eagerly at Grill 603, a casual diner in small-town New Hampshire, for a US presidential candidate not named Donald Trump.
@@ -33,20 +57,71 @@ const defaultContextValue: PanelContextType = {
   `,
   setTextContent: () => {},
   isPlaying: false,
-  setIsPlaying: () => {}
+  setIsPlaying: () => { },
+  prevParagraphIndex: 0,
+  setPrevParagraphIndex: () => {},
+  nextParagraphIndex: 0,
+  setNextParagraphIndex: () => {},
+  prevSentenceIndex: 0,
+  setPrevSentenceIndex: () => {},
+  nextSentenceIndex: 0,
+  setNextSentenceIndex: () => {},
+  prevWordSequenceIndex: 0,
+  setPrevWordSequenceIndex: () => {},
+  curWordSequenceIndex: 0,
+  setCurWordSequenceIndex: () => {},
+  nextWordSequenceIndex: 0,
+  setNextWordSequenceIndex: () => {},
+  formattedTextContent: <></>,
+  setFormattedTextContent: () => {},
+  sentenceIndices: [],
+  setSentenceIndices: () => {},
+  paragraphIndices: [],
+  setParagraphIndices: () => {},
+  wordSequenceIndices: [],
+  setWordSequenceIndices: () => {},
+  wordIndices: [],
+  setWordIndices: () => {},
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
 
 export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [curWordSequence, setCurWordSequence] = useState<string[]>(defaultContextValue.curWordSequence);
+  const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);
+  const [prevParagraphIndex, setPrevParagraphIndex] = useState<number>(defaultContextValue.prevParagraphIndex);
+  const [nextParagraphIndex, setNextParagraphIndex] = useState<number>(defaultContextValue.nextParagraphIndex);
+  const [prevSentenceIndex, setPrevSentenceIndex] = useState<number>(defaultContextValue.prevSentenceIndex);
+  const [nextSentenceIndex, setNextSentenceIndex] = useState<number>(defaultContextValue.nextSentenceIndex);
+  const [prevWordSequenceIndex, setPrevWordSequenceIndex] = useState<number>(defaultContextValue.prevWordSequenceIndex);
+  const [curWordSequenceIndex, setCurWordSequenceIndex] = useState<number>(defaultContextValue.curWordSequenceIndex);
+  const [nextWordSequenceIndex, setNextWordSequenceIndex] = useState<number>(defaultContextValue.nextWordSequenceIndex);
+  const [formattedTextContent, setFormattedTextContent] = useState<React.JSX.Element>(defaultContextValue.formattedTextContent);
+  const [sentenceIndices, setSentenceIndices] = useState<number[]>(defaultContextValue.sentenceIndices);
+  const [paragraphIndices, setParagraphIndices] = useState<number[]>(defaultContextValue.paragraphIndices);
+  const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
+  const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
 
   return (
-    <PanelContext.Provider value={{ curWordSequence, setCurWordSequence, textContent, setTextContent, isPlaying, setIsPlaying }}>
+    <PanelContext.Provider value={{
+      curWordSequence, setCurWordSequence, 
+      textContent, setTextContent, 
+      isPlaying, setIsPlaying, 
+      prevParagraphIndex, setPrevParagraphIndex, 
+      nextParagraphIndex, setNextParagraphIndex, 
+      prevSentenceIndex, setPrevSentenceIndex, 
+      nextSentenceIndex, setNextSentenceIndex, 
+      prevWordSequenceIndex, setPrevWordSequenceIndex, 
+      curWordSequenceIndex, setCurWordSequenceIndex, 
+      nextWordSequenceIndex, setNextWordSequenceIndex,
+      formattedTextContent, setFormattedTextContent,
+      sentenceIndices, setSentenceIndices,
+      paragraphIndices, setParagraphIndices,
+      wordSequenceIndices, setWordSequenceIndices,
+      wordIndices, setWordIndices
+    }}>
       {children}
     </PanelContext.Provider>
   );
 };
-

@@ -5,7 +5,6 @@ import FlashcardView from "./panelviews/FlashcardView";
 import VerticalPanel from "./panelviews/VerticalPanel";
 import { PanelDisplayType } from "../SettingsSchema";
 import { usePanel } from '../hooks/usePanel';
-import { usePanelViewport } from "../hooks/usePanelViewport";
 import { PanelContext } from "../contexts/PanelContext";
 import { PanelViewportContext } from "../contexts/PanelViewportContext";
 import "../styles/index.css";
