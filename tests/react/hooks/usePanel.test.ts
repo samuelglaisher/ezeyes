@@ -1,6 +1,7 @@
-import React from 'react';
 import { usePanel } from '../../../src/react/hooks/usePanel';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
+import '@testing-library/jest-dom';
+import '@testing-library/jest-dom';
 
 const text1 = `This is sentence 1. This is sentence 2.
 
@@ -76,15 +77,23 @@ describe('usePanel tests for text1', () => {
 describe('getSmallestLesserValue', () => {
     const { getSmallestLargerValue } = renderHook(() => usePanel()).result.current;
 
-    test('generating word sequences with one word', () => {
+    test('testing that smallest larger value is found for number in list', () => {
         expect(getSmallestLargerValue([0,2,90,4,1,12,123], 2)).toBe(4);
+    });
+
+    test('testing that smallest larger value is found for number not in list', () => {
+        expect(getSmallestLargerValue([0,2,90,4,1,12,123], 5)).toBe(12);
     });
 });
 
 describe('getLargestLesserValue', () => {
     const { getLargestLesserValue } = renderHook(() => usePanel()).result.current;
 
-    test('generating word sequences with one word', () => {
+    test('testing that largest smaller value is found for number in list', () => {
         expect(getLargestLesserValue([0,2,90,4,1,12,123], 12)).toBe(4);
+    });
+
+    test('testing that largest smaller value is found for number not in list', () => {
+        expect(getLargestLesserValue([0,2,90,4,1,12,123], 6)).toBe(4);
     });
 });
