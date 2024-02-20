@@ -80,6 +80,13 @@ body, html, #root {
   z-index: 10;
 }
 
+mark {
+  background-color: yellow;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  line-height: inherit;
+}
 
 .resize-bar-vertical {
   width: 5px;
