@@ -5,6 +5,7 @@ import { usePanelViewport } from '../hooks/usePanelViewport';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from './useMenuManager';
 import { MenuType } from '../contexts/MenuManagerContext';
+import { useFileManager } from './useFileManager';
 
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
@@ -12,6 +13,7 @@ const useKeybindings = () => {
     const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause } = usePanel();
     const { switchView } = usePanelViewport();
     const { openMenu } = useMenuManager();
+    const { loadFile } = useFileManager();
 
     useEffect(() => {
         Mousetrap.bind(settings.keybindings.nextWord, () => {
@@ -49,6 +51,7 @@ const useKeybindings = () => {
             return false;
         });
         Mousetrap.bind(settings.keybindings.switchView, switchView);
+        Mousetrap.bind(settings.keybindings.loadFile, loadFile);
 
         return () => {
             Mousetrap.unbind(settings.keybindings.nextWord);
@@ -56,6 +59,7 @@ const useKeybindings = () => {
             Mousetrap.unbind(settings.keybindings.openSettings);
             Mousetrap.unbind(settings.keybindings.play);
             Mousetrap.unbind(settings.keybindings.switchView);
+            Mousetrap.unbind(settings.keybindings.loadFile);
             
         };
     }, [settings.keybindings]);

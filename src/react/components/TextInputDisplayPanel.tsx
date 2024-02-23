@@ -26,13 +26,26 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = React.m
 
       //If the word index aligns on a paragraph index, add a line break
       if (paragraphIndices.includes(wordIndices[i])) {
-        renderHtml.push(<span key={`paragraph-${i}`}><br /><br /></span>);
+        renderHtml.push(<span key={`paragraph-${i}`} style={{width:"100vw"}}><br onClick={() => startHere(wordIndices[i])} /><br onClick={() => startHere(wordIndices[i])} /></span>);
       }
 
       const key = `word-${wordIndices[i]}-${i}`;
 
       //If the word index aligns on the current word sequence index, highlight the word, otherwise just add the regular word
-      if (wordIndices[i] >= curWordSequenceIndex && wordIndices[i] < nextWordSequenceIndex) {
+      if (wordIndices[i+1] == nextWordSequenceIndex) {
+        renderHtml.push(
+          <span key={key} onClick={() => startHere(wordIndices[i])}>
+            <mark key={key}>
+              <Text UNSAFE_className="text">
+                {word}
+              </Text>
+            </mark>
+            <Text UNSAFE_className="text">
+              {' '}
+            </Text>
+          </span>
+        );
+      } else if (wordIndices[i] >= curWordSequenceIndex && wordIndices[i] < nextWordSequenceIndex) {
         renderHtml.push(
           <mark key={key} onClick={() => startHere(wordIndices[i])}>
             <Text UNSAFE_className="text">

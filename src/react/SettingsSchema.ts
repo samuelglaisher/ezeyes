@@ -17,8 +17,9 @@ export interface Keybindings {
     importFile: string;
     prevParagraph: string;
     nextParagraph: string;
-    prevSentence: string,
-    nextSentence: string,
+    prevSentence: string;
+    nextSentence: string;
+    loadFile: string;
 }
 
 // Define the appearance interface
@@ -84,6 +85,7 @@ export const initialSettings: Settings = {
         nextParagraph: "w",
         prevSentence: "a",
         nextSentence: "s",
+        loadFile: "o"
     },
     panels: {
         textInputPanel: {
