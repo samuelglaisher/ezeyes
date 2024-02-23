@@ -18,7 +18,7 @@ function FileMenuBar() {
 
     const handler = (e: React.FormEvent<HTMLInputElement>) => {
         const target = e.target as HTMLInputElement & {
-            files: FileList;
+            files: File;
         }
         console.log(target.files);
         setInputFile(target.files[0]);
