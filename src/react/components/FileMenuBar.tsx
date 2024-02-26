@@ -1,28 +1,26 @@
 import React, { Key, useContext, useRef } from 'react';
-import {Menu, MenuTrigger, ActionButton, Item} from '@adobe/react-spectrum';
+import { Menu, MenuTrigger, ActionButton, Item } from '@adobe/react-spectrum';
 import { useFileManager } from '../hooks/useFileManager';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
-import { FileManagerContext } from '../contexts/FileManagerContext';
-
 
 function FileMenuBar() {
     const { retrieveFile } = useFileMenuBar();
-    const { inputFile, setInputFile } = useContext(FileManagerContext);
-    const input = useRef<HTMLInputElement | null>(null);
+    const { promptAndLoadFile } = useFileManager();
 
     const actions = (key: Key) => {
         if (key == "load") {
-            input.current.click();
+            promptAndLoadFile();
+
+            // input.current.click();
         }
     };
 
-    const handler = (e: React.FormEvent<HTMLInputElement>) => {
-        const target = e.target as HTMLInputElement & {
-            files: File;
-        }
-        console.log(target.files);
-        setInputFile(target.files[0]);
-    };
+    // const handler = (e: React.FormEvent<HTMLInputElement>) => {
+    //     // const x = promptAndLoadFile();
+    //     // console.log(x);
+    //     // console.log(target.files);
+    //     // setInputFile(target.files[0]);
+    // };
 
     return (
         <div>
@@ -34,7 +32,7 @@ function FileMenuBar() {
                 <Item key="load">Load File</Item>
             </Menu>
         </MenuTrigger>
-        <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/>
+        {/* <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/> */}
         </div>
     );
 }
