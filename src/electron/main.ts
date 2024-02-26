@@ -53,29 +53,34 @@ app.on('activate', () => {
 ipcMain.handle('read', async (_, filePath, type) => {
   try {
     const content = fs.readFileSync(filePath, type || 'utf8');
-    return { content, error: undefined };
+    return content;
   } catch (error) {
-    return { content: undefined, error: error.message };
+    console.log(error);
+    return undefined;
   }
 });
 
 ipcMain.handle('write', async (_, filePath, content) => {
   try {
     fs.writeFileSync(filePath, content, 'utf8');
-    return { error: undefined };
   } catch (error) {
-    return { error: error.message };
+    console.log(error);
   }
 });
 
 ipcMain.handle('spawn-file-dialog', async (_) => {
-  const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, { properties: ['openFile'] });
+  try {
+    const { canceled, filePaths } = await dialog.showOpenDialog(mainWindow, { properties: ['openFile'] });
 
-  if (canceled) {
-    return { filePath: undefined, error: 'No file was selected!' };
+    if (canceled) {
+      return undefined;
+    }
+
+    return filePaths[0];
+  } catch (error) {
+    console.log(error);
+    return undefined;
   }
-
-  return { filePath: filePaths[0], error: undefined };
 });
 
 // In this file you can include the rest of your app's specific main process
