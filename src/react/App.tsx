@@ -14,16 +14,16 @@ const App: React.FC = () => {
   return (
     <Provider theme={lightTheme}>
       <PanelViewportProvider>
+      <PanelProvider>
         <FileMenuBar />
           <SettingsProvider>
-            <PanelProvider>
               <MenuManagerProvider>
               <PanelViewport />
               <KeybindingManager />
               <FocusManager />
               </MenuManagerProvider>
-            </PanelProvider>
           </SettingsProvider>
+        </PanelProvider>
       </PanelViewportProvider>
     </Provider>
   );

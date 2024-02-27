@@ -31,29 +31,6 @@ export function getRtfDocument(content: string | Buffer | undefined) {
     })
 }
 
-export const loadRtfFile = async (filePath: string): Promise<any> => {
-    let content;
-
-    try {
-        content = await read(filePath, 'utf8');
-        let doc: any = await getRtfDocument(content);
-        let paragraphs = doc.content.map((paragraph: { content: any[]; }) => paragraph.content.flatMap((entry: { value: any; }) => entry.value));
-        let text: string[] = paragraphs.reduce((acc: string[], paragraph: string[]) => {
-            if (paragraph.length === 0) {
-                acc.push("\n");
-                } else {
-                const lines = paragraph.map(elem => trimWhitespace(elem).replace('','')).join(" ");
-                acc.push(lines);
-            }
-            return acc;
-        }, []);
-
-        return text.join('');
-    } catch (error) {
-        return undefined;
-    }
-};
-
 export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: Function, setCurWordSequenceIndex: Function) => {
     let filePath;
     try {
@@ -70,7 +47,7 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
     const fileExtension = filePath.split('.').pop() || undefined;
 
     let content;
-    switch (fileExtension) {
+    switch (fileExtension.toLowerCase()) {
         case "rtf":
             content = await loadRtfFile(filePath);
             break;
@@ -97,6 +74,30 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
 const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
     return await read(filePath, "utf8");
 };
+
+export const loadRtfFile = async (filePath: string): Promise<any> => {
+    let content;
+
+    try {
+        content = await read(filePath, 'utf8');
+        let doc: any = await getRtfDocument(content);
+        let paragraphs = doc.content.map((paragraph: { content: any[]; }) => paragraph.content.flatMap((entry: { value: any; }) => entry.value));
+        let text: string[] = paragraphs.reduce((acc: string[], paragraph: string[]) => {
+            if (paragraph.length === 0) {
+                acc.push("\n");
+                } else {
+                const lines = paragraph.map(elem => trimWhitespace(elem).replace('','')).join(" ");
+                acc.push(lines);
+            }
+            return acc;
+        }, []);
+
+        return text.join('');
+    } catch (error) {
+        return undefined;
+    }
+};
+
 
 const loadDocxFile = async (filePath: string) => {
     
