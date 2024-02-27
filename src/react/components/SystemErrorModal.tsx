@@ -1,5 +1,5 @@
 import React from 'react';
-import { DialogContainer, AlertDialog, Content, Well, Text, Link } from '@adobe/react-spectrum';
+import { DialogContainer, AlertDialog, Content, Well, Link } from '@adobe/react-spectrum';
 
 interface ErrorModalProps {
     error: any,
@@ -10,7 +10,7 @@ function buildEmail(error: any) {
     const MAX_SUBJECT_LENGTH = 78
 
     const address = 'ezeyes@drexel0.onmicrosoft.com'
-    var subject = `[Crash Report] ${error.message}`
+    let subject = `[Crash Report] ${error.message}`
     if (subject.length > MAX_SUBJECT_LENGTH) { 
         subject = subject.slice(0,MAX_SUBJECT_LENGTH) + '…'
     }
@@ -21,7 +21,7 @@ function buildEmail(error: any) {
 }
 
 // TODO: develop error handling strategy for these: https://stackoverflow.com/a/57943193
-function ErrorModal(props: ErrorModalProps) {
+function SystemErrorModal(props: ErrorModalProps) {
     return (
         (
             <DialogContainer onDismiss={props.resetErrorBoundary} type="modal" isDismissable>
@@ -40,4 +40,4 @@ function ErrorModal(props: ErrorModalProps) {
     );
 }
 
-export default ErrorModal;
+export default SystemErrorModal;
