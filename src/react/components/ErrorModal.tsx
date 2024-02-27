@@ -1,27 +1,41 @@
 import React from 'react';
-import { Dialog, DialogContainer, Heading, Content, Divider } from '@adobe/react-spectrum';
+import { DialogContainer, AlertDialog, Content, Well, Text, Link } from '@adobe/react-spectrum';
 
 interface ErrorModalProps {
     error: any,
-    resetErrorBoundary: any
+    resetErrorBoundary: () => void
 }
 
-// TODO: look into https://react-spectrum.adobe.com/react-spectrum/AlertDialog.html
+function buildEmail(error: any) {
+    const MAX_SUBJECT_LENGTH = 78
+
+    const address = 'ezeyes@drexel0.onmicrosoft.com'
+    var subject = `[Crash Report] ${error.message}`
+    if (subject.length > MAX_SUBJECT_LENGTH) { 
+        subject = subject.slice(0,MAX_SUBJECT_LENGTH) + '…'
+    }
+    const body = `${error.stack}\n\n${window.navigator.userAgent}`
+    
+    const email = encodeURI(`mailto:${address}?subject=${subject}&body=${body}`)
+    return email;
+}
+
 // TODO: develop error handling strategy for these: https://stackoverflow.com/a/57943193
 function ErrorModal(props: ErrorModalProps) {
     return (
         (
             <DialogContainer onDismiss={props.resetErrorBoundary} type="modal" isDismissable>
-            <Dialog>
-                <Heading>⚠️ Something Went Wrong</Heading>
-                <Divider />
+            <AlertDialog 
+                variant='error'
+                title='EZEyes Broke'
+                primaryActionLabel='Close'
+                onPrimaryAction={props.resetErrorBoundary}>
                 <Content>
-                    <pre>{props.error.message}</pre>
-                    <p>To report this error, send us a message here: <a href="mhurm00@gmail.com">mhurm00@gmail.com</a></p>
+                    <Link href={buildEmail(props.error)}>Send Bug Report</Link>
+                    <Well>{props.error.message}</Well>
                 </Content>
-            </Dialog>
+            </AlertDialog>
             </DialogContainer>
-
         )
     );
 }
