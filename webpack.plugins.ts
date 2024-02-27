@@ -15,4 +15,7 @@ export const plugins: WebpackPluginInstance[] = [
   new webpack.ProvidePlugin({
     Buffer: ['buffer', 'Buffer'],
   }),
+  new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
 ];
