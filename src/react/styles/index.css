@@ -4,9 +4,7 @@ body, html, #root {
   height: 100%;
   width: 100%;
   overflow: hidden;
-
 }
-
 
 .panel-viewport {
   height: 100vh;
@@ -18,10 +16,6 @@ body, html, #root {
   overflow: auto;
 }
 
-.highlight {
-  background-color: rgba(255, 255, 0, 0.25);
-}
-
 #reader-display-panel, #text-input-panel {
   display: flex;
   flex-direction: column;
@@ -30,9 +24,6 @@ body, html, #root {
   overflow: auto;
   box-sizing: border-box;
   text-align: left;
-  position: absolute;
-  bottom: 0; /* Align to the bottom */
-  right: 0;
 }
 
 #horizontal-panel-container {
@@ -90,13 +81,6 @@ body, html, #root {
   z-index: 10;
 }
 
-mark {
-  background-color: yellow;
-  padding: 0;
-  margin: 0;
-  box-shadow: none;
-  line-height: inherit;
-}
 
 .resize-bar-vertical {
   width: 5px;
