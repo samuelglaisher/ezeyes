@@ -3,7 +3,8 @@ import { FileManagerContext } from '../contexts/FileManagerContext';
 import { PanelContext } from '../contexts/PanelContext';
 import * as RtfParser from 'rtf-parser';
 import { read, spawnFileDialog } from '../../electron/ipc';
-
+import mammoth from 'mammoth';
+import fs from 'fs/promises';
 
 export function processRTFContent(rtfContent: string): string {
     return rtfContent.replace(/(\\u-?\d+)((?:\s*\\'[0-9a-fA-F]{2})?)(\s*[\-\?])?/g, (match, unicodeControlWord, offset) => {
@@ -98,9 +99,31 @@ const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
     return await read(filePath, "utf8");
 };
 
+//---mml
+
 const loadDocxFile = async (filePath: string) => {
-    
+    const data = await fs.readFile(filePath);
+    return data;
 };
+
+const convertToHtml = async (arrayBuffer: Buffer) => {
+    const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
+    return result.value; // The generated HTML
+};
+
+const parseLines = (html: string) => {
+    const text = html.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n');
+    return text.split('\n');
+};
+
+const wordReader = async (filePath: string) => {
+    const arrayBuffer = await loadDocxFile(filePath);
+    const html = await convertToHtml(arrayBuffer);
+    const lines = parseLines(html);
+    console.log(lines);
+};
+
+//--mml
 
 const loadPdfFile = async (filePath: string) => {
     
