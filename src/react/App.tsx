@@ -9,27 +9,26 @@ import { PanelViewportProvider } from "./contexts/PanelViewportContext";
 import { MenuManagerProvider } from "./contexts/MenuManagerContext";
 import { Provider, darkTheme, lightTheme } from "@adobe/react-spectrum";
 import { ErrorBoundary } from "react-error-boundary";
-
 import "./styles/index.css";
-
 
 const App: React.FC = () => {
   return (
-      <Provider theme={lightTheme}>
-        <ErrorBoundary FallbackComponent={SystemErrorModal}>
-        <PanelViewportProvider>
+    <Provider theme={lightTheme}>
+      <ErrorBoundary FallbackComponent={SystemErrorModal}>
+      <PanelViewportProvider>
+      <PanelProvider>
+        <FileMenuBar />
           <SettingsProvider>
-            <PanelProvider>
               <MenuManagerProvider>
-                <PanelViewport />
-                <KeybindingManager />
-                <FocusManager />
+              <PanelViewport />
+              <KeybindingManager />
+              <FocusManager />
               </MenuManagerProvider>
-            </PanelProvider>
           </SettingsProvider>
-        </PanelViewportProvider>
-        </ErrorBoundary>
-      </Provider>
+        </PanelProvider>
+      </PanelViewportProvider>
+      </ErrorBoundary>
+    </Provider>
   );
 };
 

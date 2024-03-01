@@ -28,4 +28,24 @@ export const rules: Required<ModuleOptions>['rules'] = [
       },
     },
   },
+  {
+    test: /node_modules[\/\\](iconv-lite)[\/\\].+/,
+    resolve: {
+      aliasFields: ['main']
+    }
+  },
+  {
+    test: /\.(ts|tsx|js|jsx)$/, // Match TypeScript and JavaScript files
+    exclude: /node_modules/, // Exclude the node_modules directory
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-react', '@babel/preset-typescript'], // Use React and TypeScript presets
+      },
+    },
+  },
+  {
+    test: /\.css$/,
+    use: ['style-loader', 'css-loader'], // Process CSS files
+  },
 ];
