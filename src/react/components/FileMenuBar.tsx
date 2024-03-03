@@ -1,5 +1,5 @@
 import React, { Key, useContext, useRef } from 'react';
-import { Menu, MenuTrigger, ActionButton, Item } from '@adobe/react-spectrum';
+import { Menu, MenuTrigger, ActionButton, Item, Flex } from '@adobe/react-spectrum';
 import { useFileManager } from '../hooks/useFileManager';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
 
@@ -23,17 +23,17 @@ function FileMenuBar() {
     // };
 
     return (
-        <div>
-        <MenuTrigger>
-            <ActionButton>
-                File
-            </ActionButton>
-            <Menu onAction={(key) => actions(key)}>
-                <Item key="load">Load File</Item>
-            </Menu>
-        </MenuTrigger>
-        {/* <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/> */}
-        </div>
+        <Flex gap="size-100" position={'absolute'}>
+            <MenuTrigger>
+                <ActionButton>
+                    File
+                </ActionButton>
+                <Menu onAction={(key) => actions(key)}>
+                    <Item key="load">Load File</Item>
+                </Menu>
+            </MenuTrigger>
+            {/* <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/> */}
+        </Flex>
     );
 }
 

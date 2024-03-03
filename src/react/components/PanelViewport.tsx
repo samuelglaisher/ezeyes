@@ -15,7 +15,7 @@ import ChevronDoubleRight from '@spectrum-icons/workflow/ChevronDoubleRight';
 import ChevronDoubleLeft from '@spectrum-icons/workflow/ChevronDoubleLeft';
 import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
-
+import FileMenuBar from "./FileMenuBar";
 
 const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
@@ -26,7 +26,8 @@ const PanelViewport: React.FC = () => {
     return (
         <>
             <Header margin="size-100">
-                <Flex justifyContent="center" width="100%">
+                <FileMenuBar />
+                <Flex justifyContent="center" width="100%">   
                     <SettingsButton />
                 </Flex>
             </Header>

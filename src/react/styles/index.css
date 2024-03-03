@@ -48,11 +48,6 @@ body, html, #root {
   min-width: 200px;
 }
 
-#horizontal-panel-container > :nth-child(3) .text {
-  margin: 0.5em 0.5em 0.5em 0;
-  max-height: 100vh;
-}
-
 #vertical-panel-container {
   display: flex;
   flex-direction: column;
