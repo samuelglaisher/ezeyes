@@ -5,6 +5,7 @@ import { SettingsContext } from '../contexts/SettingsContext';
 import nlp from 'compromise';
 
 export const usePanel = () => {
+  const [words, setWords] = useState<string[]>([]);
   const [indicesCalculated, setIndicesCalculated] = useState(false);
   const [prevParagraphIndex, setPrevParagraphIndex] = useState<number>(0);
   const [nextParagraphIndex, setNextParagraphIndex] = useState<number>(0);
@@ -27,24 +28,39 @@ export const usePanel = () => {
     setWordIndices
   } = useContext(PanelContext);
 
-
   const currentTextContentRef = useRef('');
   const { settings } = useContext(SettingsContext);
   const speed = 1000 / (settings.panels.wpm.curWpm / 60);
 
-  const getWordList = (words: string[], subtext: string) => {
-    let wordList: string[] = [];
+  const getWordList = (words: string[], backtext: string, fronttext: string) => {
+    let backwords: string[] = [];
+    let frontwords: string[] = [];
     let curIndex = 0;
 
-    words.forEach((word: string) => {
-      const index = subtext.indexOf(word, curIndex);
-      if (index !== -1) {
-        wordList.push(word);
-        curIndex = index + word.length;
-      }
-    });
+    if (backtext.length > 0) {
+      words.forEach(entry => {
+        console.log(`entry.text: ${entry.text}, curIndex: ${curIndex} => index: ${backtext.indexOf(entry.text, curIndex)}`)
+        const index = backtext.indexOf(entry.text, curIndex);
+        // console.log(`entry.text: ${entry.text}, curIndex: ${curIndex} => index: ${index}`)
+        if (index !== -1) {
+          console.log(entry.text)
+          backwords.push(entry.text);
+          curIndex = index + entry.text.length;
+        }
+      });
+   }
 
-    return wordList;
+   if (fronttext.length > 0) {
+      words.forEach(entry => {
+        const index = fronttext.indexOf(entry.text, curIndex);
+        if (index !== -1) {
+          frontwords.push(entry.text);
+          curIndex = index + entry.text.length;
+        }
+      });
+    }
+
+    return [backwords, frontwords];
   }
 
   /**
@@ -52,15 +68,15 @@ export const usePanel = () => {
    * @param text - Input text
    * @param index - Starting index aligned on a word boundary and relative to the text content.
    */
-  const generateWordSequenceIndicesFromIndex = useCallback((text: string, index: number, wordSeqLen: number) => {
+  const generateWordSequenceIndicesFromIndex = (words: string[], text: string, index: number, wordSeqLen: number) => {
     const wordSequenceIndices: number[] = [];
     let marker = index;
 
     let backtext = text.slice(0, index);
     const fronttext = text.slice(index, text.length)
-    const words = nlp.tokenize(text).terms().out('array');
-    const backwords = getWordList(words, backtext);
-    const frontwords = getWordList(words, fronttext);
+    const [backwords, frontwords] = getWordList(words, backtext, fronttext);
+
+    console.log(backwords, frontwords)
 
     //Backwards search
     for (let i = backwords.length - 1; i >= 0; i -= wordSeqLen) {
@@ -112,8 +128,10 @@ export const usePanel = () => {
       }
     }
 
+    console.log("wordSequenceIndices returned: ", wordSequenceIndices)
+
     return wordSequenceIndices;
-  }, [getWordList]);
+  };
 
   /**
    * Obtains the indices to every sentence, paragraph, and word sequence
@@ -123,7 +141,10 @@ export const usePanel = () => {
     const document = nlp(textContent);
     const sentences = document.sentences().out('array');
     const paragraphs = textContent.trim().split(/\n+/);
-    const words = document.terms().out('array');
+    const words = document.terms().out('offset');
+
+    //Saves having to calculate this a second time
+    setWords(words);
 
     let newSentenceIndices: number[] = [];
     let newParagraphIndices: number[] = [];
@@ -158,12 +179,15 @@ export const usePanel = () => {
     });
 
     console.time('generateWordSequenceIndicesFromIndex');
-    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContent, 0, settings.panels.wordSequenceLength);
+    newWordSequenceIndices = generateWordSequenceIndicesFromIndex(words, textContent, 0, settings.panels.wordSequenceLength);
     console.timeEnd('generateWordSequenceIndicesFromIndex');
 
     setSentenceIndices(newSentenceIndices);
     setParagraphIndices(newParagraphIndices);
     setWordSequenceIndices(newWordSequenceIndices);
+
+
+    console.log("dddd: ", newWordSequenceIndices[0])
 
     //In case we have leading spaces or tabs, set to the start of the first word sequence index!
     setCurWordSequenceIndex(newWordSequenceIndices[0]);
@@ -226,9 +250,14 @@ export const usePanel = () => {
     if (!isCustomNavigation) {
       newWordSequenceIndices = wordSequenceIndices;
     } else {
-      newWordSequenceIndices = generateWordSequenceIndicesFromIndex(textContent, curWordSequenceIndex, settings.panels.wordSequenceLength);
+      newWordSequenceIndices = generateWordSequenceIndicesFromIndex(words, textContent, curWordSequenceIndex, settings.panels.wordSequenceLength);
       setWordSequenceIndices(newWordSequenceIndices);
     }
+
+    console.log("ws indices: ", newWordSequenceIndices)
+
+    console.log('curWordSequenceIndex', curWordSequenceIndex);
+    console.log('newWordSequenceIndices[0]', newWordSequenceIndices[0]);
 
     //Set relative word sequence indices
     setPrevWordSequenceIndex(Math.max(getLargestLesserValue(newWordSequenceIndices, curWordSequenceIndex), newWordSequenceIndices[0]));
@@ -274,8 +303,7 @@ export const usePanel = () => {
 
   //If our overall text content has changed, initialize all index buffers AND update the relative indices
   useEffect(() => {
-    console.log(textContent, currentTextContentRef.current)
-    if (textContent != currentTextContentRef.current && indicesCalculated === false)
+    if (textContent != currentTextContentRef.current)
       calculateIndicesOnLoad(textContent);
   }, [textContent]);
 
