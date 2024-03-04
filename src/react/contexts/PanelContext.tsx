@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, useMemo, ReactNode } from 'react';
 
 export interface PanelContextType {
   curWordSequence: string;
@@ -7,8 +7,6 @@ export interface PanelContextType {
   setTextContent: React.Dispatch<React.SetStateAction<string>>;
   isPlaying: boolean;
   setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-  prevParagraphIndex: number;
-  setPrevParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
   nextParagraphIndex: number;
   setNextParagraphIndex: React.Dispatch<React.SetStateAction<number>>;
   prevSentenceIndex: number;
@@ -57,9 +55,7 @@ const defaultContextValue: PanelContextType = {
   `,
   setTextContent: () => {},
   isPlaying: false,
-  setIsPlaying: () => { },
-  prevParagraphIndex: 0,
-  setPrevParagraphIndex: () => {},
+  setIsPlaying: () => {},
   nextParagraphIndex: 0,
   setNextParagraphIndex: () => {},
   prevSentenceIndex: 0,
@@ -90,7 +86,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);
-  const [prevParagraphIndex, setPrevParagraphIndex] = useState<number>(defaultContextValue.prevParagraphIndex);
   const [nextParagraphIndex, setNextParagraphIndex] = useState<number>(defaultContextValue.nextParagraphIndex);
   const [prevSentenceIndex, setPrevSentenceIndex] = useState<number>(defaultContextValue.prevSentenceIndex);
   const [nextSentenceIndex, setNextSentenceIndex] = useState<number>(defaultContextValue.nextSentenceIndex);
@@ -103,24 +98,29 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
   const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
 
+  const memoizedValue = useMemo(() => ({
+    curWordSequence, setCurWordSequence, 
+    textContent, setTextContent, 
+    isPlaying, setIsPlaying, 
+    nextParagraphIndex, setNextParagraphIndex, 
+    prevSentenceIndex, setPrevSentenceIndex, 
+    nextSentenceIndex, setNextSentenceIndex, 
+    prevWordSequenceIndex, setPrevWordSequenceIndex, 
+    curWordSequenceIndex, setCurWordSequenceIndex, 
+    nextWordSequenceIndex, setNextWordSequenceIndex,
+    formattedTextContent, setFormattedTextContent,
+    sentenceIndices, setSentenceIndices,
+    paragraphIndices, setParagraphIndices,
+    wordSequenceIndices, setWordSequenceIndices,
+    wordIndices, setWordIndices,
+  }), [
+    curWordSequence, textContent, isPlaying, nextParagraphIndex, prevSentenceIndex, nextSentenceIndex, 
+    prevWordSequenceIndex, curWordSequenceIndex, nextWordSequenceIndex, formattedTextContent, 
+    sentenceIndices, paragraphIndices, wordSequenceIndices, wordIndices,
+  ]);
+
   return (
-    <PanelContext.Provider value={{
-      curWordSequence, setCurWordSequence, 
-      textContent, setTextContent, 
-      isPlaying, setIsPlaying, 
-      prevParagraphIndex, setPrevParagraphIndex, 
-      nextParagraphIndex, setNextParagraphIndex, 
-      prevSentenceIndex, setPrevSentenceIndex, 
-      nextSentenceIndex, setNextSentenceIndex, 
-      prevWordSequenceIndex, setPrevWordSequenceIndex, 
-      curWordSequenceIndex, setCurWordSequenceIndex, 
-      nextWordSequenceIndex, setNextWordSequenceIndex,
-      formattedTextContent, setFormattedTextContent,
-      sentenceIndices, setSentenceIndices,
-      paragraphIndices, setParagraphIndices,
-      wordSequenceIndices, setWordSequenceIndices,
-      wordIndices, setWordIndices
-    }}>
+    <PanelContext.Provider value={memoizedValue}>
       {children}
     </PanelContext.Provider>
   );
