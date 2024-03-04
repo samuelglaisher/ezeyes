@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useMemo } from 'react';
 import { Settings, initialSettings } from '../SettingsSchema';
 
 interface SettingsContextType {
@@ -23,8 +23,16 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   const [settings, setSettings] = useState<Settings>(initialSettings);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
+  // Memoize the context value
+  const contextValue = useMemo(() => ({
+    settings,
+    setSettings,
+    showSettingsMenu,
+    setShowSettingsMenu
+  }), [settings, showSettingsMenu]);
+
   return (
-    <SettingsContext.Provider value={{ settings, setSettings, showSettingsMenu, setShowSettingsMenu }}>
+    <SettingsContext.Provider value={contextValue}>
       {children}
     </SettingsContext.Provider>
   );
