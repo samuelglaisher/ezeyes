@@ -16,6 +16,10 @@ body, html, #root {
   overflow: auto;
 }
 
+.highlight {
+  background-color: #ffff007f;
+}
+
 #reader-display-panel, #text-input-panel {
   display: flex;
   flex-direction: column;
