@@ -6,7 +6,7 @@ interface ReaderDisplayProps {
   style?: CSSProperties;
 }
 
-const ReaderDisplay: React.FC<ReaderDisplayProps> = React.memo(({ style }) => {
+const ReaderDisplay: React.FC<ReaderDisplayProps> = ({ style }) => {
     const { curWordSequence } = useContext(PanelContext);
 
     return (
@@ -16,6 +16,6 @@ const ReaderDisplay: React.FC<ReaderDisplayProps> = React.memo(({ style }) => {
             </View>
         </div>
     );
-});
+};
 
 export default ReaderDisplay;

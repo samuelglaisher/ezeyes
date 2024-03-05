@@ -3,7 +3,7 @@ import { Menu, MenuTrigger, ActionButton, Item } from '@adobe/react-spectrum';
 import { useFileManager } from '../hooks/useFileManager';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
 
-const  FileMenuBar = React.memo(() => {
+const  FileMenuBar = () => {
     const { retrieveFile } = useFileMenuBar();
     const { promptAndLoadFile } = useFileManager();
 
@@ -35,6 +35,6 @@ const  FileMenuBar = React.memo(() => {
         {/* <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/> */}
         </div>
     );
-});
+};
 
 export default FileMenuBar;

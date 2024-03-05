@@ -17,7 +17,7 @@ import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
 
 
-const PanelViewport: React.FC = React.memo(() => {
+const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
     const { activeView } = useContext(PanelViewportContext);
 
@@ -58,6 +58,6 @@ const PanelViewport: React.FC = React.memo(() => {
             </Footer>
         </>
     );
-});
+};
 
 export default PanelViewport;

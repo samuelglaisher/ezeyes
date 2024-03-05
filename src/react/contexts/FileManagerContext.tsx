@@ -16,7 +16,7 @@ const defaultContextValue: FileManagerContextType = {
 
 export const FileManagerContext = createContext<FileManagerContextType>(defaultContextValue);
 
-export const FileManagerProvider: React.FC<{ children: ReactNode }> = React.memo(({ children }) => {
+export const FileManagerProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [currentFiles, setCurrentFiles] = useState<string[]>(defaultContextValue.currentFiles);
     const [inputFile, setInputFile] = useState<File>(defaultContextValue.inputFile); 
 
@@ -25,4 +25,4 @@ export const FileManagerProvider: React.FC<{ children: ReactNode }> = React.memo
             {children}
         </FileManagerContext.Provider>
     );
-});
+};
