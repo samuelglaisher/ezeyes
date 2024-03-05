@@ -27,7 +27,6 @@ body, html, #root {
 
 #panel-viewport > div {
   display: flex;
-  overflow: auto;
   height: 100%;
 }
 
@@ -36,6 +35,19 @@ body, html, #root {
   flex-direction: column;
   overflow: auto;
   text-align: left;
+}
+
+/* This would be less janky with a @container query.
+   However, they only became universally supported in early 2023.
+   If this doesn't seem too recent, feel free to replace this with container queries */
+#text-input-panel > div {
+  width: clamp(380px, 45% + 200px, 600px);
+  max-width: 100%;
+}
+
+#text-input-panel {
+  padding: 16px;
+  align-items: center;
 }
 
 .resize-bar-vertical, .resize-bar-horizontal {
@@ -58,10 +70,6 @@ body, html, #root {
 #reader-display-panel {
   align-items: center;
   justify-content: center;
-}
-
-#horizontal-panel-container > #text-input-panel {
-  padding: 5%;
 }
 
 #vertical-panel-container {
@@ -91,18 +99,14 @@ body, html, #root {
   width: 200px;
   height: 200px;
   padding: 4px;
+
+  border: 2px solid #d9d9d9;
+  border-radius: 10px;
 }
 
 #flashcard-container {
   perspective: 1000px;
   align-items: center;
-}
-
-/* TODO: bootstrap-like "col" for text input */
-#vertical-panel-container > #text-input-panel,
-#flashcard-container > #text-input-panel {
-  padding-left: 30%;
-  padding-right: 30%;
 }
 
 #flashcard-container > #reader-display-panel,
