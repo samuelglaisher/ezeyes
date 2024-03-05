@@ -25,8 +25,13 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = React.m
       const word = textContent.slice(wordIndices[i], wordIndices[i + 1]).trimEnd();
 
       //If the word index aligns on a paragraph index, add a line break
-      if (paragraphIndices.includes(wordIndices[i])) {
-        renderHtml.push(<span key={`paragraph-${i}`} style={{width:"100vw"}}><br onClick={() => startHere(wordIndices[i])} /><br onClick={() => startHere(wordIndices[i])} /></span>);
+      //Don't add a line break for the first paragraph
+      if (i > 0 && paragraphIndices.includes(wordIndices[i])) {
+        renderHtml.push(
+          <span key={`paragraph-${i}`} style={{width:"100vw"}}>
+            <br onClick={() => startHere(wordIndices[i])} />
+            <br onClick={() => startHere(wordIndices[i])} />
+          </span>);
       }
 
       const key = `word-${wordIndices[i]}-${i}`;
