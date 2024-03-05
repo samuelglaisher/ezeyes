@@ -1,10 +1,67 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
 import { View, Text } from '@adobe/react-spectrum';
 
-const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = React.memo(({ style }) => {
 
-  const { textContent, setTextContent, setCurWordSequenceIndex, curWordSequenceIndex, nextWordSequenceIndex, wordIndices, paragraphIndices } = useContext(PanelContext);
+function updateHighlight(curWordSequenceIndex: number, nextWordSequenceIndex: number): void {
+  // Remove highlighting from previously highlighted elements in a single pass
+  document.querySelectorAll('.highlight').forEach(el => {
+    el.classList.remove('highlight');
+  });
+
+  // Directly add highlighting to the new range of elements
+  for (let i = curWordSequenceIndex; i < nextWordSequenceIndex; i++) {
+    const element = document.getElementById(`word-${i}`);
+    element?.classList.add('highlight');
+  }
+}
+
+const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ style }) => {
+  const { setCurWordSequenceIndex, setTextContent, curWordSequenceIndex, wordIndices, paragraphIndices, textContent, nextWordSequenceIndex} = useContext(PanelContext);
+  const [renderHtml, setRenderHtml] = useState<React.JSX.Element[]>([]);
+
+  useEffect(() => {
+    console.log('hi', curWordSequenceIndex, nextWordSequenceIndex)
+    updateHighlight(curWordSequenceIndex, nextWordSequenceIndex);
+  }, [curWordSequenceIndex, nextWordSequenceIndex]);
+
+  /**
+   * Render loop for rendering the highlighted HTML
+   */
+  useEffect(() => {
+    const newRenderHtml: React.JSX.Element[] = [];
+
+    // Function to start from a specific index, used in onClick
+    const startHere = (i: number) => {
+      setCurWordSequenceIndex(i);
+    };
+
+    // Traverse each word in the text
+    wordIndices.forEach((wordIndex, i) => {
+      const word = textContent.slice(wordIndex, wordIndices[i + 1]).trimEnd();
+      const key = `word-${wordIndex}-${i}`;
+
+      // Line break logic for paragraph indices
+      if (paragraphIndices.includes(wordIndex)) {
+        newRenderHtml.push(
+          <span key={`paragraph-${i}`} style={{ width: "100vw" }}>
+            <br onClick={() => startHere(wordIndex)} />
+            <br onClick={() => startHere(wordIndex)} />
+          </span>
+        );
+      }
+
+      newRenderHtml.push(
+        <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
+          <Text UNSAFE_className="text">{word + ' '}</Text>
+        </span>
+      );
+
+    });
+
+    // Update the local state to trigger a re-render with the updated content
+    setRenderHtml(newRenderHtml);
+  }, [textContent, paragraphIndices]);
 
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -13,67 +70,11 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = React.m
     setCurWordSequenceIndex(0);
   };
 
-  const startHere = useMemo(() => (i: number) => {
-    setCurWordSequenceIndex(i);
-  }, [setCurWordSequenceIndex]);
-
-  const render = useMemo(() => () => {
-    const renderHtml: React.JSX.Element[] = [];
-
-    //Traverse each word in the text
-    for (let i = 0; i < wordIndices.length; i++) {
-      const word = textContent.slice(wordIndices[i], wordIndices[i + 1]).trimEnd();
-
-      //If the word index aligns on a paragraph index, add a line break
-      if (paragraphIndices.includes(wordIndices[i])) {
-        renderHtml.push(<span key={`paragraph-${i}`} style={{width:"100vw"}}><br onClick={() => startHere(wordIndices[i])} /><br onClick={() => startHere(wordIndices[i])} /></span>);
-      }
-
-      const key = `word-${wordIndices[i]}-${i}`;
-
-      //If the word index aligns on the current word sequence index, highlight the word, otherwise just add the regular word
-      if (wordIndices[i+1] == nextWordSequenceIndex) {
-        renderHtml.push(
-          <span key={key} onClick={() => startHere(wordIndices[i])}>
-            <mark key={key}>
-              <Text UNSAFE_className="text">
-                {word}
-              </Text>
-            </mark>
-            <Text UNSAFE_className="text">
-              {' '}
-            </Text>
-          </span>
-        );
-      } else if (wordIndices[i] >= curWordSequenceIndex && wordIndices[i] < nextWordSequenceIndex) {
-        renderHtml.push(
-          <mark key={key} onClick={() => startHere(wordIndices[i])}>
-            <Text UNSAFE_className="text">
-              {word + ' '}
-            </Text>
-          </mark>
-        );
-      } else {
-        renderHtml.push(
-          <span key={key} onClick={() => startHere(wordIndices[i])}>
-            <Text UNSAFE_className="text">
-              {word + ' '}
-            </Text>
-          </span>
-        );
-      }
-    }
-
-    return renderHtml;
-  }, [wordIndices, textContent, paragraphIndices, curWordSequenceIndex, nextWordSequenceIndex, startHere]);
-
   return (
     <div id="text-input-panel" style={style} onPaste={handlePaste} tabIndex={0}>
-      <View>
-        { render() }
-      </View>
+      <View>{renderHtml}</View>
     </div>
   );
-});
+};
 
 export default TextInputDisplayPanel;
