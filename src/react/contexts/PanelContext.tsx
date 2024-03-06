@@ -254,6 +254,7 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   
       curIndex = 0;
       sentences.forEach((sentence: string) => {
+        console.log(sentence)
         const index = textContent.indexOf(sentence, curIndex);
         newSentenceIndices.push(index);
         curIndex = index + sentence.length;

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FileManagerContext } from '../contexts/FileManagerContext';
 import { PanelContext } from '../contexts/PanelContext';
 import * as RtfParser from 'rtf-parser';
-import { read, spawnFileDialog } from '../../electron/ipc';
+import { read, readPdf, spawnFileDialog } from '../../electron/ipc';
 
 
 export function processRTFContent(rtfContent: string): string {
@@ -52,15 +52,19 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
             content = await loadRtfFile(filePath);
             break;
         case "txt":
+            content = await loadTxtFile(filePath);
             break;
         case "docx":
             break;
         case "pdf":
+            content = await loadPdfFile(filePath);
             break;
         default:
             console.log("Unsupported file found!");
             break;
     }
+
+    console.log(content)
 
     if (!content) {
         return;
@@ -71,9 +75,21 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
     setCurWordSequenceIndex(0);
 };
 
-const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
+const loadTxtFile = async (filePath: string): Promise<Buffer | undefined> => {
     return await read(filePath, "utf8");
 };
+
+export const loadPdfFile = async (filePath: string): Promise<any> => {
+    let content;
+
+    try {
+        content = await readPdf(filePath);
+        console.log(content);
+    } catch (error) {
+        console.log(error)
+        return undefined;
+    }
+}
 
 export const loadRtfFile = async (filePath: string): Promise<any> => {
     let content;
@@ -100,10 +116,6 @@ export const loadRtfFile = async (filePath: string): Promise<any> => {
 
 
 const loadDocxFile = async (filePath: string) => {
-    
-};
-
-const loadPdfFile = async (filePath: string) => {
     
 };
 

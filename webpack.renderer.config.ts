@@ -12,7 +12,13 @@ export const rendererConfig: Configuration = {
     fallback: {
       "assert": require.resolve("assert/"),
       "util": require.resolve("util/"),
-      "stream": require.resolve("stream-browserify")
+      "stream": require.resolve("stream-browserify"),
+      "process": require.resolve("process/browser"),
+      "zlib": require.resolve("browserify-zlib"),
+      "http": require.resolve('stream-http'),
+      "https": require.resolve('https-browserify'),
+      "url": require.resolve('url/'),
+      "fs": false
     },
     alias: {
       'iconv-lite$': 'iconv-lite/lib/index.js',
