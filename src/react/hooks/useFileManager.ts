@@ -3,8 +3,6 @@ import { FileManagerContext } from '../contexts/FileManagerContext';
 import { PanelContext } from '../contexts/PanelContext';
 import * as RtfParser from 'rtf-parser';
 import { read, spawnFileDialog } from '../../electron/ipc';
-import mammoth from 'mammoth';
-import fs from 'fs/promises';
 
 export function processRTFContent(rtfContent: string): string {
     return rtfContent.replace(/(\\u-?\d+)((?:\s*\\'[0-9a-fA-F]{2})?)(\s*[\-\?])?/g, (match, unicodeControlWord, offset) => {
@@ -99,37 +97,34 @@ const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
     return await read(filePath, "utf8");
 };
 
-//---mml
+function parseLines(htmlContent: string): string[] {
+    return htmlContent.split(/<p>|<\/p>|<br\/>/g).filter(line => line.trim() !== '');
+  }
 
-const loadDocxFile = async (filePath: string) => {
-    const data = await fs.readFile(filePath);
-    return data;
-};
-
-const convertToHtml = async (arrayBuffer: Buffer) => {
-    const result = await mammoth.convertToHtml({arrayBuffer: arrayBuffer});
-    return result.value; // The generated HTML
-};
-
-const parseLines = (html: string) => {
-    const text = html.replace(/<br>/g, '\n').replace(/<\/p>/g, '\n');
-    return text.split('\n');
-};
-
-const wordReader = async (filePath: string) => {
-    const arrayBuffer = await loadDocxFile(filePath);
-    const html = await convertToHtml(arrayBuffer);
-    const lines = parseLines(html);
-    console.log(lines);
-};
-
-//--mml
+export const wordReader = async (filePath: string) => {
+    try {
+      const htmlContent = await (window as any).electron.invoke('convert-docx-to-html', filePath);
+  
+      if (htmlContent) {
+        const lines = parseLines(htmlContent);
+        console.log(lines);
+        return lines; // Return the lines
+      } else {
+        const error = `Failed to convert the DOCX file at ${filePath}`;
+        console.error(error);
+        throw new Error(error); // Throw an error
+      }
+    } catch (error) {
+      console.error('Error in wordReader:', error);
+      throw error; // Rethrow the error
+    }
+  };
 
 const loadPdfFile = async (filePath: string) => {
     
 };
 
-export const useFileManager = () => {
+const useFileManager = () => {
     const { currentFiles, setCurrentFiles } = useContext(FileManagerContext);
     const { setTextContent, setCurWordSequenceIndex, textContent } = useContext(PanelContext);
 
@@ -146,3 +141,5 @@ export const useFileManager = () => {
         promptAndLoadFile,
     }
 };
+
+export { useFileManager };
