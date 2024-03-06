@@ -9,20 +9,23 @@ import "./styles/index.css";
 import { MenuManagerProvider } from "./contexts/MenuManagerContext";
 import { Provider, lightTheme } from "@adobe/react-spectrum";
 import FileMenuBar from "./components/FileMenuBar";
+import { FileManagerProvider } from "./contexts/FileManagerContext";
 
 const App: React.FC = () => {
   return (
     <Provider theme={lightTheme}>
       <PanelViewportProvider>
       <PanelProvider>
-        <FileMenuBar />
-          <SettingsProvider>
-              <MenuManagerProvider>
-              <PanelViewport />
-              <KeybindingManager />
-              <FocusManager />
-              </MenuManagerProvider>
-          </SettingsProvider>
+        <FileManagerProvider>        
+          <FileMenuBar />
+            <SettingsProvider>
+                <MenuManagerProvider>
+                <PanelViewport />
+                <KeybindingManager />
+                <FocusManager />
+                </MenuManagerProvider>
+            </SettingsProvider>
+          </FileManagerProvider>
         </PanelProvider>
       </PanelViewportProvider>
     </Provider>

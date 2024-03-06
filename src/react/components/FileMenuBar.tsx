@@ -1,26 +1,28 @@
-import React, { Key, useContext, useRef } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Menu, MenuTrigger, ActionButton, Item } from '@adobe/react-spectrum';
-import { useFileManager } from '../hooks/useFileManager';
+import { SubmenuTrigger } from '@react-spectrum/menu';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
+import { FileManagerContext } from '../contexts/FileManagerContext';
 
 function FileMenuBar() {
-    const { retrieveFile } = useFileMenuBar();
-    const { promptAndLoadFile } = useFileManager();
+    const { processOptions } = useFileMenuBar();
+    const { currentFiles } = useContext(FileManagerContext);
 
-    const actions = (key: Key) => {
-        if (key == "load") {
-            promptAndLoadFile();
+    const render = useMemo(() => () => {
+        const renderItems: React.JSX.Element[] = [];
 
-            // input.current.click();
+        if (currentFiles.length === 0) {
+            return <Item key="pass">(none)</Item>
         }
-    };
 
-    // const handler = (e: React.FormEvent<HTMLInputElement>) => {
-    //     // const x = promptAndLoadFile();
-    //     // console.log(x);
-    //     // console.log(target.files);
-    //     // setInputFile(target.files[0]);
-    // };
+        currentFiles.forEach((filePath) => {
+            renderItems.push(
+                <Item key={filePath}>{filePath.split('\\').pop()}</Item>
+            );
+        });
+
+        return renderItems;
+    }, [currentFiles]);
 
     return (
         <div>
@@ -28,13 +30,18 @@ function FileMenuBar() {
             <ActionButton>
                 File
             </ActionButton>
-            <Menu onAction={(key) => actions(key)}>
+            <Menu onAction={(key) => processOptions(key)}>
                 <Item key="load">Load File</Item>
+                <SubmenuTrigger>
+                    <Item>Import Previous</Item>
+                    <Menu onAction={(key) => processOptions(key)} items={currentFiles}>
+                        { render() }
+                    </Menu>
+                </SubmenuTrigger>
             </Menu>
         </MenuTrigger>
-        {/* <input type='file' id='file' ref={input} style={{display: 'none'}} onChange={handler}/> */}
         </div>
     );
-}
+};
 
 export default FileMenuBar;
