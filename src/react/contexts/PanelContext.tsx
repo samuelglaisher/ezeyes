@@ -91,6 +91,7 @@ export const PanelContext = createContext<PanelContextType>(defaultContextValue)
 export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [indicesCalculated, setIndicesCalculated] = useState(false);
   const [words, setWords] = useState<string[]>([]);
+  const [hasLoaded, setHasLoaded] = useState<number>(0);
 
   const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
@@ -107,7 +108,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [paragraphIndices, setParagraphIndices] = useState<number[]>(defaultContextValue.paragraphIndices);
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
   const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
-
 
   const { settings } = useContext(SettingsContext);
   const speed = 1000 / (settings.panels.wpm.curWpm / 60);
@@ -203,8 +203,8 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     let newWordSequenceIndices: number[] = [];
 
     //If we custom navigated elsewhere
-    const isCustomNavigation = curWordSequenceIndex !== prevWordSequenceIndex && curWordSequenceIndex !== nextWordSequenceIndex; 
- 
+    const isCustomNavigation = curWordSequenceIndex !== prevWordSequenceIndex && curWordSequenceIndex !== nextWordSequenceIndex;
+
     //Cache solution (drastically improves speeds by x100)
     if (!isCustomNavigation) {
       newWordSequenceIndices = wordSequenceIndices;
@@ -281,7 +281,7 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setIndicesCalculated(true);
       currentTextContentRef.current = textContent;
     };
-  
+
     function getLargestLesserValue(elems: number[], target: number) {
       let max = -Infinity;
       elems = elems.sort((a,b) => a - b);
@@ -343,13 +343,20 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       wordIndices, setWordIndices],
   )
 
-    //If our overall text content has changed, initialize all index buffers AND update the relative indices
+    //If our overall text content has changed, initialize all index buffers
     useEffect(() => {
-      if (textContent != currentTextContentRef.current) {
+      if (textContent !== currentTextContentRef.current) {
         calculateIndicesOnLoad(textContent);
-        calculateIndicesOnUpdate();
+        setHasLoaded(hasLoaded + 1);
       }
     }, [textContent]);
+
+    //If we detect that new text content has been loaded, calculate the relative indices
+    //This allows newly loaded text to successfully recalculate word indices
+    useEffect(() => {
+      calculateIndicesOnUpdate();
+      currentTextContentRef.current = textContent;
+    }, [hasLoaded]);
   
     //Runs only initially after text content loaded in to generate index values
     //We need to do this because we can't move to the next word sequence and trigger the next effect without having the initial index values already populated.

@@ -14,8 +14,7 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
 
   useEffect(() => {
     triggerHighlightUpdate();
-  }, [curWordSequenceIndex, nextWordSequenceIndex])
-  
+  }, [textContent, curWordSequenceIndex, nextWordSequenceIndex])
 
   useEffect(() => {
     document.querySelectorAll('.highlight').forEach(el => {
