@@ -64,7 +64,7 @@ ipcMain.handle('read', async (_, filePath, type) => {
 ipcMain.handle('convert-docx-to-html', async (event, filePath) => {
   try {
     const buffer = await fs.promises.readFile(filePath);
-    const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
+    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
     return result.value; // The generated HTML content
   } catch (error) {
     console.error('Failed to convert DOCX to HTML:', error);
