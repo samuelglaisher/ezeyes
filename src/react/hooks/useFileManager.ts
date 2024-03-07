@@ -17,7 +17,7 @@ export function processRTFContent(rtfContent: string): string {
 }
 
 export function trimWhitespace(str: string) {
-  return str.replace(/^ +| +$/g, '');
+    return str.replace(/^ +| +$/g, '');
 }
 
 export function getRtfDocument(content: string | Buffer | undefined) {
@@ -43,6 +43,11 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
         return;
     }
 
+    addNew(filePath);
+    await loadFile(filePath, setTextContent, setCurWordSequenceIndex);
+};
+
+export const loadFile = async (filePath: string, setTextContent: Function, setCurWordSequenceIndex: Function): Promise<any> => {
     const fileExtension = filePath.split('.').pop() || undefined;
 
     let content;
@@ -51,6 +56,7 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
             content = await loadRtfFile(filePath);
             break;
         case "txt":
+            content = await loadTxtFile(filePath);
             break;
         case "docx":
             content = await readDocx(filePath);
@@ -66,10 +72,9 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
         return;
     }
 
-    addNew(filePath);
     setTextContent(content);
     setCurWordSequenceIndex(0);
-};
+}
 
 const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
     return await read(filePath, "utf8");
@@ -107,7 +112,10 @@ const useFileManager = () => {
     const { setTextContent, setCurWordSequenceIndex, textContent } = useContext(PanelContext);
 
     const handleAddNew = (filePath: string) => {
-        const files = [...currentFiles, filePath];
+        const files = [filePath, ...currentFiles];
+        if (files.length > 3) {
+            files.pop();
+        }
         setCurrentFiles(files);
     };
 
@@ -117,6 +125,7 @@ const useFileManager = () => {
 
     return {
         promptAndLoadFile,
+        loadFile
     }
 };
 
