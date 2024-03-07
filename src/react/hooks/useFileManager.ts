@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FileManagerContext } from '../contexts/FileManagerContext';
 import { PanelContext } from '../contexts/PanelContext';
 import * as RtfParser from 'rtf-parser';
-import { read, spawnFileDialog } from '../../electron/ipc';
+import { read, readDocx, spawnFileDialog } from '../../electron/ipc';
 
 export function processRTFContent(rtfContent: string): string {
     return rtfContent.replace(/(\\u-?\d+)((?:\s*\\'[0-9a-fA-F]{2})?)(\s*[\-\?])?/g, (match, unicodeControlWord, offset) => {
@@ -59,6 +59,7 @@ export const loadFile = async (filePath: string, setTextContent: Function, setCu
             content = await loadTxtFile(filePath);
             break;
         case "docx":
+            content = await readDocx(filePath);
             break;
         case "pdf":
             break;
@@ -102,16 +103,11 @@ export const loadRtfFile = async (filePath: string): Promise<any> => {
     }
 };
 
-
-const loadDocxFile = async (filePath: string) => {
-    
-};
-
 const loadPdfFile = async (filePath: string) => {
     
 };
 
-export const useFileManager = () => {
+const useFileManager = () => {
     const { currentFiles, setCurrentFiles } = useContext(FileManagerContext);
     const { setTextContent, setCurWordSequenceIndex, textContent } = useContext(PanelContext);
 
@@ -132,3 +128,5 @@ export const useFileManager = () => {
         loadFile
     }
 };
+
+export { useFileManager };
