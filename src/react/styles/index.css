@@ -129,3 +129,8 @@ body, html, #root {
 #flashcard-container.flipped > #reader-display-panel {
   transform: rotateY(180deg);
 }
+
+/* hides default React modal in dev environment */ 
+iframe {
+  display: none;
+}
