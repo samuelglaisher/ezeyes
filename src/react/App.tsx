@@ -7,9 +7,8 @@ import { PanelProvider } from "./contexts/PanelContext";
 import { SettingsProvider } from './contexts/SettingsContext';
 import { PanelViewportProvider } from "./contexts/PanelViewportContext";
 import { MenuManagerProvider } from "./contexts/MenuManagerContext";
-import { Provider, darkTheme, lightTheme } from "@adobe/react-spectrum";
+import { Provider, lightTheme } from "@adobe/react-spectrum";
 import { ErrorBoundary } from "react-error-boundary";
-import FileMenuBar from "./components/FileMenuBar";
 import { FileManagerProvider } from "./contexts/FileManagerContext";
 import "./styles/index.css";
 
@@ -20,16 +19,15 @@ const App: React.FC = () => {
       <PanelViewportProvider>
       <PanelProvider>
         <FileManagerProvider>        
-          <FileMenuBar />
-            <SettingsProvider>
-                <MenuManagerProvider>
-                <PanelViewport />
-                <KeybindingManager />
-                <FocusManager />
-                </MenuManagerProvider>
-            </SettingsProvider>
-          </FileManagerProvider>
-        </PanelProvider>
+          <SettingsProvider>
+            <MenuManagerProvider>
+            <PanelViewport />
+            <KeybindingManager />
+            <FocusManager />
+            </MenuManagerProvider>
+          </SettingsProvider>
+        </FileManagerProvider>
+      </PanelProvider>
       </PanelViewportProvider>
       </ErrorBoundary>
     </Provider>

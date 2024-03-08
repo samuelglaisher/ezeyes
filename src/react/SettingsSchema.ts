@@ -19,6 +19,7 @@ export interface Keybindings {
     nextParagraph: string;
     prevSentence: string;
     nextSentence: string;
+    flipFlashcard: string;
 }
 
 // Define the appearance interface
@@ -83,7 +84,8 @@ export const initialSettings: Settings = {
         prevParagraph: "q",
         nextParagraph: "w",
         prevSentence: "a",
-        nextSentence: "s"
+        nextSentence: "s",
+        flipFlashcard: "f"
     },
     panels: {
         textInputPanel: {
@@ -94,7 +96,7 @@ export const initialSettings: Settings = {
         },
         readerPanel: {
             appearance: {
-                fontSize: '16px',
+                fontSize: '64px',
                 theme: 'light',
             }
         },
@@ -105,8 +107,8 @@ export const initialSettings: Settings = {
                 max: 100,
             },
             fastWpm: {
-                min: 10,
-                max: 100,
+                min: 100,
+                max: 700,
             }
         },
         wordSequenceLength: 4,
