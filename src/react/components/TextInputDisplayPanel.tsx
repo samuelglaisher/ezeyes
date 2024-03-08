@@ -12,6 +12,23 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
     setHighlightTrigger(prev => prev + 1);
   };
 
+  const scrollToHighlight = () => {
+    let highlighted = document.querySelectorAll(".highlight");
+    
+    if (highlighted.length > 0) {
+      let sequenceTop = highlighted[0].getBoundingClientRect().top;
+      let sequenceBottom = highlighted[highlighted.length - 1].getBoundingClientRect().bottom 
+      let panelRect = document.querySelector("#text-input-panel").getBoundingClientRect();
+      let buf = parseInt(window.getComputedStyle(highlighted[0]).getPropertyValue('scroll-margin'))
+
+      if (sequenceTop < panelRect.top ||
+        sequenceBottom > panelRect.bottom - buf) {
+          let lastHighlighted = highlighted[highlighted.length - 1];
+          lastHighlighted?.scrollIntoView(false);
+      }
+    }
+  }
+
   useEffect(() => {
     triggerHighlightUpdate();
   }, [textContent, curWordSequenceIndex, nextWordSequenceIndex])
@@ -20,11 +37,13 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
     document.querySelectorAll('.highlight').forEach(el => {
       el.classList.remove('highlight');
     });
-
+ 
     for (let i = curWordSequenceIndex; i < nextWordSequenceIndex; i++) {
       const element = document.getElementById(`word-${i}`);
       element?.classList.add('highlight');
     }
+
+    scrollToHighlight();
   }, [highlightTrigger]);
 
   /**
