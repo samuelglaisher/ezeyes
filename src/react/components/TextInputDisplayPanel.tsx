@@ -51,7 +51,6 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
    */
   useEffect(() => {
     const newRenderHtml: React.JSX.Element[] = [];
-
     // Function to start from a specific index, used in onClick
     const startHere = (i: number) => {
       setCurWordSequenceIndex(i);
@@ -63,7 +62,7 @@ const TextInputDisplayPanel: React.FC<{ style?: React.CSSProperties }> = ({ styl
       const key = `word-${wordIndex}-${i}`;
 
       // Line break logic for paragraph indices
-      if (paragraphIndices.includes(wordIndex)) {
+      if (i > 0 && paragraphIndices.includes(wordIndex)) {
         newRenderHtml.push(
           <span key={`paragraph-${i}`} style={{ width: "100vw" }}>
             <br onClick={() => startHere(wordIndex)} />

@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { Menu, MenuTrigger, ActionButton, Item } from '@adobe/react-spectrum';
+import { Menu, MenuTrigger, ActionButton, Item, Flex } from '@adobe/react-spectrum';
 import { SubmenuTrigger } from '@react-spectrum/menu';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
 import { FileManagerContext } from '../contexts/FileManagerContext';
@@ -25,7 +25,7 @@ function FileMenuBar() {
     }, [currentFiles]);
 
     return (
-        <div>
+        <Flex gap="size-100" position={'absolute'} zIndex={1000}>
         <MenuTrigger>
             <ActionButton>
                 File
@@ -40,7 +40,7 @@ function FileMenuBar() {
                 </SubmenuTrigger>
             </Menu>
         </MenuTrigger>
-        </div>
+        </Flex>
     );
 };
 

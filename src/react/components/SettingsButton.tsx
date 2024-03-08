@@ -8,7 +8,7 @@ function SettingsButton() {
     const { openMenu } = useMenuManager();
 
     return (
-        <Button variant="primary" onPress={() => openMenu(MenuType.SETTINGS)}>
+        <Button variant="secondary" onPress={() => openMenu(MenuType.SETTINGS)}>
             <SettingsIcon />
         </Button>
     );

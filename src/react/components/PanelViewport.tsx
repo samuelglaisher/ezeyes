@@ -10,12 +10,12 @@ import { PanelViewportContext } from "../contexts/PanelViewportContext";
 import "../styles/index.css";
 import SettingsButton from "./SettingsButton";
 import { MenuManager } from './MenuManager'
-import { Button, ButtonGroup, Flex, Footer, Header } from "@adobe/react-spectrum";
+import { Button, ButtonGroup, Content, Flex, Footer, Header } from "@adobe/react-spectrum";
 import ChevronDoubleRight from '@spectrum-icons/workflow/ChevronDoubleRight';
 import ChevronDoubleLeft from '@spectrum-icons/workflow/ChevronDoubleLeft';
 import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
-
+import FileMenuBar from "./FileMenuBar";
 
 const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
@@ -24,22 +24,21 @@ const PanelViewport: React.FC = () => {
     const { togglePlayPause, navigateForward, navigateBackward} = usePanel();
 
     return (
-        <>
+        <div id="layout">
             <Header margin="size-100">
-                <Flex justifyContent="center" width="100%">
+                <FileMenuBar />
+                <Flex justifyContent="center" width="100%">   
                     <SettingsButton />
                 </Flex>
             </Header>
 
-            <main>
-                <div id="panel-viewport">
-                    <MenuManager/>
-                    {activeView === PanelDisplayType.HORIZONTAL && <HorizontalPanel />}
-                    {activeView === PanelDisplayType.VERTICAL && <VerticalPanel />}
-                    {activeView === PanelDisplayType.ZOOM && <ZoomView />}
-                    {activeView === PanelDisplayType.FLASHCARD && <FlashcardView />}
-                </div>
-            </main>
+            <Content id="panel-viewport">
+                <MenuManager/>
+                {activeView === PanelDisplayType.HORIZONTAL && <HorizontalPanel />}
+                {activeView === PanelDisplayType.VERTICAL && <VerticalPanel />}
+                {activeView === PanelDisplayType.ZOOM && <ZoomView />}
+                {activeView === PanelDisplayType.FLASHCARD && <FlashcardView />}
+            </Content>
 
             <Footer>
                 <Flex justifyContent="center" width="100%">
@@ -56,7 +55,7 @@ const PanelViewport: React.FC = () => {
                     </ButtonGroup>
                 </Flex>
             </Footer>
-        </>
+        </div>
     );
 };
 

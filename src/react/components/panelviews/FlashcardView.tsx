@@ -1,21 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import TextInputDisplayPanel from "../TextInputDisplayPanel";
 import ReaderDisplayPanel from "../ReaderDisplayPanel";
+import { PanelViewportContext } from "../../contexts/PanelViewportContext";
+import { PanelType } from "../../contexts/PanelViewportContext";
 import "../../styles/index.css";
 
-const FlashcardView = () => {
-  const [flipped, setFlipped] = useState(false);
 
-  const handleFlip = () => {
-    setFlipped(!flipped);
-  };
+const FlashcardView = () => {
+  const { activeFlashcard } = React.useContext(PanelViewportContext);
 
   return (
-    <div
-      id="flashcard-container"
-      className={flipped ? "flipped" : ""}
-      onClick={handleFlip}
-    >
+    <div id="flashcard-container" className={activeFlashcard === PanelType.READER ? "" : "flipped"}>
       <ReaderDisplayPanel />
       <TextInputDisplayPanel />
     </div>
