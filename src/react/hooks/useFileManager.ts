@@ -65,6 +65,7 @@ export const loadFile = async (filePath: string, setTextContent: Function, setCu
             break;
         default:
             console.log("Unsupported file found!");
+            content = undefined;
             break;
     }
 
