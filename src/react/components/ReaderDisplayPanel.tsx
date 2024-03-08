@@ -12,7 +12,7 @@ const ReaderDisplay: React.FC<ReaderDisplayProps> = ({ style }) => {
     return (
         <div id="reader-display-panel" style={style}>
             <View>
-                <Text UNSAFE_className="text">{curWordSequence}</Text>
+                <Text UNSAFE_className="text reader-text">{curWordSequence}</Text>
             </View>
         </div>
     );

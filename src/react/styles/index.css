@@ -37,6 +37,19 @@ body, html, #root {
   text-align: left;
 }
 
+.highlight {
+  background-color: #ffff007f;
+  scroll-margin: 3em;
+}
+
+.reader-text {
+  display: block;
+  width: 100%;
+  text-align: center;
+  text-wrap: wrap;
+  padding: 0 1em;
+}
+
 /* This would be less janky with a @container query.
    However, they only became universally supported in early 2023.
    If this doesn't seem too recent, feel free to replace this with container queries */

@@ -25,7 +25,7 @@ function FileMenuBar() {
     }, [currentFiles]);
 
     return (
-        <Flex gap="size-100" position={'absolute'}>
+        <Flex gap="size-100" position={'absolute'} zIndex={1000}>
         <MenuTrigger>
             <ActionButton>
                 File
