@@ -9,6 +9,8 @@ import { PanelViewportProvider } from "./contexts/PanelViewportContext";
 import { MenuManagerProvider } from "./contexts/MenuManagerContext";
 import { Provider, darkTheme, lightTheme } from "@adobe/react-spectrum";
 import { ErrorBoundary } from "react-error-boundary";
+import FileMenuBar from "./components/FileMenuBar";
+import { FileManagerProvider } from "./contexts/FileManagerContext";
 import "./styles/index.css";
 
 const App: React.FC = () => {
@@ -17,14 +19,16 @@ const App: React.FC = () => {
       <ErrorBoundary FallbackComponent={SystemErrorModal}>
       <PanelViewportProvider>
       <PanelProvider>
-        <FileMenuBar />
-          <SettingsProvider>
-              <MenuManagerProvider>
-              <PanelViewport />
-              <KeybindingManager />
-              <FocusManager />
-              </MenuManagerProvider>
-          </SettingsProvider>
+        <FileManagerProvider>        
+          <FileMenuBar />
+            <SettingsProvider>
+                <MenuManagerProvider>
+                <PanelViewport />
+                <KeybindingManager />
+                <FocusManager />
+                </MenuManagerProvider>
+            </SettingsProvider>
+          </FileManagerProvider>
         </PanelProvider>
       </PanelViewportProvider>
       </ErrorBoundary>
