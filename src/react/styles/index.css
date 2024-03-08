@@ -195,3 +195,8 @@ body, html, #root {
 #flashcard-container.flipped > :nth-child(2) {
   transform: rotateY(0deg);
 }
+
+/* hides default React modal in dev environment */ 
+iframe {
+  display: none;
+}
