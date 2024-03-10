@@ -5,7 +5,8 @@
   "description": "A reading assistance tool for saccadic eye dysfunction.",
   "main": ".webpack/main",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "patch-package && electron-forge start",
+    "postinstall": "patch-package",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
