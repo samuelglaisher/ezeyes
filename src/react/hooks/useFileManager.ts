@@ -110,7 +110,6 @@ export const loadPdfFile = async (filePath: string): Promise<any> => {
 
     try {
         content = await readPdf(filePath);
-        console.log(content);
         return content;
     } catch (error) {
         console.log(error)
