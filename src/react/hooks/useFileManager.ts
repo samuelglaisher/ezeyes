@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { FileManagerContext } from '../contexts/FileManagerContext';
 import { PanelContext } from '../contexts/PanelContext';
 import * as RtfParser from 'rtf-parser';
-import { read, readDocx, spawnFileDialog } from '../../electron/ipc';
+import { read, readDocx, readPdf, spawnFileDialog } from '../../electron/ipc';
 
 export function processRTFContent(rtfContent: string): string {
     return rtfContent.replace(/(\\u-?\d+)((?:\s*\\'[0-9a-fA-F]{2})?)(\s*[\-\?])?/g, (match, unicodeControlWord, offset) => {
@@ -62,6 +62,7 @@ export const loadFile = async (filePath: string, setTextContent: Function, setCu
             content = await readDocx(filePath);
             break;
         case "pdf":
+            content = await loadPdfFile(filePath);
             break;
         default:
             console.log("Unsupported file found!");
@@ -104,9 +105,18 @@ export const loadRtfFile = async (filePath: string): Promise<any> => {
     }
 };
 
-const loadPdfFile = async (filePath: string) => {
-    
-};
+export const loadPdfFile = async (filePath: string): Promise<any> => {
+    let content;
+
+    try {
+        content = await readPdf(filePath);
+        console.log(content);
+        return content;
+    } catch (error) {
+        console.log(error)
+        return undefined;
+    }
+}
 
 const useFileManager = () => {
     const { currentFiles, setCurrentFiles } = useContext(FileManagerContext);
