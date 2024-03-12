@@ -1,14 +1,26 @@
 import { useEffect, useContext, useRef, Key } from 'react';
 import { useFileManager } from './useFileManager';
 import { PanelContext } from '../contexts/PanelContext';
+import { FileManagerContext } from '../contexts/FileManagerContext';
 
 export const useFileMenuBar = () => {
     const { promptAndLoadFile, loadFile } = useFileManager();
+    const { currentFiles, setCurrentFiles } = useContext(FileManagerContext)
     const { setTextContent, setCurWordSequenceIndex } = useContext(PanelContext);
 
     const resetPreferences = () => {
-        console.log();
+        setCurrentFiles([]);
     };
+
+    useEffect(() => {
+        saveLocal();
+    }, [currentFiles]);
+
+    const saveLocal = () => {
+        if(currentFiles.length !== 0){
+            localStorage.setItem("filePaths", JSON.stringify(currentFiles));
+        }
+    }
 
     const processOptions = (key: Key) => {
         if (key == "pass") {
@@ -20,5 +32,5 @@ export const useFileMenuBar = () => {
         }
     };
 
-    return { processOptions };
+    return { processOptions, resetPreferences };
 };
