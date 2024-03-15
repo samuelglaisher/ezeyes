@@ -6,7 +6,7 @@ export interface FileManagerContextType {
 }
 
 const defaultContextValue: FileManagerContextType = {
-    currentFiles: JSON.parse(localStorage.getItem("filePaths")),
+    currentFiles: localStorage.getItem("filePaths")?JSON.parse(localStorage.getItem("filePaths")):[],
     setCurrentFiles: () => {}
 };
 

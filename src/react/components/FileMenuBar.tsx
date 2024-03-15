@@ -38,6 +38,7 @@ function FileMenuBar() {
                         { render() }
                     </Menu>
                 </SubmenuTrigger>
+                <Item key="reset">Reset Preferences</Item>
             </Menu>
         </MenuTrigger>
         </Flex>

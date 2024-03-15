@@ -10,6 +10,7 @@ export const useFileMenuBar = () => {
 
     const resetPreferences = () => {
         setCurrentFiles([]);
+        localStorage.setItem("filePaths", JSON.stringify([]));
     };
 
     useEffect(() => {
@@ -27,6 +28,8 @@ export const useFileMenuBar = () => {
             return;
         } else if (key == "load") {
             promptAndLoadFile();
+        } else if (key == "reset") {
+            resetPreferences();
         } else {
             loadFile(key.toString(), setTextContent, setCurWordSequenceIndex);
         }
