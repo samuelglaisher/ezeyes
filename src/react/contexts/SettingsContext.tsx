@@ -9,7 +9,7 @@ interface SettingsContextType {
 }
 
 export const SettingsContext = createContext<SettingsContextType>({
-  settings: initialSettings,
+  settings: localStorage.getItem("settings")?JSON.parse(localStorage.getItem("settings")):initialSettings,
   showSettingsMenu: false,
   setShowSettingsMenu: () => {},
   setSettings: () => {}

@@ -112,7 +112,11 @@ const useFileManager = () => {
     const { setTextContent, setCurWordSequenceIndex, textContent } = useContext(PanelContext);
 
     const handleAddNew = (filePath: string) => {
-        const files = [filePath, ...currentFiles];
+        let files = currentFiles;
+        if (files.includes(filePath)){
+            files = files.filter(f => f !== filePath);
+        }
+        files = [filePath, ...files];
         if (files.length > 3) {
             files.pop();
         }
