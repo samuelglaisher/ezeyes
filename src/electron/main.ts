@@ -4,6 +4,9 @@ import * as fs from 'fs';
 // plugin that tells the Electron app where to look for the Webpack-bundled app code (depending on
 // whether you're running in development or production).
 import * as mammoth from 'mammoth';
+const pdf = require('pdf-parse');
+
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
@@ -64,11 +67,22 @@ ipcMain.handle('read', async (_, filePath, type) => {
 ipcMain.handle('convert-docx-to-html', async (event, filePath) => {
   try {
     const buffer = await fs.promises.readFile(filePath);
-    const result = await mammoth.extractRawText({ arrayBuffer: buffer });
+    const result = await mammoth.extractRawText({ buffer: buffer });
     return result.value; // The generated HTML content
   } catch (error) {
     console.error('Failed to convert DOCX to HTML:', error);
     throw error; 
+  }
+});
+
+ipcMain.handle('read-pdf', async (_, filePath) => {
+  try {
+      const content = fs.readFileSync(filePath);
+      const res = await pdf(content);
+      return res.text;
+  } catch (error) {
+      console.log(error);
+      return undefined;
   }
 });
 
