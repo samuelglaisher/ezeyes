@@ -4,6 +4,7 @@ import { PanelContext } from '../contexts/PanelContext';
 import { FileManagerContext } from '../contexts/FileManagerContext';
 import { initialSettings } from '../SettingsSchema';
 import { SettingsContext } from '../contexts/SettingsContext';
+import { darkThemeToggle } from '../../electron/ipc';
 
 export const useFileMenuBar = () => {
     const { promptAndLoadFile, loadFile } = useFileManager();
@@ -27,6 +28,10 @@ export const useFileMenuBar = () => {
         localStorage.setItem("settings", JSON.stringify(settings));
     }, [settings]);
 
+    const themes = async() => {
+        await darkThemeToggle();
+    }
+
     const processOptions = (key: Key) => {
         if (key == "pass") {
             return;
@@ -34,6 +39,8 @@ export const useFileMenuBar = () => {
             promptAndLoadFile();
         } else if (key == "reset") {
             resetPreferences();
+        } else if (key = "toggle-dark-mode"){
+            themes();
         } else {
             loadFile(key.toString(), setTextContent, setCurWordSequenceIndex);
         }
