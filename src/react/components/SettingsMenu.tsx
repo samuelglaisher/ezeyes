@@ -20,7 +20,11 @@ import { useMenuManager } from '../hooks/useMenuManager';
 import { PanelDisplayType, ThemeType, UISize, WPMType } from '../SettingsSchema';
 import { KeybindInput } from './KeybindInput';
 
-const SettingsMenu: React.FC = () => {
+interface SettingsMenuProps {
+    onClose: () => void;
+}
+
+function SettingsMenu(props: SettingsMenuProps) {
     const { settings, dispatch } = useContext(SettingsContext);
     const { closeMenu } = useMenuManager();
 
