@@ -1,8 +1,7 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { PanelDisplayType } from '../SettingsSchema';
 import { PanelType, PanelViewportContext } from '../contexts/PanelViewportContext';
 import { SettingsContext } from '../contexts/SettingsContext';
-import { useSettings } from './useSettings';
 
 function cycleView<T>(prevView: T, viewList: Array<T>): T {
     const nextIndex = (viewList.indexOf(prevView) + 1) % viewList.length;
@@ -10,17 +9,17 @@ function cycleView<T>(prevView: T, viewList: Array<T>): T {
 }
 
 export const usePanelViewport = () => {
+    const [isInit, setIsInit] = useState(true);
     const { settings } = useContext(SettingsContext);
-    var { activeView, setActiveView, setActiveFlashcard } = useContext(PanelViewportContext);
-    const { changePanelSetting } = useSettings();
+    var { setActiveView, setActiveFlashcard } = useContext(PanelViewportContext);
 
-    useEffect(() => {
-        setActiveView(settings.panels.displayType);
-    }, [settings.panels.displayType]);
+    if (isInit) {
+        setActiveView(settings.ui.defaultDisplayType);
+        setIsInit(false);
+    }
 
     const switchView = () => {
         setActiveView(prevView => cycleView(prevView, [PanelDisplayType.HORIZONTAL, PanelDisplayType.VERTICAL, PanelDisplayType.ZOOM, PanelDisplayType.FLASHCARD]));
-        changePanelSetting("displayType", activeView);
     };
 
     const flipFlashcard = () => {
