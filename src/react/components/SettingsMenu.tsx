@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Heading, Content, Divider, ButtonGroup, Button, TextField, Form, Checkbox, Flex, Slider } from '@adobe/react-spectrum';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useSettings } from '../hooks/useSettings';
-import {useMenuManager} from '../hooks/useMenuManager';
+import { useMenuManager } from '../hooks/useMenuManager';
 
 interface SettingsMenuProps {
     onClose: () => void;

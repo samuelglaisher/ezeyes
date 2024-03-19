@@ -38,6 +38,8 @@ function FileMenuBar() {
                         { render() }
                     </Menu>
                 </SubmenuTrigger>
+                <Item key="reset">Reset Preferences</Item>
+                <Item key="toggle-dark-mode">Toggle Dark Mode</Item>
             </Menu>
         </MenuTrigger>
         </Flex>
