@@ -15,6 +15,9 @@ import {
   View,
   Grid,
 } from '@adobe/react-spectrum';
+
+import {ColorArea, ColorSlider} from '@react-spectrum/color';
+import {parseColor} from '@react-stately/color';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from '../hooks/useMenuManager';
 import { PanelDisplayType, ThemeType, UISize, WPMType } from '../SettingsSchema';
@@ -27,6 +30,8 @@ interface SettingsMenuProps {
 function SettingsMenu(props: SettingsMenuProps) {
     const { settings, dispatch } = useContext(SettingsContext);
     const { closeMenu } = useMenuManager();
+    console.log(settings.ui)
+    let [redChannel, greenChannel, blueChannel] = parseColor(settings.ui.overlayColor).getColorChannels();
 
     return (
         <>
@@ -37,6 +42,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                         <Item key="processing">Processing</Item>
                         <Item key="display">Display</Item>
                         <Item key="filter">Filter</Item>
+                        <Item key="overlay">Overlay</Item>
                         <Item key="keybinds">Keybindings</Item>
                     </TabList>
                     <TabPanels height="size-3600">
@@ -89,13 +95,34 @@ function SettingsMenu(props: SettingsMenuProps) {
                                         <Item key={PanelDisplayType.HORIZONTAL}>Horizontal</Item>
                                         <Item key={PanelDisplayType.VERTICAL}>Vertical</Item>
                                         <Item key={PanelDisplayType.ZOOM}>Zoom</Item>
-                                        <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
+                                    <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
                                     </Picker>
                                     <NumberField label="Text Panel Font Size" defaultValue={settings.textInputPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_TEXT_INPUT_FONT_SIZE', value: value})}/>
                                     <NumberField label="Reader Panel Font Size" defaultValue={settings.readerPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_READER_PANEL_FONT_SIZE', value: value})}/>
                                 </Flex>
                             </View>
                         </Item>
+                        <Item key="overlay">
+                            <View height="size-3600" overflow="auto">
+                                <Flex direction="column" gap="size-150">
+                                    <fieldset style={{ border: 0 }}>
+                                        <legend>Overlay color</legend>
+                                            <Flex direction="column">
+                                                <ColorArea
+                                                xChannel={redChannel}
+                                                yChannel={greenChannel}
+                                                value={settings.ui.overlayColor}
+                                                onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})}
+                                                />
+                                                <ColorSlider channel={blueChannel} value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
+                                                <ColorSlider channel="alpha" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
+                                                <p>Current value: {settings.ui.overlayColor}</p>
+                                        </Flex>
+                                    </fieldset>
+                                </Flex>
+                            </View>
+                        </Item>
+
                         <Item key="filter">
                             <View height="size-3600" width="size-5500" overflow="auto" overflow-x="hidden">
                                 <Grid
