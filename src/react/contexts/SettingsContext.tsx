@@ -12,7 +12,7 @@ interface SettingsContextType {
 }
 
 export const SettingsContext = createContext<SettingsContextType>({
-  settings: localStorage.getItem("settings")?JSON.parse(localStorage.getItem("settings")):initialSettings,
+  settings: initialSettings,
   showSettingsMenu: false,
   setShowSettingsMenu: () => {},
   dispatch: () => {},
@@ -436,7 +436,8 @@ interface SettingsProviderProps {
 }
 
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const [settings, dispatch] = useReducer(settingsReducer, initialSettings);
+  const settingsObject = localStorage.getItem("settings") ? JSON.parse(localStorage.getItem("settings")) : initialSettings
+  const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
   const getThemeObject = (theme: ThemeType): Theme => {
@@ -450,6 +451,8 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
         return lightTheme;
     }
   }
+
+  console.log("Loaded settings: ", JSON.stringify(settings));
 
   return (
     <SettingsContext.Provider value={{ settings, showSettingsMenu, setShowSettingsMenu, dispatch, getThemeObject }}>
