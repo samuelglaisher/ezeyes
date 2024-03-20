@@ -27,13 +27,10 @@ export enum FilterType {
 
 export interface Keybindings {
     play: string;
-    pause: string;
     nextWord: string;
     prevWord: string;
     openSettings: string;
     switchView: string;
-    focus: string;
-    select: string;
     importFile: string;
     prevParagraph: string;
     nextParagraph: string;
@@ -138,13 +135,10 @@ export const initialSettings: Settings = {
     },
     keybindings: {
         play: 'space',
-        pause: 'space',
         nextWord: 'right',
         prevWord: 'left',
         openSettings: 'ctrl+o',
         switchView: 'p',
-        focus: 'tab',
-        select: 'enter',
         importFile: 'ctrl+i',
         prevParagraph: "q",
         nextParagraph: "w",
