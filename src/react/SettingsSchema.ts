@@ -20,11 +20,6 @@ export enum UISize {
     LARGE = "large",
 }
 
-export enum FilterType {
-    NONE = "none",
-    ORANGE = "orange",
-}
-
 export interface Keybindings {
     play: string;
     nextWord: string;
@@ -81,6 +76,7 @@ export interface UI {
     opacity: number;
     saturate: number;
     sepia: number;
+    overlayColor: string;
 }
 
 export interface Processing {
@@ -126,6 +122,7 @@ export const initialSettings: Settings = {
         opacity: 1,
         saturate: 1,
         sepia: 0,
+        overlayColor: '#ff00ff00',
     },
     textInputPanel: {
         fontSize: 16,
