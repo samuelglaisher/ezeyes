@@ -1,64 +1,78 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Flex } from '@adobe/react-spectrum';
-import Mousetrap, { ExtendedKeyboardEvent } from 'mousetrap';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { Divider, Flex, Header } from '@adobe/react-spectrum';
+import { SettingsContext } from '../contexts/SettingsContext';
+import { Keybindings } from '../SettingsSchema';
+var Mousetrap = require('mousetrap-record')(require('mousetrap'));
 
 interface KeybindInputProps {
   label: string;
+  keycode: string;
   keyValue: string;
-  onChange: (key: string) => void;
 }
 
-export const KeybindInput: React.FC<KeybindInputProps> = ({ label, keyValue, onChange }) => {
+
+export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyValue }) => {
+  const { settings, dispatch } = useContext(SettingsContext);
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const mousetrap = new Mousetrap(inputRef.current);
+    const inputElement = inputRef.current;
+    if (!inputElement) return;
 
-    if (isEditing && inputRef.current) {
-        const oldHandleKey = mousetrap.handleKey;
-
-        mousetrap.handleKey = (character: string, modifiers: string[], e: ExtendedKeyboardEvent) => {
-          if (timerRef.current) {
-            clearTimeout(timerRef.current);
-          }
-
-          timerRef.current = setTimeout(() => {
-            onChange(character);
-            setIsEditing(false);
-          }, 1000);
-
-        inputRef.current.focus();
-
-        return () => {
-          mousetrap.unbind('keypress');
-          mousetrap.handleKey = oldHandleKey;
-          if (timerRef.current) {
-            clearTimeout(timerRef.current);
-          }
-        };
+    const handleSpaceBar = (event: KeyboardEvent) => {
+      if (event.code === 'Space' && isEditing) {
+        event.preventDefault();
       }
-    }
+    };
 
-  }, [isEditing, onChange]);
+    const handleRecord = (sequence: string[]) => {
+      const detectedSequence = sequence.join(' ');
+      const assignedKeybinds = Object.values(settings.keybindings);
+
+      if (!assignedKeybinds.includes(detectedSequence)) {
+        dispatch({type: "UPDATE_KEYBINDING", key: keycode as keyof Keybindings, value: detectedSequence});
+      }
+
+      // Always stop editing after an attempt to assign a key, whether successful or not
+      setIsEditing(false);
+    };
+
+    if (isEditing) {
+      inputElement.focus();
+
+      inputElement.addEventListener('keydown', handleSpaceBar);
+
+      Mousetrap.record(handleRecord);
+
+      return () => {
+        inputElement.removeEventListener('keydown', handleSpaceBar);
+        // Potentially reset Mousetrap's record state here if necessary
+      };
+    }
+  }, [isEditing, keycode, settings.keybindings, dispatch]);
 
   return (
     <Flex direction="column" gap="size-50">
-      <div>{label}:</div>
+      <Header UNSAFE_style={{userSelect: 'none'}}>{label}</Header>
       <div
         tabIndex={0}
         role="textbox"
         aria-label="Keybind"
         onClick={() => setIsEditing(true)}
         ref={inputRef}
+        className='keybind-input'
         style={{
-          border: '1px solid black',
+          border: '1px solid #D0D0D0',
           padding: '4px 8px',
           display: 'inline-block',
           maxWidth: '100px',
           textAlign: 'center',
-          backgroundColor: isEditing ? 'lightgrey' : '',
+          borderRadius: '8px',
+          backgroundColor: '',
+          fontFamily: 'var(--spectrum-global-font-family-base)',
+          fontSize: 'var(--spectrum-alias-font-size-default)',
+          fontWeight: 'var(--spectrum-global-font-weight-regular)',
         }}
       >
         {isEditing ? '???' : keyValue}
