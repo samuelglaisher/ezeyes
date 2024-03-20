@@ -10,7 +10,6 @@ interface KeybindInputProps {
   keyValue: string;
 }
 
-
 export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyValue }) => {
   const { settings, dispatch } = useContext(SettingsContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -34,7 +33,6 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyV
         dispatch({type: "UPDATE_KEYBINDING", key: keycode as keyof Keybindings, value: detectedSequence});
       }
 
-      // Always stop editing after an attempt to assign a key, whether successful or not
       setIsEditing(false);
     };
 
@@ -47,7 +45,6 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyV
 
       return () => {
         inputElement.removeEventListener('keydown', handleSpaceBar);
-        // Potentially reset Mousetrap's record state here if necessary
       };
     }
   }, [isEditing, keycode, settings.keybindings, dispatch]);
