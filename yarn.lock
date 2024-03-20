@@ -9312,6 +9312,11 @@ mousetrap-pause@^1.0.0:
   resolved "https://registry.npmjs.org/mousetrap-pause/-/mousetrap-pause-1.0.0.tgz"
   integrity sha512-/92qasq/TIkogCZKRYZdX+XAiPOD8dBDIipaar+caXSdKrfhYQIe6UmweiXO9yQeETjhNAUWdopwLsU6po/IPw==
 
+mousetrap-record@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mousetrap-record/-/mousetrap-record-1.0.1.tgz#c8301a616576e4d619e7fd69384616badf19d876"
+  integrity sha512-0cHFVL3MpH6qRJFe/3svt/hwQJArl2tArW4mt9k51auiFKlWz27DQ6U82aasvuILExvPOa/B7wxngEHxBTQIwQ==
+
 mousetrap@^1.6.5:
   version "1.6.5"
   resolved "https://registry.npmjs.org/mousetrap/-/mousetrap-1.6.5.tgz"
