@@ -122,14 +122,18 @@ function SettingsMenu(props: SettingsMenuProps) {
                                 gap="size-0"
                                 autoRows="size-800"
                               >
-                                  {Object.entries(settings.keybindings).map(([action, key]) => (
-                                      <KeybindInput
-                                          key={action}
-                                          label={action}
-                                          keyValue={key}
-                                          onChange={(newKey) => {}}
-                                      />
-                                  ))}
+                                <KeybindInput key="play" keycode="play" label="Play/pause" keyValue={settings.keybindings.play}/>
+                                <KeybindInput key="nextWord" keycode="nextWord" label="Next word" keyValue={settings.keybindings.nextWord}/>
+                                <KeybindInput key="prevWord" keycode="prevWord" label="Previous word" keyValue={settings.keybindings.prevWord}/>
+                                <KeybindInput key="openSettings" keycode="openSettings" label="Open settings" keyValue={settings.keybindings.openSettings}/>
+                                <KeybindInput key="switchView" keycode="switchView" label="Switch panel view" keyValue={settings.keybindings.switchView}/>
+                                <KeybindInput key="importFile" keycode="importFile" label="Import file menu" keyValue={settings.keybindings.importFile}/>
+                                <KeybindInput key="prevParagraph" keycode="prevParagraph" label="Previous paragraph" keyValue={settings.keybindings.prevParagraph}/>
+                                <KeybindInput key="nextParagraph" keycode="nextParagraph" label="Next paragraph" keyValue={settings.keybindings.nextParagraph}/>
+                                <KeybindInput key="prevSentence" keycode="prevSentence" label="Previous sentence" keyValue={settings.keybindings.prevSentence}/>
+                                <KeybindInput key="nextSentence" keycode="nextSentence" label="Next sentence" keyValue={settings.keybindings.nextSentence}/>
+                                <KeybindInput key="flipFlashcard" keycode="flipFlashcard" label="Flip flashcard" keyValue={settings.keybindings.flipFlashcard}/>
+                                <KeybindInput key="backToTop" keycode="backToTop" label="Back to top" keyValue={settings.keybindings.backToTop}/>
                               </Grid>
                             </View>
                         </Item>
