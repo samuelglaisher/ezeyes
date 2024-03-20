@@ -1,6 +1,7 @@
 import React, { createContext, useReducer, useState } from 'react';
 import { Keybindings, PanelDisplayType, Settings, ThemeType, UI, UISize, WPMType, WpmRange, WpmSettings, initialSettings } from '../SettingsSchema';
 import { darkTheme, lightTheme } from "@adobe/react-spectrum";
+import { parseColor } from '@react-stately/color';
 import { Theme } from "@react-types/provider";
 
 interface SettingsContextType {
@@ -115,6 +116,7 @@ type Action =
   | { type: 'UPDATE_UI_OPACITY'; value: number }
   | { type: 'UPDATE_UI_SATURATE'; value: number }
   | { type: 'UPDATE_UI_SEPIA'; value: number }
+  | { type: 'UPDATE_UI_OVERLAY_COLOR'; value: string }
   | { type: 'UPDATE_TEXT_INPUT_FONT_SIZE'; value: number }
   | { type: 'UPDATE_READER_PANEL_FONT_SIZE'; value: number }
   | { type: 'UPDATE_KEYBINDING'; key: keyof Keybindings; value: string }
@@ -379,6 +381,27 @@ type Action =
           ui: {
             ...state.ui,
             sepia: action.value,
+          },
+        };
+
+      case 'UPDATE_UI_OVERLAY_COLOR':
+        try {
+          parseColor(action.value);
+        } catch (e) {
+          console.warn(`Invalid UI overlay color value: ${action.value}`);
+          return state;
+        }
+
+        if (typeof action.value !== "string") {
+          console.warn(`Invalid UI overlay color value!`);
+          return state;
+        }
+
+        return {
+          ...state,
+          ui: {
+            ...state.ui,
+            overlayColor: action.value,
           },
         };
 
