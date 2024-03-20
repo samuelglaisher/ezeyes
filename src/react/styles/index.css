@@ -151,3 +151,8 @@ body, html, #root {
 iframe {
   display: none;
 }
+
+.keybind-input:hover {
+  background-color: rgba(192,192,192, 0.5);
+  cursor: pointer;
+}
