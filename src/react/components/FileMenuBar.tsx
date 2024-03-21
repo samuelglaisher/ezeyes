@@ -27,7 +27,7 @@ function FileMenuBar() {
     return (
         <Flex gap="size-100" position={'absolute'} zIndex={1000}>
         <MenuTrigger>
-            <ActionButton>
+            <ActionButton width="size-900" height="size-600">
                 File
             </ActionButton>
             <Menu onAction={(key) => processOptions(key)}>
