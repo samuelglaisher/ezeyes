@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect, useContext, useRef } from 'react';
 import { PanelDisplayType } from '../SettingsSchema';
 import { PanelType, PanelViewportContext } from '../contexts/PanelViewportContext';
 import { SettingsContext } from '../contexts/SettingsContext';
@@ -11,10 +11,14 @@ function cycleView<T>(prevView: T, viewList: Array<T>): T {
 export const usePanelViewport = () => {
     const { settings } = useContext(SettingsContext);
     const { setActiveView, setActiveFlashcard } = useContext(PanelViewportContext);
+    const initialLoadRef = useRef(true);
 
     useEffect(() => {
-        setActiveView(settings.ui.defaultDisplayType);
-    }, [setActiveView, settings.ui.defaultDisplayType]);
+        if (initialLoadRef.current) {
+            setActiveView(settings.ui.defaultDisplayType);
+            initialLoadRef.current = false;
+        }
+    }, [setActiveView]);
 
     const switchView = () => {
         setActiveView(prevView => cycleView(prevView, [PanelDisplayType.HORIZONTAL, PanelDisplayType.VERTICAL, PanelDisplayType.ZOOM, PanelDisplayType.FLASHCARD]));
