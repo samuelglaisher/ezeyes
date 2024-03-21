@@ -30,8 +30,6 @@ interface SettingsMenuProps {
 function SettingsMenu(props: SettingsMenuProps) {
     const { settings, dispatch } = useContext(SettingsContext);
     const { closeMenu } = useMenuManager();
-    console.log(settings.ui)
-    let [redChannel, greenChannel, blueChannel] = parseColor(settings.ui.overlayColor).getColorChannels();
 
     return (
         <>
@@ -51,14 +49,14 @@ function SettingsMenu(props: SettingsMenuProps) {
                                 <Flex direction="column" gap="size-150">
                                     <Picker
                                         defaultSelectedKey={WPMType.NORMAL}
-                                        label="WPM Mode"
+                                        label="Speed Mode"
                                         selectedKey={settings.processing.wpm.type}
                                         onSelectionChange={(value) => dispatch({ type: 'UPDATE_WPM_TYPE', value: value as WPMType })}>
                                         <Item key={WPMType.NORMAL}>Normal</Item>
                                         <Item key={WPMType.ASSISTED}>Assisted</Item>
                                     </Picker>
                                     <Slider
-                                        label={`${settings.processing.wpm.type === WPMType.NORMAL ? 'Normal' : 'Assisted'} WPM`}
+                                        label={`Words Per Minute`}
                                         minValue={settings.processing.wpm[settings.processing.wpm.type].min}
                                         maxValue={settings.processing.wpm[settings.processing.wpm.type].max}
                                         value={settings.processing.wpm[settings.processing.wpm.type].current}
@@ -106,23 +104,16 @@ function SettingsMenu(props: SettingsMenuProps) {
                             <View height="size-3600" overflow="auto">
                                 <Flex direction="column" gap="size-150">
                                     <fieldset style={{ border: 0 }}>
-                                        <legend>Overlay color</legend>
-                                            <Flex direction="column">
-                                                <ColorArea
-                                                xChannel={redChannel}
-                                                yChannel={greenChannel}
-                                                value={settings.ui.overlayColor}
-                                                onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})}
-                                                />
-                                                <ColorSlider channel={blueChannel} value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
-                                                <ColorSlider channel="alpha" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
-                                                <p>Current value: {settings.ui.overlayColor}</p>
+                                        <Flex direction="column">
+                                            <ColorSlider defaultValue="#ff0000" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="red" />
+                                            <ColorSlider defaultValue="#00ff00" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="green" />
+                                            <ColorSlider defaultValue="#0000ff" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="blue" />
+                                            <ColorSlider channel="alpha" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
                                         </Flex>
                                     </fieldset>
                                 </Flex>
                             </View>
                         </Item>
-
                         <Item key="filter">
                             <View height="size-3600" width="size-5500" overflow="auto" overflow-x="hidden">
                                 <Grid
