@@ -458,8 +458,51 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
+function loadSettings() {
+  let settingObj = JSON.parse(localStorage.getItem("settings"));
+
+  let settingKeys = Object.keys(JSON.parse(localStorage.getItem("settings")));
+  let initKeys = Object.keys(initialSettings);
+
+  let loaded = compare(initialSettings, settingObj);
+
+  return JSON.parse(JSON.stringify(loaded));
+}
+
+function compare(inital: Object, saved: Object) {
+  const initKeys = Object.keys(inital);
+  const savedKeys = Object.keys(saved);
+  var settingsReturn = {};
+
+  if (typeof inital !== "object" || typeof saved !== "object") {
+    return inital;
+  }
+
+  for (var key of initKeys) {
+    if (saved.hasOwnProperty(key)){
+      Object.entries(inital).forEach(init => {
+        if (init[0] === key) {
+          Object.entries(saved).forEach(save => {
+            if (save[0] === key) {
+              Object.assign(settingsReturn, {[key]: compare(init[1], save[1])})
+            }
+          });
+        }
+      });
+    } else {
+      Object.entries(inital).forEach(init => {
+        if (init[0] === key) {
+          Object.assign(settingsReturn, {[key]: init[1]});
+        }
+      });
+    }
+  }
+
+  return settingsReturn;
+}
+
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const settingsObject = localStorage.getItem("settings") ? JSON.parse(localStorage.getItem("settings")) : initialSettings
+  const settingsObject = localStorage.getItem("settings") ? loadSettings() : initialSettings;
   const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
