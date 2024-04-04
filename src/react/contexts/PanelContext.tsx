@@ -1,6 +1,7 @@
 import React, { createContext, useState, ReactNode, useCallback, useEffect, useRef, useContext } from 'react';
 import nlp from 'compromise';
 import { SettingsContext } from './SettingsContext';
+import { getLargestLesserValue, getSmallestLargerValue } from '../../utils';
 
 export interface PanelContextType {
   curWordSequence: string;
@@ -33,16 +34,81 @@ export interface PanelContextType {
   setWordSequenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
   wordIndices: number[];
   setWordIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  generateWordSequenceIndicesFromIndex: (words: string[], text: string, index: number, wordSeqLen: number) => number[];
 }
+
+/**
+ * Generates a list of word sequences relative to the current index into the text content.
+ * @param words - List of words in the text content
+ * @param text - Input text
+ * @param index - Starting index aligned on a word boundary and relative to the text content.
+ */
+const generateWordSequenceIndicesFromIndex = (words: string[], text: string, index: number, wordSeqLen: number) => {
+  const wordSequenceIndices: number[] = [];
+  let marker = index;
+  let backtext = text.slice(0, index);
+  const fronttext = text.slice(index, text.length)
+  let backwords = nlp.tokenize(backtext).terms().out('array');
+  const frontwords = nlp.tokenize(fronttext).terms().out('array');
+
+  //Backwards search
+  for (let i = backwords.length - 1; i >= 0; i -= wordSeqLen) {
+    //Grab the sequence in reversed order (last word comes first)
+    //This is used to find word sequences from the current index to the beggining of the text
+    const sequenceStartIndex = (i - wordSeqLen + 1) >= 0 ? i - wordSeqLen + 1 : 0;
+
+    const wordSequence = backwords.slice(sequenceStartIndex, i + 1).reverse();
+
+    //Get the index of the last word in the current sequence
+    let seqEndingWordIndex = backtext.lastIndexOf(wordSequence[0], marker);
+
+    if (seqEndingWordIndex !== -1) {
+      //Set global text marker to the last word in the current sequence
+      marker = seqEndingWordIndex;
+
+      //For the rest of the words in the sequence, move marker past them
+      for (let j = 1; j < wordSequence.length; j++) {
+        const nextWordIndex = backtext.lastIndexOf(wordSequence[j], marker);
+        if (nextWordIndex !== -1) {
+          marker = nextWordIndex;
+          seqEndingWordIndex = marker;
+        }
+      }
+
+      wordSequenceIndices.unshift(seqEndingWordIndex)
+    }
+  }
+
+  //Frontwards search
+  marker = index;
+  for (let i = 0; i < frontwords.length; i += wordSeqLen) {
+    const sequence = frontwords.slice(i, i + wordSeqLen);
+    let seqStartingWordIndex = text.indexOf(sequence[0], marker);
+
+    if (seqStartingWordIndex !== -1) {
+      marker = seqStartingWordIndex + sequence[0].length;
+
+      for (let j = 1; j < sequence.length; j++) {
+        const nextWordIndex = text.indexOf(sequence[j], marker);
+
+        if (nextWordIndex !== -1) {
+          marker = nextWordIndex + sequence[j].length;
+        }
+      }
+      
+      if (seqStartingWordIndex >= index)
+        wordSequenceIndices.push(seqStartingWordIndex);
+    }
+  }
+
+  return wordSequenceIndices;
+};
+
 
 const defaultContextValue: PanelContextType = {
   curWordSequence: '',
   setCurWordSequence: () => {},
-  textContent: `
-  HUNTSVILLE, AL—Bereft of the sort of close companions who would intervene before he took such a drastic step, local man Bill Delaney had no one in his life to stop him from posting a lengthy video condemning the new film Ghostbusters: Frozen Empire, sources confirmed Friday. 
-  According to insiders with knowledge of the situation, the 43-year-old’s life was completely devoid of loved ones who cared enough about him to step in before he hit record on a self-filmed YouTube rant arguing the many ways the new Ghostbusters allegedly betrayed his childhood. 
-  Delaney reportedly encountered no resistance from a friend or parent at any point as he uploaded the 53-minute screed, leaving the unemployed man no reason to question whether or not it was a worthy focus of time and energy for himself or others. Sources also noted a demonstrable indifference from Delaney’s roommate, who simply shook his head and silently walked past after hearing the man vehemently insist from behind a closed door that “this isn’t the Slimer I grew up with.” 
-  At press time, the man who had spoken off the cuff for nearly an hour on his deep-seated animosity toward a children’s movie was heard expressing annoyance that the video had only accumulated a few dozen views in its first hour online.`,
+  textContent: "",
   setTextContent: () => {},
   isPlaying: false,
   setIsPlaying: () => {},
@@ -70,6 +136,7 @@ const defaultContextValue: PanelContextType = {
   setWordSequenceIndices: () => {},
   wordIndices: [],
   setWordIndices: () => {},
+  generateWordSequenceIndicesFromIndex: generateWordSequenceIndicesFromIndex,
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
@@ -96,76 +163,9 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
 
   const { settings } = useContext(SettingsContext);
-  const [lastWordSequenceLength, setLastWordSequenceLength] = useState(settings.processing.wordSequenceLength);
 
   const currentTextContentRef = useRef('');
   const lastWordSequenceLengthRef = useRef(settings.processing.wordSequenceLength);
-
-    /**
-   * Generates a list of word sequences relative to the current index into the text content.
-   * @param text - Input text
-   * @param index - Starting index aligned on a word boundary and relative to the text content.
-   */
-    const generateWordSequenceIndicesFromIndex = (words: string[], text: string, index: number, wordSeqLen: number) => {
-      const wordSequenceIndices: number[] = [];
-      let marker = index;
-      let backtext = text.slice(0, index);
-      const fronttext = text.slice(index, text.length)
-      let backwords = nlp.tokenize(backtext).terms().out('array');
-      const frontwords = nlp.tokenize(fronttext).terms().out('array');
-  
-      //Backwards search
-      for (let i = backwords.length - 1; i >= 0; i -= wordSeqLen) {
-        //Grab the sequence in reversed order (last word comes first)
-        //This is used to find word sequences from the current index to the beggining of the text
-        const sequenceStartIndex = (i - wordSeqLen + 1) >= 0 ? i - wordSeqLen + 1 : 0;
-    
-        const wordSequence = backwords.slice(sequenceStartIndex, i + 1).reverse();
-  
-        //Get the index of the last word in the current sequence
-        let seqEndingWordIndex = backtext.lastIndexOf(wordSequence[0], marker);
-  
-        if (seqEndingWordIndex !== -1) {
-          //Set global text marker to the last word in the current sequence
-          marker = seqEndingWordIndex;
-  
-          //For the rest of the words in the sequence, move marker past them
-          for (let j = 1; j < wordSequence.length; j++) {
-            const nextWordIndex = backtext.lastIndexOf(wordSequence[j], marker);
-            if (nextWordIndex !== -1) {
-              marker = nextWordIndex;
-              seqEndingWordIndex = marker;
-            }
-          }
-  
-          wordSequenceIndices.unshift(seqEndingWordIndex)
-        }
-      }
-  
-      //Frontwards search
-      marker = index;
-      for (let i = 0; i < frontwords.length; i += wordSeqLen) {
-        const sequence = frontwords.slice(i, i + wordSeqLen);
-        let seqStartingWordIndex = text.indexOf(sequence[0], marker);
-  
-        if (seqStartingWordIndex !== -1) {
-          marker = seqStartingWordIndex + sequence[0].length;
-  
-          for (let j = 1; j < sequence.length; j++) {
-            const nextWordIndex = text.indexOf(sequence[j], marker);
-  
-            if (nextWordIndex !== -1) {
-              marker = nextWordIndex + sequence[j].length;
-            }
-          }
-          
-          if (seqStartingWordIndex >= index)
-            wordSequenceIndices.push(seqStartingWordIndex);
-        }
-      }
-  
-      return wordSequenceIndices;
-    };
 
       /**
    * Updates the list of word sequences and all
@@ -202,8 +202,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setWordSequenceIndices(newWordSequenceIndices);
       lastWordSequenceLengthRef.current = settings.processing.wordSequenceLength;
     } else {
-      // Log for debugging purposes; you may remove this in production.
-      console.log('Using cached word sequence indices.');
       newWordSequenceIndices = wordSequenceIndices;
       setWordSequenceIndices([...newWordSequenceIndices]);
     }
@@ -287,32 +285,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       currentTextContentRef.current = textContent;
     };
 
-    function getLargestLesserValue(elems: number[], target: number) {
-      let max = -Infinity;
-      elems = elems.sort((a,b) => a - b);
-  
-      for (let i = 0; i < elems.length; i++) {
-        if (elems[i] < target && elems[i] > max) {
-          max = elems[i];
-        }
-      }
-  
-      return max;
-    }
-  
-    function getSmallestLargerValue(elems: number[], target: number) {
-      let min = Infinity;
-      elems = elems.sort((a,b) => a - b);
-  
-      for (let i = 0; i < elems.length; i++) {
-        if (elems[i] > target && elems[i] < min) {
-          min = elems[i];
-        }
-      }
-  
-      return min;
-    }
-  
   const getContextValue = useCallback(
     () => ({
       curWordSequence, setCurWordSequence, 
@@ -329,9 +301,11 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       sentenceIndices, setSentenceIndices,
       paragraphIndices, setParagraphIndices,
       wordSequenceIndices, setWordSequenceIndices,
-      wordIndices, setWordIndices
+      wordIndices, setWordIndices,
+      generateWordSequenceIndicesFromIndex,
     }),
-    [curWordSequence, setCurWordSequence, 
+    [
+      curWordSequence, setCurWordSequence, 
       textContent, setTextContent, 
       isPlaying, setIsPlaying, 
       prevParagraphIndex, setPrevParagraphIndex,
@@ -345,7 +319,9 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       sentenceIndices, setSentenceIndices,
       paragraphIndices, setParagraphIndices,
       wordSequenceIndices, setWordSequenceIndices,
-      wordIndices, setWordIndices],
+      wordIndices, setWordIndices,
+      generateWordSequenceIndicesFromIndex,
+    ],
   )
 
     //If our overall text content has changed, initialize all index buffers
