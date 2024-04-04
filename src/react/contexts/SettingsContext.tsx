@@ -518,8 +518,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     }
   }
 
-  console.log("Loaded settings: ", JSON.stringify(settings));
-
   return (
     <SettingsContext.Provider value={{ settings, showSettingsMenu, setShowSettingsMenu, dispatch, getThemeObject }}>
       {children}
