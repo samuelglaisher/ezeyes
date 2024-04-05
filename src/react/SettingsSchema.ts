@@ -20,6 +20,12 @@ export enum UISize {
     LARGE = "large",
 }
 
+export enum WPMAttribute {
+    MIN = "min",
+    MAX = "max",
+    CURRENT = "current",
+};
+
 export interface Keybindings {
     play: string;
     nextWord: string;
@@ -102,7 +108,7 @@ export const initialSettings: Settings = {
                 current: 50,
             },
             normal: {
-                min: 100,
+                min: 200,
                 max: 700,
                 current: 300,
             }
