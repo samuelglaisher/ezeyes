@@ -1,5 +1,5 @@
 import { Keybindings } from '../src/react/SettingsSchema';
-import { getSmallestLargerValue, getLargestLesserValue, isInRange, isValidKeybinding } from '../src/utils';
+import { getSmallestLargerValue, getLargestLesserValue, isInRange, isValidKeybinding, compare } from '../src/utils';
 
 describe('getSmallestLesserValue', () => {
     test('testing that smallest larger value is found for number in list', () => {
@@ -90,5 +90,52 @@ describe('isValidKeybinding', () => {
         expect(isValidKeybinding(key as keyof Keybindings, 'meta+shift+a')).toBeTruthy();
         expect(isValidKeybinding(key as keyof Keybindings, 'fa')).toBeFalsy();
       });
+    });
+  });
+
+  describe('compare', () => {
+    it('returns the initial object if either input is not an object', () => {
+      const initial = { a: 1 };
+      const saved = "notAnObject";
+      const result = compare(initial, saved);
+      expect(result).toEqual(initial);
+    });
+
+    it('returns the initial object for non-object initial input', () => {
+      const initial = "notAnObject";
+      const saved = { a: 1 };
+      const result = compare(initial, saved);
+      expect(result).toEqual(initial);
+    });
+
+    it('returns initial object when saved object has no matching keys', () => {
+      const initial = { a: 1, b: 2 };
+      const saved = { c: 3 };
+      const result = compare(initial, saved);
+      expect(result).toEqual(initial);
+    });
+
+    it('handles nested objects when saved object has non-matching keys', () => {
+      const initial = { a: { b: 1 } };
+      const saved = { a: { c: 2 } };
+      const result = compare(initial, saved);
+      const expected = { a: { b: 1 } };
+      expect(result).toEqual(expected);
+    });
+
+    it('handles multiple nested objects with matching and non-matching keys', () => {
+      const initial = { a: { b: 1, c: { d: 3 } } };
+      const saved = { a: { b: 2, c: { e: 4 } } };
+      const result = compare(initial, saved);
+      const expected = initial;
+      expect(result).toEqual(expected);
+    });
+
+    it('handles when saved is null', () => {
+      const initial = { a: { b: 1, c: { d: 3 } } };
+      const saved = null as any;
+      const result = compare(initial, saved as any);
+      const expected = initial;
+      expect(result).toEqual(expected);
     });
   });
