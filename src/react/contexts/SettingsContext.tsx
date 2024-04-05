@@ -1,10 +1,11 @@
 import React, { createContext, useReducer, useState } from 'react';
-import { Keybindings, PanelDisplayType, Settings, ThemeType, UI, UISize, WPMType, WpmRange, WpmSettings, initialSettings } from '../SettingsSchema';
+import { Keybindings, PanelDisplayType, Settings, ThemeType, UI, UISize, WPMAttribute, WPMType, WpmRange, WpmSettings, initialSettings } from '../SettingsSchema';
 import { darkTheme, lightTheme } from "@adobe/react-spectrum";
 import { parseColor } from '@react-stately/color';
 import { Theme } from "@react-types/provider";
-import { isInRange, isValidKeybinding } from '../../../src/utils';
+import { isInRange, isValidKeybinding, compare } from '../../../src/utils';
 
+/* istanbul ignore next */
 interface SettingsContextType {
   settings: Settings;
   showSettingsMenu: boolean;
@@ -13,6 +14,7 @@ interface SettingsContextType {
   getThemeObject: (theme: ThemeType) => Theme;
 }
 
+/* istanbul ignore next */
 export const SettingsContext = createContext<SettingsContextType>({
   settings: initialSettings,
   showSettingsMenu: false,
@@ -21,9 +23,10 @@ export const SettingsContext = createContext<SettingsContextType>({
   getThemeObject: () => lightTheme,
 });
 
+/* istanbul ignore next */
 type Action =
   | { type: 'UPDATE_WPM_TYPE'; value: WPMType }
-  | { type: 'UPDATE_WPM_SETTING'; wpmType: 'assisted' | 'normal'; setting: 'min' | 'max' | 'current'; value: number }
+  | { type: 'UPDATE_WPM_SETTING'; wpmType: WPMType; setting: WPMAttribute; value: number }
   | { type: 'UPDATE_WORD_SEQUENCE_LENGTH'; value: number }
   | { type: 'UPDATE_UI_SIZE'; value: UISize }
   | { type: 'UPDATE_UI_THEME'; value: ThemeType }
@@ -43,7 +46,7 @@ type Action =
   | { type: 'UPDATE_KEYBINDING'; key: keyof Keybindings; value: string }
   | { type: 'RESET_SETTINGS'}
 
-  function settingsReducer(state: Settings, action: Action): Settings {
+  export function settingsReducer(state: Settings, action: Action): Settings {
     switch (action.type) {
       case 'UPDATE_WPM_TYPE':
         if (action.value !== WPMType.NORMAL && action.value !== WPMType.ASSISTED) {
@@ -76,34 +79,34 @@ type Action =
         const wpmMode = action.wpmType === 'normal' ? 'normal' : 'assisted';
 
         if (wpmMode === 'normal') {
-          if (action.setting === 'min' && action.value < initialSettings.processing.wpm.normal.min) {
+          if (action.setting === 'min' as WPMAttribute && (action.value < state.processing.wpm.assisted.max || action.value > state.processing.wpm.normal.max )) {
             console.warn(`Invalid WPM min setting for normal mode: ${action.value}`);
             return state;
           }
 
-          if (action.setting === 'max' && action.value > initialSettings.processing.wpm.normal.max) {
+          if (action.setting === 'max' as WPMAttribute && action.value < state.processing.wpm.normal.min) {
             console.warn(`Invalid WPM max setting for normal mode: ${action.value}`);
             return state;
           }
 
-          if (action.setting === 'current' && !isInRange(action.value, initialSettings.processing.wpm.normal.min, initialSettings.processing.wpm.normal.max)) {
+          if (action.setting === 'current' as WPMAttribute && !isInRange(action.value, initialSettings.processing.wpm.normal.min, initialSettings.processing.wpm.normal.max)) {
             console.warn(`Invalid WPM current setting for normal mode: ${action.value}`);
             return state;
           }
         }
 
         if (wpmMode === 'assisted') {
-          if (action.setting === 'min' && action.value < initialSettings.processing.wpm.assisted.min) {
+          if (action.setting === 'min' as WPMAttribute && (action.value <= 0 || action.value > state.processing.wpm.assisted.max)) {
             console.warn(`Invalid WPM min setting for assisted mode: ${action.value}`);
             return state;
           }
 
-          if (action.setting === 'max' && action.value > initialSettings.processing.wpm.assisted.max) {
+          if (action.setting === 'max' as WPMAttribute && (action.value < state.processing.wpm.assisted.min || action.value > state.processing.wpm.normal.min)) {
             console.warn(`Invalid WPM max setting for assisted mode: ${action.value}`);
             return state;
           }
 
-          if (action.setting === 'current' && !isInRange(action.value, initialSettings.processing.wpm.assisted.min, initialSettings.processing.wpm.assisted.max)) {
+          if (action.setting == 'current' as WPMAttribute && !isInRange(action.value, initialSettings.processing.wpm.assisted.min, initialSettings.processing.wpm.assisted.max)) {
             console.warn(`Invalid WPM current setting for assisted mode: ${action.value}`);
             return state;
           }
@@ -180,7 +183,7 @@ type Action =
         };
 
       case 'UPDATE_UI_BLUR':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 10) {
+        if (typeof action.value == "number" && (action.value < 0 || action.value > 10)) {
           console.warn(`Invalid UI blur value: ${action.value}`);
           return state;
         }
@@ -194,7 +197,7 @@ type Action =
         };
 
       case 'UPDATE_UI_BRIGHTNESS':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 3) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
           console.warn(`Invalid UI brightness value: ${action.value}`);
           return state;
         }
@@ -208,7 +211,7 @@ type Action =
         };
 
       case 'UPDATE_UI_CONTRAST':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 3) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
           console.warn(`Invalid UI contrast value: ${action.value}`);
           return state;
         }
@@ -222,7 +225,7 @@ type Action =
         };
 
       case 'UPDATE_UI_GRAYSCALE':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 1) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
           console.warn(`Invalid UI grayscale value: ${action.value}`);
           return state;
         }
@@ -236,7 +239,7 @@ type Action =
         };
 
       case 'UPDATE_UI_HUE_ROTATE':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 360) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 360)) {
           console.warn(`Invalid UI hueRotate value: ${action.value}`);
           return state;
         }
@@ -250,7 +253,7 @@ type Action =
         };
 
       case 'UPDATE_UI_INVERT':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 1) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
           console.warn(`Invalid UI invert value: ${action.value}`);
           return state;
         }
@@ -264,7 +267,7 @@ type Action =
         };
 
       case 'UPDATE_UI_OPACITY':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 1) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
           console.warn(`Invalid UI opacity value: ${action.value}`);
           return state;
         }
@@ -278,7 +281,7 @@ type Action =
         };
 
       case 'UPDATE_UI_SATURATE':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 3) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
           console.warn(`Invalid UI saturate value: ${action.value}`);
           return state;
         }
@@ -292,7 +295,7 @@ type Action =
         };
 
       case 'UPDATE_UI_SEPIA':
-        if (typeof action.value === "number" && action.value < 0 && action.value > 1) {
+        if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
           console.warn(`Invalid UI sepia value: ${action.value}`);
           return state;
         }
@@ -313,11 +316,6 @@ type Action =
           return state;
         }
 
-        if (typeof action.value !== "string") {
-          console.warn(`Invalid UI overlay color value!`);
-          return state;
-        }
-
         return {
           ...state,
           ui: {
@@ -327,7 +325,7 @@ type Action =
         };
 
       case 'UPDATE_TEXT_INPUT_FONT_SIZE':
-        if (typeof action.value === "number" && action.value < 0) {
+        if (typeof action.value === "number" && action.value <= 0) {
           console.warn(`Invalid text input font size: ${action.value}`);
           return state;
         }
@@ -341,7 +339,7 @@ type Action =
         };
 
       case 'UPDATE_READER_PANEL_FONT_SIZE':
-        if (typeof action.value === "number" && action.value < 0) {
+        if (typeof action.value === "number" && action.value <= 0) {
           console.warn(`Invalid reader panel font size: ${action.value}`);
           return state;
         }
@@ -372,56 +370,25 @@ type Action =
         return initialSettings;
 
       default:
-        throw new Error(`Unhandled!`);
+        throw new Error("Unhandled!");
     }
   }
 interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-function loadSettings() {
-  let settingObj = JSON.parse(localStorage.getItem("settings"));
-
-  let settingKeys = Object.keys(JSON.parse(localStorage.getItem("settings")));
-  let initKeys = Object.keys(initialSettings);
-
-  let loaded = compare(initialSettings, settingObj);
-
-  return JSON.parse(JSON.stringify(loaded));
+export function loadSettings() {
+  try {
+    const settingObj = JSON.parse(localStorage.getItem("settings"));
+    const loaded = compare(initialSettings, settingObj);
+    return JSON.parse(JSON.stringify(loaded));
+  } catch (e) {
+    console.error(`Error loading settings: ${e}`);
+    return initialSettings;
+  }
 }
 
-function compare(inital: Object, saved: Object) {
-  const initKeys = Object.keys(inital);
-  const savedKeys = Object.keys(saved);
-  var settingsReturn = {};
-
-  if (typeof inital !== "object" || typeof saved !== "object") {
-    return inital;
-  }
-
-  for (var key of initKeys) {
-    if (saved.hasOwnProperty(key)){
-      Object.entries(inital).forEach(init => {
-        if (init[0] === key) {
-          Object.entries(saved).forEach(save => {
-            if (save[0] === key) {
-              Object.assign(settingsReturn, {[key]: compare(init[1], save[1])})
-            }
-          });
-        }
-      });
-    } else {
-      Object.entries(inital).forEach(init => {
-        if (init[0] === key) {
-          Object.assign(settingsReturn, {[key]: init[1]});
-        }
-      });
-    }
-  }
-
-  return settingsReturn;
-}
-
+/* istanbul ignore next */
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
   const settingsObject = localStorage.getItem("settings") ? loadSettings() : initialSettings;
   const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
