@@ -1,4 +1,4 @@
-import { Keybindings } from "./react/SettingsSchema";
+import { initialSettings, Keybindings } from "./react/SettingsSchema";
 
 export function getLargestLesserValue(elems: number[], target: number) {
     let max = -Infinity;
@@ -31,7 +31,11 @@ export function isInRange(value: number, min: number, max: number): boolean {
 }
 
 export const isValidKeybinding = (key: keyof Keybindings, value: string): boolean => {
-    interface SpecialAliases {
+  if (!(key in initialSettings.keybindings)) {
+    return false;
+  }
+
+  interface SpecialAliases {
       option: string;
       command: string;
       return: string;
@@ -105,3 +109,45 @@ export const isValidKeybinding = (key: keyof Keybindings, value: string): boolea
 
     return keys.every(isValidKey);
   }
+
+/**
+ * Compare two objects and return the differences
+ * @param inital
+ * @param saved
+ * @returns
+ */
+export function compare(inital: Object, saved: Object) {
+  if (saved === undefined || saved === null) {
+    return inital;
+  }
+
+  const initKeys = Object.keys(inital);
+  const savedKeys = Object.keys(saved);
+  var obj = {};
+
+  if (typeof inital !== "object" || typeof saved !== "object") {
+    return inital;
+  }
+
+  for (var key of initKeys) {
+    if (saved.hasOwnProperty(key)){
+      Object.entries(inital).forEach(init => {
+        if (init[0] === key) {
+          Object.entries(saved).forEach(save => {
+            if (save[0] === key) {
+              Object.assign(obj, {[key]: compare(init[1], save[1])})
+            }
+          });
+        }
+      });
+    } else {
+      Object.entries(inital).forEach(init => {
+        if (init[0] === key) {
+          Object.assign(obj, {[key]: init[1]});
+        }
+      });
+    }
+  }
+
+  return obj;
+}
