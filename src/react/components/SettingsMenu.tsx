@@ -20,7 +20,7 @@ import {ColorArea, ColorSlider} from '@react-spectrum/color';
 import {parseColor} from '@react-stately/color';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from '../hooks/useMenuManager';
-import { PanelDisplayType, ThemeType, UISize, WPMType } from '../SettingsSchema';
+import { PanelDisplayType, ThemeType, UISize, WPMAttribute, WPMType } from '../SettingsSchema';
 import { KeybindInput } from './KeybindInput';
 
 interface SettingsMenuProps {
@@ -60,7 +60,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                                         minValue={settings.processing.wpm[settings.processing.wpm.type].min}
                                         maxValue={settings.processing.wpm[settings.processing.wpm.type].max}
                                         value={settings.processing.wpm[settings.processing.wpm.type].current}
-                                        onChange={(value) => dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: settings.processing.wpm.type, setting: 'current', value: value})}
+                                        onChange={(value) => dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: settings.processing.wpm.type, setting: 'current' as WPMAttribute, value: value})}
                                     />
                                     <NumberField label="Word Sequence Length" defaultValue={settings.processing.wordSequenceLength} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_WORD_SEQUENCE_LENGTH', value: value})} />
                                 </Flex>

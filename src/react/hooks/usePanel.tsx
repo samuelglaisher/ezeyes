@@ -69,6 +69,10 @@ export const usePanel = () => {
   const { settings } = useContext(SettingsContext);
   const speed = 1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60);
 
+  const backToTop = () => {
+    setCurWordSequenceIndex(0);
+  };
+
   const navigateForward = () => {
     if (curWordSequenceIndexRef.current < wordSequenceIndicesRef.current[wordSequenceIndicesRef.current.length - 1])
       setCurWordSequenceIndex(nextWordSequenceIndexRef.current);
@@ -109,5 +113,6 @@ export const usePanel = () => {
     navigateForward,
     navigateBackward,
     togglePlayPause,
+    backToTop,
   };
 };
