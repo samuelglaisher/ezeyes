@@ -56,6 +56,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./out/make/zip/${{ runner.os }}/**/*.*
+          asset_path: ./out/make/**/*.*
           asset_name: ezeye-${{ runner.os }}.zip
           asset_content_type: application/zip
