@@ -33,12 +33,6 @@ jobs:
           name: ${{ runner.os }}-app
           path: out/make/**
 
-      - name: Set release info
-        id: release_info
-        run: |
-          echo "RELEASE_TITLE=EZEyes ${{ github.ref }}" >> $GITHUB_ENV
-          echo "RELEASE_DESCRIPTION=This release contains the following changes: $(git log --format='%h %s' -n 5)" >> $GITHUB_ENV
-
       - name: Get Release by Tag
         id: get_release
         uses: actions/github-script@0.9.0
@@ -55,6 +49,10 @@ jobs:
                 throw new Error("Release not found or upload_url missing");
               }
               core.setOutput('upload_url', release.data.upload_url);
+
+      - name: Debug upload URL
+        run: |
+          echo "Upload URL: ${{ steps.get_release.outputs.result }}"
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
