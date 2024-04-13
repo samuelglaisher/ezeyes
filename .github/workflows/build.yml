@@ -48,7 +48,6 @@ jobs:
               if (!release || !release.data.upload_url) {
                 throw new Error("Release not found or upload_url missing");
               }
-              console.log(release.data);
               core.setOutput('upload_url', release.data.upload_url);
 
       - name: Upload Release Assets
