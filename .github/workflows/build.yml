@@ -39,24 +39,29 @@ jobs:
           echo "RELEASE_TITLE=EZEyes ${{ github.ref }}" >> $GITHUB_ENV
           echo "RELEASE_DESCRIPTION=This release contains the following changes: $(git log --format='%h %s' -n 5)" >> $GITHUB_ENV
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      - name: Get Release by Tag
+        id: get_release
+        uses: actions/github-script@0.9.0
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ env.RELEASE_TITLE }}
-          body: ${{ env.RELEASE_DESCRIPTION }}
-          draft: false
-          prerelease: false
+            github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+            script: |
+              const tag = context.ref.replace('refs/tags/', '');
+              const release = await github.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: tag
+              });
+              if (release.status !== 200) {
+                throw new Error("Release not found");
+              }
+              return release.data;
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.result.upload_url }}
           asset_path: ./out/make/zip/${{ runner.os }}/**/*.*
           asset_name: ezeye-${{ runner.os }}.zip
           asset_content_type: application/zip
