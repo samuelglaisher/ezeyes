@@ -1,9 +1,22 @@
 import useKeybindings from '../hooks/useKeybindings';
 
 const KeybindingManager = (): JSX.Element => {
-  useKeybindings();
+  const dummyUpdateFunction = () => {};
+  const defaultSpeed = 1;
+
+  useKeybindings(dummyUpdateFunction, defaultSpeed);
 
   return null;
 };
 
 export default KeybindingManager;
+
+// import useKeybindings from '../hooks/useKeybindings';
+
+// const KeybindingManager = (): JSX.Element => {
+//   useKeybindings();
+
+//   return null;
+// };
+
+// export default KeybindingManager;

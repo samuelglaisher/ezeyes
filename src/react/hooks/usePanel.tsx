@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
 import { usePlaybackControl } from './usePlaybackControl';
 import { SettingsContext } from '../contexts/SettingsContext';
@@ -20,7 +20,6 @@ export const usePanel = () => {
     wordIndices,
     setCurWordSequenceIndex,
   } = useContext(PanelContext);
-
 
   const curWordSequenceRef = useRef(curWordSequence);
   const textContentRef = useRef(textContent);
@@ -67,7 +66,7 @@ export const usePanel = () => {
   ]);
 
   const { settings } = useContext(SettingsContext);
-  const speed = 1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60);
+  const [speed, setSpeed] = useState(1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60));
 
   const navigateForward = () => {
     if (curWordSequenceIndexRef.current < wordSequenceIndicesRef.current[wordSequenceIndicesRef.current.length - 1])
@@ -99,8 +98,16 @@ export const usePanel = () => {
       setCurWordSequenceIndex(nextSentenceIndexRef.current);
   };
 
-  const { togglePlayPause } = usePlaybackControl(navigateForward, speed);
+  const handleSpeedUpdate = (newSpeed: number) => {
+    console.log("Speed updated in usePanel:", newSpeed);
+    setSpeed(newSpeed);
+  };
 
+  //const { togglePlayPause } = usePlaybackControl(navigateForward, speed);
+
+  const { togglePlayPause, handleSpeedChange } = usePlaybackControl(navigateForward, speed, handleSpeedUpdate);
+
+  //alert("speed in usepanel" + speed);
   return {
     navigateToPrevParagraph,
     navigateToNextParagraph,
@@ -109,5 +116,7 @@ export const usePanel = () => {
     navigateForward,
     navigateBackward,
     togglePlayPause,
+    handleSpeedChange,
+    speed,
   };
 };
