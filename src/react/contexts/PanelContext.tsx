@@ -33,6 +33,8 @@ export interface PanelContextType {
   setWordSequenceIndices: React.Dispatch<React.SetStateAction<number[]>>;
   wordIndices: number[];
   setWordIndices: React.Dispatch<React.SetStateAction<number[]>>;
+  speed: number;
+  setSpeed: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const defaultContextValue: PanelContextType = {
@@ -70,6 +72,8 @@ const defaultContextValue: PanelContextType = {
   setWordSequenceIndices: () => {},
   wordIndices: [],
   setWordIndices: () => {},
+  speed: 10,
+  setSpeed: () => {}
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
@@ -78,6 +82,8 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [indicesCalculated, setIndicesCalculated] = useState(false);
   const [words, setWords] = useState<string[]>([]);
   const [hasLoaded, setHasLoaded] = useState<number>(0);
+
+  const { settings } = useContext(SettingsContext);
 
   const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
@@ -94,8 +100,7 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [paragraphIndices, setParagraphIndices] = useState<number[]>(defaultContextValue.paragraphIndices);
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
   const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
-
-  const { settings } = useContext(SettingsContext);
+  const [speed, setSpeed] = useState<number>(1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60));
   const [lastWordSequenceLength, setLastWordSequenceLength] = useState(settings.processing.wordSequenceLength);
 
   const currentTextContentRef = useRef('');
@@ -329,9 +334,11 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       sentenceIndices, setSentenceIndices,
       paragraphIndices, setParagraphIndices,
       wordSequenceIndices, setWordSequenceIndices,
-      wordIndices, setWordIndices
+      wordIndices, setWordIndices,
+      speed, setSpeed,
     }),
-    [curWordSequence, setCurWordSequence, 
+    [
+      curWordSequence, setCurWordSequence, 
       textContent, setTextContent, 
       isPlaying, setIsPlaying, 
       prevParagraphIndex, setPrevParagraphIndex,
@@ -345,7 +352,9 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       sentenceIndices, setSentenceIndices,
       paragraphIndices, setParagraphIndices,
       wordSequenceIndices, setWordSequenceIndices,
-      wordIndices, setWordIndices],
+      wordIndices, setWordIndices,
+      speed, setSpeed
+    ],
   )
 
     //If our overall text content has changed, initialize all index buffers

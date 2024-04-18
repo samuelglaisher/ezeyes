@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
 import { usePlaybackControl } from './usePlaybackControl';
 import { SettingsContext } from '../contexts/SettingsContext';
@@ -19,6 +19,7 @@ export const usePanel = () => {
     textContent,
     wordIndices,
     setCurWordSequenceIndex,
+    speed,
   } = useContext(PanelContext);
 
   const curWordSequenceRef = useRef(curWordSequence);
@@ -34,6 +35,7 @@ export const usePanel = () => {
   const sentenceIndicesRef = useRef(sentenceIndices);
   const wordSequenceIndicesRef = useRef(wordSequenceIndices);
   const wordIndicesRef = useRef(wordIndices);
+  const speedRef = useRef(speed);
 
   useEffect(() => {
     curWordSequenceRef.current = curWordSequence;
@@ -49,6 +51,7 @@ export const usePanel = () => {
     sentenceIndicesRef.current = sentenceIndices;
     wordSequenceIndicesRef.current = wordSequenceIndices;
     wordIndicesRef.current = wordIndices;
+    speedRef.current = speed;
   }, [
     curWordSequence,
     textContent,
@@ -63,10 +66,8 @@ export const usePanel = () => {
     wordSequenceIndices,
     sentenceIndices,
     wordIndices,
+    speed,
   ]);
-
-  const { settings } = useContext(SettingsContext);
-  const [speed, setSpeed] = useState(1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60));
 
   const navigateForward = () => {
     if (curWordSequenceIndexRef.current < wordSequenceIndicesRef.current[wordSequenceIndicesRef.current.length - 1])
@@ -98,16 +99,8 @@ export const usePanel = () => {
       setCurWordSequenceIndex(nextSentenceIndexRef.current);
   };
 
-  const handleSpeedUpdate = (newSpeed: number) => {
-    console.log("Speed updated in usePanel:", newSpeed);
-    setSpeed(newSpeed);
-  };
+  const { togglePlayPause } = usePlaybackControl(navigateForward);
 
-  //const { togglePlayPause } = usePlaybackControl(navigateForward, speed);
-
-  const { togglePlayPause, handleSpeedChange } = usePlaybackControl(navigateForward, speed, handleSpeedUpdate);
-
-  //alert("speed in usepanel" + speed);
   return {
     navigateToPrevParagraph,
     navigateToNextParagraph,
@@ -116,7 +109,5 @@ export const usePanel = () => {
     navigateForward,
     navigateBackward,
     togglePlayPause,
-    handleSpeedChange,
-    speed,
   };
 };

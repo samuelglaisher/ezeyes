@@ -13,10 +13,10 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
     const { settings } = useContext(SettingsContext);
 
     const { promptAndLoadFile } = useFileManager();
-    const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause, handleSpeedChange } = usePanel();
+    const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause } = usePanel();
     const { switchView, flipFlashcard } = usePanelViewport();
     const { openMenu } = useMenuManager();
-    //const { handleSpeedChange } = usePlaybackControl(updateFunction, speed);
+    const { increaseSpeed } = usePlaybackControl(updateFunction);
 
     useEffect(() => {
         Mousetrap.bind(settings.keybindings.nextWord, () => {
@@ -61,15 +61,8 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
 
         Mousetrap.bind(settings.keybindings.flipFlashcard, flipFlashcard);
 
-        // document.addEventListener('keydown', function(event) {
-        //     if(event.ctrlKey && event.key === 'ArrowRight') {
-        //         Mousetrap.bind(settings.keybindings.increaseSpeed, handleSpeedChange(true));
-        //         console.log('Ctrl + Right Arrow key pressed');
-        //     }
-        // });
-        
         Mousetrap.bind(settings.keybindings.increaseSpeed, () => {
-            handleSpeedChange();
+            increaseSpeed();
             return false;
         });
 
