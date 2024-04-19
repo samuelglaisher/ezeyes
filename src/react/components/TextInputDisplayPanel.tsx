@@ -84,7 +84,7 @@ const TextInputDisplayPanel: React.FC<TextInputProps> = ({ style }) => {
 
       newRenderHtml.push(
         <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
-          <Text UNSAFE_className="text">{word + ' '}</Text>
+          {word+" "}
         </span>
       );
 

@@ -7,10 +7,11 @@ import { useMenuManager } from './useMenuManager';
 import { MenuType } from '../contexts/MenuManagerContext';
 import { useFileManager } from './useFileManager';
 import { PanelViewportContext } from '../contexts/PanelViewportContext';
+import { useSearchBar } from './useSearchBar';
 
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
-
+    const { searchFunction } = useSearchBar();
     const { promptAndLoadFile } = useFileManager();
     const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause } = usePanel();
     const { switchView, flipFlashcard } = usePanelViewport();
@@ -55,6 +56,7 @@ const useKeybindings = () => {
         Mousetrap.bind(settings.keybindings.importFile, promptAndLoadFile);
 
         Mousetrap.bind(settings.keybindings.flipFlashcard, flipFlashcard);
+        Mousetrap.bind(settings.keybindings.search, searchFunction);
 
         return () => {
             Mousetrap.unbind(settings.keybindings.nextWord);
@@ -63,6 +65,7 @@ const useKeybindings = () => {
             Mousetrap.unbind(settings.keybindings.play);
             Mousetrap.unbind(settings.keybindings.switchView);
             Mousetrap.unbind(settings.keybindings.importFile);
+            Mousetrap.unbind(settings.keybindings.search);
             
         };
     }, [settings.keybindings]);

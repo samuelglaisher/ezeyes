@@ -23,3 +23,13 @@ export const spawnFileDialog = async (): Promise<string | undefined> => {
     const { ipcRenderer } = window.require('electron');
     return ipcRenderer.invoke('read-pdf', filePath);
 };
+
+export const findPhrase = async (phrase: string, action: string): Promise<Buffer | undefined> => {
+    const { ipcRenderer } = window.require('electron');
+    return ipcRenderer.invoke('search-text', phrase, action);
+}
+
+export const closeSearchBar = async (): Promise<Buffer | undefined> => {
+    const { ipcRenderer } = window.require('electron');
+    return ipcRenderer.invoke('search-stop');
+}

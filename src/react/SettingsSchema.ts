@@ -33,6 +33,7 @@ export interface Keybindings {
     nextSentence: string;
     flipFlashcard: string;
     backToTop: string;
+    search: string;
 }
 
 export interface TextInputPanelSettings {
@@ -143,5 +144,6 @@ export const initialSettings: Settings = {
         nextSentence: "s",
         flipFlashcard: "f",
         backToTop: "v",
+        search:"ctrl+f"
     },
 };
