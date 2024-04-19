@@ -16,7 +16,7 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
     const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause } = usePanel();
     const { switchView, flipFlashcard } = usePanelViewport();
     const { openMenu } = useMenuManager();
-    const { increaseSpeed } = usePlaybackControl(updateFunction);
+    const { increaseSpeed, decreaseSpeed } = usePlaybackControl(updateFunction);
 
     useEffect(() => {
         Mousetrap.bind(settings.keybindings.nextWord, () => {
@@ -66,6 +66,11 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
             return false;
         });
 
+        Mousetrap.bind(settings.keybindings.decreaseSpeed, () => {
+            decreaseSpeed();
+            return false;
+        });
+
         return () => {
             Mousetrap.unbind(settings.keybindings.nextWord);
             Mousetrap.unbind(settings.keybindings.prevWord);
@@ -74,7 +79,7 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
             Mousetrap.unbind(settings.keybindings.switchView);
             Mousetrap.unbind(settings.keybindings.importFile);
             Mousetrap.unbind(settings.keybindings.increaseSpeed);
-            
+            Mousetrap.unbind(settings.keybindings.decreaseSpeed);
         };
     }, [settings.keybindings]);
 };
