@@ -82,12 +82,19 @@ const TextInputDisplayPanel: React.FC<TextInputProps> = ({ style }) => {
         );
       }
 
-      newRenderHtml.push(
-        <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
-          <Text UNSAFE_className="text">{word + ' '}</Text>
-        </span>
-      );
-
+      if (i !== wordIndices.length - 1) {
+        newRenderHtml.push(
+          <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
+            <Text UNSAFE_className="text">{word + ' '}</Text>
+          </span>
+        );
+      } else {
+        newRenderHtml.push(
+          <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
+            <Text UNSAFE_className="text">{word}</Text>
+          </span>
+        );
+      }
     });
 
     // Update the local state to trigger a re-render with the updated content
