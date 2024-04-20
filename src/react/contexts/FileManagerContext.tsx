@@ -1,5 +1,9 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+/**
+ * No tests!
+ */
+
 export interface FileManagerContextType {
     currentFiles: string[];
     setCurrentFiles: React.Dispatch<React.SetStateAction<string[]>>;
