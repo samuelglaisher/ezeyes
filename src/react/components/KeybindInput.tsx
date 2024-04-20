@@ -10,6 +10,17 @@ interface KeybindInputProps {
   keyValue: string;
 }
 
+const handleRecord = (keycode: string, dispatch: Function, settingsKeybindings: Keybindings, setIsEditing: Function, sequence: string[]) => {
+  const detectedSequence = sequence.join(' ');
+  const assignedKeybinds = Object.values(settingsKeybindings);
+
+  if (!assignedKeybinds.includes(detectedSequence)) {
+    dispatch({type: "UPDATE_KEYBINDING", key: keycode, value: detectedSequence});
+  }
+
+  setIsEditing(false);
+};
+
 export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyValue }) => {
   const { settings, dispatch } = useContext(SettingsContext);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,23 +37,10 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyV
       }
     };
 
-    const handleRecord = (sequence: string[]) => {
-      const detectedSequence = sequence.join(' ');
-      const assignedKeybinds = Object.values(settings.keybindings);
-
-      if (!assignedKeybinds.includes(detectedSequence)) {
-        dispatch({type: "UPDATE_KEYBINDING", key: keycode as keyof Keybindings, value: detectedSequence});
-      }
-
-      setIsEditing(false);
-    };
-
     if (isEditing) {
       inputElement.focus();
-
       inputElement.addEventListener('keydown', handleSpaceBar);
-
-      Mousetrap.record(handleRecord);
+      Mousetrap.record((sequence: string[]) => handleRecord(keycode, dispatch, settings.keybindings, setIsEditing, sequence));
 
       return () => {
         inputElement.removeEventListener('keydown', handleSpaceBar);
