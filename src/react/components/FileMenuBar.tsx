@@ -4,25 +4,27 @@ import { SubmenuTrigger } from '@react-spectrum/menu';
 import { useFileMenuBar } from '../hooks/useFileMenuBar';
 import { FileManagerContext } from '../contexts/FileManagerContext';
 
+export function  genFileMenuItems(currentFiles: string[]) {
+    const renderItems: React.JSX.Element[] = [];
+
+    if (currentFiles.length === 0) {
+        return <Item key="pass">(none)</Item>
+    }
+
+    currentFiles.forEach((filePath) => {
+        renderItems.push(
+            <Item key={filePath}>{filePath.split('\\').pop()}</Item>
+        );
+    });
+
+    return renderItems;
+}
+
 function FileMenuBar() {
     const { processOptions } = useFileMenuBar();
     const { currentFiles } = useContext(FileManagerContext);
 
-    const render = useMemo(() => () => {
-        const renderItems: React.JSX.Element[] = [];
-
-        if (currentFiles.length === 0) {
-            return <Item key="pass">(none)</Item>
-        }
-
-        currentFiles.forEach((filePath) => {
-            renderItems.push(
-                <Item key={filePath}>{filePath.split('\\').pop()}</Item>
-            );
-        });
-
-        return renderItems;
-    }, [currentFiles]);
+    const render = useMemo(() => () => genFileMenuItems(currentFiles), [currentFiles]);
 
     return (
         <Flex gap="size-100" position={'absolute'} zIndex={1000}>
