@@ -1,6 +1,10 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { PanelDisplayType } from "../SettingsSchema";
 
+/**
+ * No tests needed!
+ */
+
 export enum PanelType {
     READER, TEXT_INPUT
 }
