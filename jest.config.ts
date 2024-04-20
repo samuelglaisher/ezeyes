@@ -24,7 +24,10 @@ const config: Config = {
     "!src/**/*.d.ts"
   ],
   coveragePathIgnorePatterns: [
-    "./src/electron/main.ts"
+    "./src/electron/main.ts",
+  ],
+  testPathIgnorePatterns: [
+    "./tests/e2e",
   ]
 };
 
