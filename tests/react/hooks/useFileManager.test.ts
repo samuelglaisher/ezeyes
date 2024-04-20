@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom';
 import * as ipc from '../../../src/electron/ipc';
+import { read, readDocx, readPdf, spawnFileDialog } from '../../../src/electron/ipc';
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -27,6 +28,20 @@ describe('whitespace tests', () => {
 		expect(res).toEqual("\thi there\n");
 	});
 });
+
+// describe('docx processing tests', async () => {
+// 	test('reading in first test docx document', async () => {
+// 		const testDocxFile = await readDocx("../../files/article.docx");
+// 		expect(testDocxFile).toBe("This is a test!");
+// 	});
+
+// 	test('reading in second test docx document', async () => {
+// 		const docxContent = Buffer.from(docxText2, 'base64').toString('utf8');
+// 		jest.spyOn(ipc, 'read').mockResolvedValue(docxContent);
+// 		const content = await loadDocxFile("./docs/test2.docx");
+// 		expect(content).toBe(`This is a test!
+// 	});
+// });
 
 describe('rtf processing tests', () => {
 	test('trimming whitespace only preserves other special characters (2)', () => {
