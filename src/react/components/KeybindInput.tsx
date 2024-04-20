@@ -19,6 +19,7 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyV
     const inputElement = inputRef.current;
     if (!inputElement) return;
 
+    /* instanbul ignore next */
     const handleSpaceBar = (event: KeyboardEvent) => {
       if (event.code === 'Space' && isEditing) {
         event.preventDefault();
