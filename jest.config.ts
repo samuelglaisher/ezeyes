@@ -1,5 +1,10 @@
 import type { Config } from 'jest';
 
+const getCoverageThreshold = (envVar: string, defaultValue: number): number => {
+  const value = Number(process.env[envVar]);
+  return isNaN(value) ? defaultValue : value;
+};
+
 const config: Config = {
   collectCoverage: true,
   verbose: true,
@@ -13,10 +18,10 @@ const config: Config = {
   },
   coverageThreshold: {
     global: {
-      branches: 90,
-      functions: 90,
-      lines: 90,
-      statements: 90
+      branches: getCoverageThreshold('COVERAGE_BRANCHES', 90),
+      functions: getCoverageThreshold('COVERAGE_FUNCTIONS', 90),
+      lines: getCoverageThreshold('COVERAGE_LINES', 90),
+      statements: getCoverageThreshold('COVERAGE_STATEMENTS', 90),
     }
   },
   collectCoverageFrom: [
