@@ -6,7 +6,6 @@ import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from './useMenuManager';
 import { MenuType } from '../contexts/MenuManagerContext';
 import { useFileManager } from './useFileManager';
-import { PanelViewportContext } from '../contexts/PanelViewportContext';
 
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
