@@ -6,7 +6,7 @@ import { Theme } from "@react-types/provider";
 import { isInRange, isValidKeybinding, compare } from '../../../src/utils';
 
 /* istanbul ignore next */
-interface SettingsContextType {
+export interface SettingsContextType {
   settings: Settings;
   showSettingsMenu: boolean;
   setShowSettingsMenu: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,7 +50,6 @@ type Action =
     switch (action.type) {
       case 'UPDATE_WPM_TYPE':
         if (action.value !== WPMType.NORMAL && action.value !== WPMType.ASSISTED) {
-          console.warn(`Invalid WPM type: ${action.value}`);
           return state;
         }
 
@@ -67,12 +66,10 @@ type Action =
 
       case 'UPDATE_WPM_SETTING':
         if (action.wpmType !== 'normal' && action.wpmType !== 'assisted') {
-          console.warn(`Invalid WPM type: ${action.wpmType}`);
           return state;
         }
 
         if (action.setting !== 'min' && action.setting !== 'max' && action.setting !== 'current') {
-          console.warn(`Invalid WPM setting: ${action.setting}`);
           return state;
         }
 
@@ -80,34 +77,28 @@ type Action =
 
         if (wpmMode === 'normal') {
           if (action.setting === 'min' as WPMAttribute && (action.value < state.processing.wpm.assisted.max || action.value > state.processing.wpm.normal.max )) {
-            console.warn(`Invalid WPM min setting for normal mode: ${action.value}`);
             return state;
           }
 
           if (action.setting === 'max' as WPMAttribute && action.value < state.processing.wpm.normal.min) {
-            console.warn(`Invalid WPM max setting for normal mode: ${action.value}`);
             return state;
           }
 
           if (action.setting === 'current' as WPMAttribute && !isInRange(action.value, initialSettings.processing.wpm.normal.min, initialSettings.processing.wpm.normal.max)) {
-            console.warn(`Invalid WPM current setting for normal mode: ${action.value}`);
             return state;
           }
         }
 
         if (wpmMode === 'assisted') {
           if (action.setting === 'min' as WPMAttribute && (action.value <= 0 || action.value > state.processing.wpm.assisted.max)) {
-            console.warn(`Invalid WPM min setting for assisted mode: ${action.value}`);
             return state;
           }
 
           if (action.setting === 'max' as WPMAttribute && (action.value < state.processing.wpm.assisted.min || action.value > state.processing.wpm.normal.min)) {
-            console.warn(`Invalid WPM max setting for assisted mode: ${action.value}`);
             return state;
           }
 
           if (action.setting == 'current' as WPMAttribute && !isInRange(action.value, initialSettings.processing.wpm.assisted.min, initialSettings.processing.wpm.assisted.max)) {
-            console.warn(`Invalid WPM current setting for assisted mode: ${action.value}`);
             return state;
           }
         }
@@ -128,7 +119,6 @@ type Action =
 
       case 'UPDATE_WORD_SEQUENCE_LENGTH':
         if (action.value < 1) {
-          console.warn(`Invalid word sequence length: ${action.value}`);
           return state;
         }
 
@@ -142,7 +132,6 @@ type Action =
 
       case 'UPDATE_UI_SIZE':
         if (action.value !== UISize.MEDIUM && action.value !== UISize.LARGE) {
-          console.warn(`Invalid UI size: ${action.value}`);
           return state;
         }
 
@@ -156,7 +145,6 @@ type Action =
 
       case 'UPDATE_UI_THEME':
         if (action.value !== ThemeType.LIGHT && action.value !== ThemeType.DARK) {
-          console.warn(`Invalid UI theme: ${action.value}`);
           return state;
         }
 
@@ -170,7 +158,6 @@ type Action =
 
       case 'UPDATE_UI_DEFAULT_DISPLAY':
         if (action.value !== PanelDisplayType.FLASHCARD && action.value !== PanelDisplayType.HORIZONTAL && action.value !== PanelDisplayType.VERTICAL && action.value !== PanelDisplayType.ZOOM) {
-          console.warn(`Invalid UI default display: ${action.value}`);
           return state;
         }
 
@@ -184,7 +171,6 @@ type Action =
 
       case 'UPDATE_UI_BLUR':
         if (typeof action.value == "number" && (action.value < 0 || action.value > 10)) {
-          console.warn(`Invalid UI blur value: ${action.value}`);
           return state;
         }
 
@@ -198,7 +184,6 @@ type Action =
 
       case 'UPDATE_UI_BRIGHTNESS':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
-          console.warn(`Invalid UI brightness value: ${action.value}`);
           return state;
         }
 
@@ -212,7 +197,6 @@ type Action =
 
       case 'UPDATE_UI_CONTRAST':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
-          console.warn(`Invalid UI contrast value: ${action.value}`);
           return state;
         }
 
@@ -226,7 +210,6 @@ type Action =
 
       case 'UPDATE_UI_GRAYSCALE':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
-          console.warn(`Invalid UI grayscale value: ${action.value}`);
           return state;
         }
 
@@ -240,7 +223,6 @@ type Action =
 
       case 'UPDATE_UI_HUE_ROTATE':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 360)) {
-          console.warn(`Invalid UI hueRotate value: ${action.value}`);
           return state;
         }
 
@@ -254,7 +236,6 @@ type Action =
 
       case 'UPDATE_UI_INVERT':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
-          console.warn(`Invalid UI invert value: ${action.value}`);
           return state;
         }
 
@@ -268,7 +249,6 @@ type Action =
 
       case 'UPDATE_UI_OPACITY':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
-          console.warn(`Invalid UI opacity value: ${action.value}`);
           return state;
         }
 
@@ -282,7 +262,6 @@ type Action =
 
       case 'UPDATE_UI_SATURATE':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 3)) {
-          console.warn(`Invalid UI saturate value: ${action.value}`);
           return state;
         }
 
@@ -296,7 +275,6 @@ type Action =
 
       case 'UPDATE_UI_SEPIA':
         if (typeof action.value === "number" && (action.value < 0 || action.value > 1)) {
-          console.warn(`Invalid UI sepia value: ${action.value}`);
           return state;
         }
 
@@ -312,7 +290,6 @@ type Action =
         try {
           parseColor(action.value);
         } catch (e) {
-          console.warn(`Invalid UI overlay color value: ${action.value}`);
           return state;
         }
 
@@ -326,7 +303,6 @@ type Action =
 
       case 'UPDATE_TEXT_INPUT_FONT_SIZE':
         if (typeof action.value === "number" && action.value <= 0) {
-          console.warn(`Invalid text input font size: ${action.value}`);
           return state;
         }
 
@@ -340,7 +316,6 @@ type Action =
 
       case 'UPDATE_READER_PANEL_FONT_SIZE':
         if (typeof action.value === "number" && action.value <= 0) {
-          console.warn(`Invalid reader panel font size: ${action.value}`);
           return state;
         }
 
@@ -354,7 +329,6 @@ type Action =
 
       case 'UPDATE_KEYBINDING':
         if (!isValidKeybinding(action.key, action.value)) {
-          console.warn(`Invalid keybinding: ${action.value}`);
           return state;
         }
 
