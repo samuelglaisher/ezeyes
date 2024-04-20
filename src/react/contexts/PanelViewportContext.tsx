@@ -9,7 +9,7 @@ export enum PanelType {
     READER, TEXT_INPUT
 }
 
-interface PanelViewportContextType {
+export interface PanelViewportContextType {
     activeView: PanelDisplayType;
     activeFlashcard: PanelType;
     setActiveView: React.Dispatch<React.SetStateAction<PanelDisplayType>>;
