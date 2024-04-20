@@ -10,7 +10,7 @@ interface KeybindInputProps {
   keyValue: string;
 }
 
-const handleRecord = (keycode: string, dispatch: Function, settingsKeybindings: Keybindings, setIsEditing: Function, sequence: string[]) => {
+export const handleRecord = (keycode: string, dispatch: Function, settingsKeybindings: Keybindings, setIsEditing: Function, sequence: string[]) => {
   const detectedSequence = sequence.join(' ');
   const assignedKeybinds = Object.values(settingsKeybindings);
 
