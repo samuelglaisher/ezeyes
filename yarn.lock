@@ -10322,6 +10322,11 @@ pdf-parse@^1.1.1:
     debug "^3.1.0"
     node-ensure "^0.0.0"
 
+pdf-to-text@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/pdf-to-text/-/pdf-to-text-0.0.7.tgz#d1cd75b6a9f3782a14bcdf9fe6bc02f74cd7ecd3"
+  integrity sha512-NHWB7u/9q+SZ28UtEgJYljamp61j06oldHdvGik1729pzRFLCO4igbZwm0MOUWoIQUz4nla3n+cf3Jh7uiOZwQ==
+
 pend@~1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/pend/-/pend-1.2.0.tgz"
