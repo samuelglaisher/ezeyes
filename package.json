@@ -90,6 +90,7 @@
     "mammoth": "^1.7.0",
     "mousetrap-pause": "^1.0.0",
     "patch-package": "^8.0.0",
+    "pdf-to-text": "^0.0.7",
     "postinstall-postinstall": "^2.1.0",
     "process": "^0.11.10",
     "react": "^18.2.0",
