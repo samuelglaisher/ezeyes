@@ -82,12 +82,19 @@ const TextInputDisplayPanel: React.FC<TextInputProps> = ({ style }) => {
         );
       }
 
-      newRenderHtml.push(
-        <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
-          <Text UNSAFE_className="text">{word + ' '}</Text>
-        </span>
-      );
-
+      if (i !== wordIndices.length - 1) {
+        newRenderHtml.push(
+          <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
+            <Text UNSAFE_className="text">{word + ' '}</Text>
+          </span>
+        );
+      } else {
+        newRenderHtml.push(
+          <span key={key} id={"word-" + wordIndex} onClick={() => startHere(wordIndex)}>
+            <Text UNSAFE_className="text">{word}</Text>
+          </span>
+        );
+      }
     });
 
     // Update the local state to trigger a re-render with the updated content
@@ -102,7 +109,7 @@ const TextInputDisplayPanel: React.FC<TextInputProps> = ({ style }) => {
   };
 
   return (
-    <div id="text-input-panel" style={style} onPaste={handlePaste} tabIndex={0}>
+    <div id="text-input-panel" data-testid="text-input-panel" style={style} onPaste={handlePaste} tabIndex={0}>
       <View>{renderHtml}</View>
     </div>
   );

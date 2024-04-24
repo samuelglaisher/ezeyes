@@ -4,6 +4,10 @@ export enum MenuType {
     SETTINGS = 1,
 };
 
+/**
+ * No tests needed!
+ */
+
 export interface MenuManagerContextType {
     currentMenu: MenuType | undefined;
     setCurrentMenu: React.Dispatch<React.SetStateAction<MenuType>>;

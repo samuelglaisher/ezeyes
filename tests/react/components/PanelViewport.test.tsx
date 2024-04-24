@@ -1,142 +1,93 @@
 import React, { ReactElement } from 'react';
 import PanelViewport from '../../../src/react/components/PanelViewport';
 import { render, RenderOptions } from '@testing-library/react';
-import { PanelContext } from '../../../src/react/contexts/PanelContext';
-import { PanelViewportContext } from '../../../src/react/contexts/PanelViewportContext';
+import { PanelContext, PanelContextType } from '../../../src/react/contexts/PanelContext';
+import { PanelType, PanelViewportContext } from '../../../src/react/contexts/PanelViewportContext';
 import { Provider, defaultTheme } from '@adobe/react-spectrum';
 import { PanelDisplayType } from '../../../src/react/SettingsSchema';
 
-interface ProviderProps {
-    theme?: typeof defaultTheme;
-}
+const mockPanelContext: PanelContextType = {
+    curWordSequence: '',
+    setCurWordSequence: jest.fn(),
+    textContent: '',
+    setTextContent: jest.fn(),
+    isPlaying: false,
+    setIsPlaying: jest.fn(),
+    prevParagraphIndex: 0,
+    setPrevParagraphIndex: jest.fn(),
+    nextParagraphIndex: 0,
+    setNextParagraphIndex: jest.fn(),
+    prevSentenceIndex: 0,
+    setPrevSentenceIndex: jest.fn(),
+    nextSentenceIndex: 0,
+    setNextSentenceIndex: jest.fn(),
+    prevWordSequenceIndex: 0,
+    setPrevWordSequenceIndex: jest.fn(),
+    curWordSequenceIndex: 0,
+    setCurWordSequenceIndex: jest.fn(),
+    nextWordSequenceIndex: 0,
+    setNextWordSequenceIndex: jest.fn(),
+    formattedTextContent: <></>,
+    setFormattedTextContent: jest.fn(),
+    sentenceIndices: [],
+    setSentenceIndices: jest.fn(),
+    paragraphIndices: [],
+    setParagraphIndices: jest.fn(),
+    wordSequenceIndices: [],
+    setWordSequenceIndices: jest.fn(),
+    wordIndices: [],
+    setWordIndices: jest.fn(),
+    generateWordSequenceIndicesFromIndex: jest.fn(),
+  };
 
-const renderWithProviders = (
-    ui: ReactElement,
-    { providerProps, ...renderOptions }: { providerProps?: ProviderProps } & RenderOptions = {}
-) => {
-    return render(
-        <Provider theme={defaultTheme} {...providerProps}>
-            {ui}
-        </Provider>,
-        renderOptions
-    );
-};
+  const renderWithProviders = (
+      ui: React.ReactElement,
+      options?: RenderOptions,
+      activeView: PanelDisplayType = PanelDisplayType.HORIZONTAL
+  ) => {
+      return render(
+          <Provider theme={defaultTheme}>
+              <PanelContext.Provider value={mockPanelContext}>
+                  <PanelViewportContext.Provider value={{
+                      activeView: activeView,
+                      setActiveView: jest.fn(),
+                      activeFlashcard: PanelType.READER,
+                      setActiveFlashcard: jest.fn(),
+                  }}>
+                      {ui}
+                  </PanelViewportContext.Provider>
+              </PanelContext.Provider>
+          </Provider>,
+          options
+      );
+  };
 
 describe('PanelViewport component', () => {
     it('renders without crashing', () => {
-        const { container } = renderWithProviders(
-            <PanelContext.Provider value={{
-                isPlaying: false,
-                curWordSequence: [],
-                setCurWordSequence: jest.fn(),
-                textContent: '',
-                setTextContent: jest.fn(),
-                setIsPlaying: jest.fn()
-            }}>
-                <PanelViewportContext.Provider value={{
-                    activeView: PanelDisplayType.HORIZONTAL,
-                    setActiveView: jest.fn()
-                }}>
-                    <PanelViewport />
-                </PanelViewportContext.Provider>
-            </PanelContext.Provider>,
-            {}
-        );
+        const { container } = renderWithProviders(<PanelViewport />);
         expect(container).toBeTruthy();
     });
 
     it('renders horizontal view', () => {
-        renderWithProviders(
-            <PanelContext.Provider value={{
-                isPlaying: false,
-                curWordSequence: [],
-                setCurWordSequence: jest.fn(),
-                textContent: '',
-                setTextContent: jest.fn(),
-                setIsPlaying: jest.fn()
-            }}>
-                <PanelViewportContext.Provider value={{
-                    activeView: PanelDisplayType.HORIZONTAL,
-                    setActiveView: jest.fn()
-                }}>
-                    <PanelViewport />
-                </PanelViewportContext.Provider>
-            </PanelContext.Provider>,
-            {}
-        );
-
+        const { container } = renderWithProviders(<PanelViewport />);
         const panelContainer = document.getElementById('horizontal-panel-container');
         expect(panelContainer).toBeInTheDocument();
     });
 
     it('renders vertical view', () => {
-        renderWithProviders(
-            <PanelContext.Provider value={{
-                isPlaying: false,
-                curWordSequence: [],
-                setCurWordSequence: jest.fn(),
-                textContent: '',
-                setTextContent: jest.fn(),
-                setIsPlaying: jest.fn()
-            }}>
-                <PanelViewportContext.Provider value={{
-                    activeView: PanelDisplayType.VERTICAL,
-                    setActiveView: jest.fn()
-                }}>
-                    <PanelViewport />
-                </PanelViewportContext.Provider>
-            </PanelContext.Provider>,
-            {}
-        );
-
+        const { container } = renderWithProviders(<PanelViewport />, undefined, PanelDisplayType.VERTICAL);
         const panelContainer = document.getElementById('vertical-panel-container');
         expect(panelContainer).toBeInTheDocument();
     });
 
     it('renders zoom view', () => {
-        renderWithProviders(
-            <PanelContext.Provider value={{
-                isPlaying: false,
-                curWordSequence: [],
-                setCurWordSequence: jest.fn(),
-                textContent: '',
-                setTextContent: jest.fn(),
-                setIsPlaying: jest.fn()
-            }}>
-                <PanelViewportContext.Provider value={{
-                    activeView: PanelDisplayType.ZOOM,
-                    setActiveView: jest.fn()
-                }}>
-                    <PanelViewport />
-                </PanelViewportContext.Provider>
-            </PanelContext.Provider>,
-            {}
-        );
-
+        const { container } = renderWithProviders(<PanelViewport />, undefined, PanelDisplayType.ZOOM);
         const panelContainer = document.getElementById('zoom-container');
         expect(panelContainer).toBeInTheDocument();
     });
 
     it('renders flashcard view', () => {
-        renderWithProviders(
-            <PanelContext.Provider value={{
-                isPlaying: false,
-                curWordSequence: [],
-                setCurWordSequence: jest.fn(),
-                textContent: '',
-                setTextContent: jest.fn(),
-                setIsPlaying: jest.fn()
-            }}>
-                <PanelViewportContext.Provider value={{
-                    activeView: PanelDisplayType.FLASHCARD,
-                    setActiveView: jest.fn()
-                }}>
-                    <PanelViewport />
-                </PanelViewportContext.Provider>
-            </PanelContext.Provider>,
-            {}
-        );
-
+        const { container } = renderWithProviders(<PanelViewport />, undefined, PanelDisplayType.FLASHCARD);
         const panelContainer = document.getElementById('flashcard-container');
         expect(panelContainer).toBeInTheDocument();
     });

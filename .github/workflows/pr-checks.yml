@@ -26,3 +26,8 @@ jobs:
 
     - name: Run Code Coverage
       run: yarn test:coverage
+      env:
+        COVERAGE_BRANCHES: 90
+        COVERAGE_FUNCTIONS: 90
+        COVERAGE_LINES: 90
+        COVERAGE_STATEMENTS: 90
