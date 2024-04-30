@@ -25,16 +25,16 @@ function FileMenuBar() {
     }, [currentFiles]);
 
     return (
-        <Flex gap="size-100" position={'absolute'} zIndex={1000}>
+        <Flex id='fileMenu' gap="size-100" position={'absolute'} zIndex={1000}>
         <MenuTrigger>
-            <ActionButton width="size-900" height="size-600">
+            <ActionButton id='fileButton' width="size-900" height="size-600">
                 File
             </ActionButton>
             <Menu onAction={(key) => processOptions(key)}>
                 <Item key="load">Load File</Item>
                 <SubmenuTrigger>
                     <Item>Import Previous</Item>
-                    <Menu onAction={(key) => processOptions(key)} items={currentFiles}>
+                    <Menu id='fileSubmenu' onAction={(key) => processOptions(key)} items={currentFiles}>
                         { render() }
                     </Menu>
                 </SubmenuTrigger>

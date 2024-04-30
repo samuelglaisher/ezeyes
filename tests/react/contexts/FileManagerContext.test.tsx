@@ -23,8 +23,8 @@ describe('FileManagerContext', () => {
             </FileManagerProvider>
         );
 
-        const currentFiles = screen.getByTestId('currentFiles');
-        expect(currentFiles).toHaveTextContent("[]");
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        expect(currentFiles).toEqual([]);
     });
 
     test('loading with saved paths', () => {
@@ -41,8 +41,8 @@ describe('FileManagerContext', () => {
             button.click();
         });
 
-        const currentFiles = screen.getByTestId('currentFiles');
-        expect(currentFiles).toHaveTextContent("[\"saved_path\"]");
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        expect(currentFiles).toEqual(["saved_path"]);
     });
 
     test('updates context value when setCurrentFiles is called', () => {
@@ -57,7 +57,7 @@ describe('FileManagerContext', () => {
             button.click();
         });
 
-        const currentFiles = screen.getByTestId('currentFiles');
-        expect(currentFiles).toHaveTextContent("[\"test\"]");
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        expect(currentFiles).toEqual(["test"]);
     });
 });
