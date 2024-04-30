@@ -20,6 +20,12 @@ export enum UISize {
     LARGE = "large",
 }
 
+export enum WPMAttribute {
+    MIN = "min",
+    MAX = "max",
+    CURRENT = "current",
+};
+
 export interface Keybindings {
     play: string;
     nextWord: string;
@@ -103,7 +109,7 @@ export const initialSettings: Settings = {
                 current: 50,
             },
             normal: {
-                min: 100,
+                min: 200,
                 max: 700,
                 current: 300,
             }
@@ -135,13 +141,13 @@ export const initialSettings: Settings = {
         play: 'space',
         nextWord: 'right',
         prevWord: 'left',
-        openSettings: 'ctrl+o',
-        switchView: 'p',
-        importFile: 'ctrl+i',
-        prevParagraph: "q",
-        nextParagraph: "w",
-        prevSentence: "a",
-        nextSentence: "s",
+        openSettings: 's',
+        switchView: 'd',
+        importFile: 'q',
+        prevParagraph: "shift+up",
+        nextParagraph: "shift+down",
+        prevSentence: "up",
+        nextSentence: "down",
         flipFlashcard: "f",
         backToTop: "ctrl+up",
         search:"ctrl+f"
