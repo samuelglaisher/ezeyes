@@ -47,7 +47,12 @@ export const usePlaybackControl = (navigateForward: () => void) => {
 
   const decreaseSpeed = () => {
     const newSpeed = speedRef.current - 10;
-    setSpeed(newSpeed);
+
+    if (newSpeed <= 0) {
+      // do nothing
+    } else {
+      setSpeed(newSpeed);
+    }
   };
 
   return { togglePlayPause, increaseSpeed, decreaseSpeed };
