@@ -143,7 +143,7 @@ export const initialSettings: Settings = {
         prevSentence: "a",
         nextSentence: "s",
         flipFlashcard: "f",
-        backToTop: "v",
+        backToTop: "ctrl+up",
         search:"ctrl+f"
     },
 };
