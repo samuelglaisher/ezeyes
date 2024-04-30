@@ -110,16 +110,19 @@ export const loadPdfFile = async (filePath: string): Promise<any> => {
 
     try {
         content = await readPdf(filePath);
-        return content;
+        if (content) {
+            return content;
+        }
     } catch (error) {
-        console.log(error)
-        return undefined;
+        console.log(error);
     }
-}
+
+    return undefined;
+};
 
 const useFileManager = () => {
     const { currentFiles, setCurrentFiles } = useContext(FileManagerContext);
-    const { setTextContent, setCurWordSequenceIndex, textContent } = useContext(PanelContext);
+    const { setTextContent, setCurWordSequenceIndex } = useContext(PanelContext);
 
     const handleAddNew = (filePath: string) => {
         let files = currentFiles;
