@@ -150,6 +150,6 @@ export const initialSettings: Settings = {
         nextSentence: "down",
         flipFlashcard: "f",
         backToTop: "ctrl+up",
-        search:"ctrl+f"
+        search: "ctrl+f",
     },
 };
