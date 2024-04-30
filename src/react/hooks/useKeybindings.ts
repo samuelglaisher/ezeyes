@@ -11,8 +11,8 @@ import { useSearchBar } from './useSearchBar';
 const useKeybindings = () => {
     const { settings } = useContext(SettingsContext);
 
-    const { promptAndLoadFile } = useFileManager();
     const { searchFunction } = useSearchBar();
+    const { promptAndLoadFile } = useFileManager();
     const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause, backToTop } = usePanel();
     const { switchView, flipFlashcard } = usePanelViewport();
     const { openMenu } = useMenuManager();
