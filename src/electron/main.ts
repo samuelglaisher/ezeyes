@@ -5,7 +5,6 @@ import * as fs from 'fs';
 // whether you're running in development or production).
 import * as mammoth from 'mammoth';
 const pdf = require('pdf-parse');
-const pdfUtil = require('pdf-to-text');
 
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -80,19 +79,14 @@ ipcMain.handle('convert-docx-to-html', async (event, filePath) => {
 });
 
 ipcMain.handle('read-pdf', async (_, filePath) => {
-  return new Promise((resolve, reject) => {
-    pdfUtil.pdfToText(filePath, (err: any, data: any) => {
-      if (err) {
-        console.error('Error reading PDF:', err);
-        reject(new Error('Failed to read PDF file'));
-      } else {
-        resolve(data);
-      }
-    });
-  }).catch(error => {
-    console.log(error);
-    return undefined;
-  });
+  try {
+      const content = fs.readFileSync(filePath);
+      const res = await pdf(content);
+      return res.text;
+  } catch (error) {
+      console.log(error);
+      return undefined;
+  }
 });
 
 ipcMain.handle('write', async (_, filePath, content) => {
