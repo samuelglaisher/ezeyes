@@ -19,8 +19,9 @@ const mockMenuManagerContext: MenuManagerContextType = {
 };
 
 const mockDispatch = jest.fn();
-  const mockSetShowSettingsMenu = jest.fn();
-  const mockGetThemeObject = jest.fn();
+const mockSetShowSettingsMenu = jest.fn();
+const mockGetThemeObject = jest.fn();
+console.error = jest.fn();
 
 function TestSettingsMenu() {
   const { closeMenu } = useMenuManager();
