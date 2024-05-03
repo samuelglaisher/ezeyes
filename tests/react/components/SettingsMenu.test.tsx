@@ -80,6 +80,7 @@ function TestSettingsMenu() {
                 nextSentence: "down",
                 flipFlashcard: "f",
                 backToTop: "ctrl+up",
+                search: "ctrl+f",
             },
         }, 
         dispatch: mockDispatch,

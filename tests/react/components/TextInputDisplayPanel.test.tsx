@@ -84,6 +84,7 @@ const mockSettingsContext = {
       nextSentence: "down",
       flipFlashcard: "f",
       backToTop: "ctrl+up",
+      search: "ctrl+f",
     },
   }, 
   dispatch: jest.fn(),
