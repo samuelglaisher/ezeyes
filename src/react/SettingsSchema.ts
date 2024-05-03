@@ -39,6 +39,8 @@ export interface Keybindings {
     nextSentence: string;
     flipFlashcard: string;
     backToTop: string;
+    increaseSpeed: string;
+    decreaseSpeed: string;
 }
 
 export interface TextInputPanelSettings {
@@ -143,11 +145,13 @@ export const initialSettings: Settings = {
         openSettings: 's',
         switchView: 'd',
         importFile: 'q',
-        prevParagraph: "shift+up",
-        nextParagraph: "shift+down",
-        prevSentence: "up",
-        nextSentence: "down",
-        flipFlashcard: "f",
-        backToTop: "ctrl+up",
+        prevParagraph: 'shift+up',
+        nextParagraph: 'shift+down',
+        prevSentence: 'up',
+        nextSentence: 'down',
+        flipFlashcard: 'f',
+        backToTop: 'ctrl+up',
+        increaseSpeed: 'shift+right',
+        decreaseSpeed: 'shift+left',
     },
 };

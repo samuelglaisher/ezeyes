@@ -2,7 +2,10 @@ import useKeybindings from '../hooks/useKeybindings';
 
 /* istanbul ignore next */
 const KeybindingManager = (): JSX.Element => {
-  useKeybindings();
+  const dummyUpdateFunction = () => {};
+  const defaultSpeed = 1;
+
+  useKeybindings(dummyUpdateFunction, defaultSpeed);
 
   return null;
 };
