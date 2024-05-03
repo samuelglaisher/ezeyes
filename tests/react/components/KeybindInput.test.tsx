@@ -70,7 +70,7 @@ describe('KeybindInput', () => {
                 nextSentence: "down",
                 flipFlashcard: "f",
                 backToTop: "ctrl+up",
-                search: "ctrl+f",
+                search: 'ctrl+f',
             },
         }, 
         dispatch: mockDispatch,
@@ -128,7 +128,7 @@ describe('handleRecord', () => {
         nextSentence: 'down',
         flipFlashcard: 'f',
         backToTop: 'ctrl+up',
-        search: "ctrl+f",
+        search: 'ctrl+f',
       };
     });
 
