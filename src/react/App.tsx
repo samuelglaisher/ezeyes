@@ -12,6 +12,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { FileManagerProvider } from "./contexts/FileManagerContext";
 import "./styles/index.css";
 import UIProvider from "./components/UIProvider";
+import { SearchBarProvider } from "./contexts/SearchBarContext";
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         <ErrorBoundary FallbackComponent={SystemErrorModal}>
         <PanelViewportProvider>
         <PanelProvider>
+          <SearchBarProvider>
           <FileManagerProvider>        
               <MenuManagerProvider>
               <PanelViewport />
@@ -27,6 +29,7 @@ const App: React.FC = () => {
               <FocusManager />
               </MenuManagerProvider>
           </FileManagerProvider>
+          </SearchBarProvider>
         </PanelProvider>
         </PanelViewportProvider>
         </ErrorBoundary>

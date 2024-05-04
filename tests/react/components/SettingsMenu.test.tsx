@@ -19,8 +19,9 @@ const mockMenuManagerContext: MenuManagerContextType = {
 };
 
 const mockDispatch = jest.fn();
-  const mockSetShowSettingsMenu = jest.fn();
-  const mockGetThemeObject = jest.fn();
+const mockSetShowSettingsMenu = jest.fn();
+const mockGetThemeObject = jest.fn();
+console.error = jest.fn();
 
 function TestSettingsMenu() {
   const { closeMenu } = useMenuManager();
@@ -80,6 +81,7 @@ function TestSettingsMenu() {
                 nextSentence: "down",
                 flipFlashcard: "f",
                 backToTop: "ctrl+up",
+                search: 'ctrl+f',
             },
         }, 
         dispatch: mockDispatch,
