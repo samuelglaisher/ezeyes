@@ -86,6 +86,7 @@ const mockSettingsContext = {
       nextSentence: "down",
       flipFlashcard: "f",
       backToTop: "ctrl+up",
+      search: 'ctrl+f',
       increaseSpeed: 'shift+right',
       decreaseSpeed: 'shift+left',
     },

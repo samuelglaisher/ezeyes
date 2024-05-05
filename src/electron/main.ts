@@ -5,7 +5,6 @@ import * as fs from 'fs';
 // whether you're running in development or production).
 import * as mammoth from 'mammoth';
 const pdf = require('pdf-parse');
-const pdfUtil = require('pdf-to-text');
 
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -31,6 +30,12 @@ const createWindow = (): void => {
   // and load the index.html of the app.
   mainWindow.setMenuBarVisibility(false);
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+
+  mainWindow.webContents.on('found-in-page', (event, result) => {
+    if (result.finalUpdate) {
+      mainWindow.webContents.stopFindInPage('keepSelection');
+    }
+  });
 };
 
 // This method will be called when Electron has finished
@@ -80,19 +85,14 @@ ipcMain.handle('convert-docx-to-html', async (event, filePath) => {
 });
 
 ipcMain.handle('read-pdf', async (_, filePath) => {
-  return new Promise((resolve, reject) => {
-    pdfUtil.pdfToText(filePath, (err: any, data: any) => {
-      if (err) {
-        console.error('Error reading PDF:', err);
-        reject(new Error('Failed to read PDF file'));
-      } else {
-        resolve(data);
-      }
-    });
-  }).catch(error => {
-    console.log(error);
-    return undefined;
-  });
+  try {
+      const content = fs.readFileSync(filePath);
+      const res = await pdf(content);
+      return res.text;
+  } catch (error) {
+      console.log(error);
+      return undefined;
+  }
 });
 
 ipcMain.handle('write', async (_, filePath, content) => {
@@ -116,6 +116,19 @@ ipcMain.handle('spawn-file-dialog', async (_) => {
     console.log(error);
     return undefined;
   }
+});
+
+ipcMain.handle('search-text', async (_, phrase, move) => {
+  let nextArg = move === "next"?true:false;
+  mainWindow.webContents.findInPage(phrase, {
+    forward: true,
+    findNext: nextArg,
+    matchCase: false
+  });
+});
+
+ipcMain.handle('search-stop', async (_) => {
+  mainWindow.webContents.stopFindInPage('clearSelection');
 });
 
 // In this file you can include the rest of your app's specific main process
