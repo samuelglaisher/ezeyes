@@ -41,6 +41,7 @@ export interface Keybindings {
     backToTop: string;
     increaseSpeed: string;
     decreaseSpeed: string;
+    search: string;
 }
 
 export interface TextInputPanelSettings {
@@ -153,5 +154,6 @@ export const initialSettings: Settings = {
         backToTop: 'ctrl+up',
         increaseSpeed: 'shift+right',
         decreaseSpeed: 'shift+left',
+        search: "ctrl+f",
     },
 };

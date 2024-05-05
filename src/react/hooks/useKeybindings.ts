@@ -7,10 +7,12 @@ import { useMenuManager } from './useMenuManager';
 import { MenuType } from '../contexts/MenuManagerContext';
 import { useFileManager } from './useFileManager';
 import { usePlaybackControl } from './usePlaybackControl';
+import { useSearchBar } from './useSearchBar';
 
 const useKeybindings = (updateFunction: () => void, speed: number) => {
     const { settings } = useContext(SettingsContext);
 
+    const { searchFunction } = useSearchBar();
     const { promptAndLoadFile } = useFileManager();
     const { navigateForward, navigateBackward, navigateToPrevParagraph, navigateToNextParagraph, navigateToPrevSentence, navigateToNextSentence, togglePlayPause, backToTop } = usePanel();
     const { switchView, flipFlashcard } = usePanelViewport();
@@ -71,6 +73,8 @@ const useKeybindings = (updateFunction: () => void, speed: number) => {
             decreaseSpeed();
             return false;
         });
+
+        Mousetrap.bind(settings.keybindings.search, searchFunction);
 
 
         return () => {
