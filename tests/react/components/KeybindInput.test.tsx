@@ -70,6 +70,8 @@ describe('KeybindInput', () => {
                 nextSentence: "down",
                 flipFlashcard: "f",
                 backToTop: "ctrl+up",
+                increaseSpeed: 'shift+right',
+                decreaseSpeed: 'shift+left',
             },
         }, 
         dispatch: mockDispatch,
@@ -127,6 +129,8 @@ describe('handleRecord', () => {
         nextSentence: 'down',
         flipFlashcard: 'f',
         backToTop: 'ctrl+up',
+        increaseSpeed: 'shift+right',
+        decreaseSpeed: 'shift+left',
       };
     });
 

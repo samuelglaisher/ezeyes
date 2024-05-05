@@ -80,6 +80,8 @@ function TestSettingsMenu() {
                 nextSentence: "down",
                 flipFlashcard: "f",
                 backToTop: "ctrl+up",
+                increaseSpeed: 'shift+right',
+                decreaseSpeed: 'shift+left',
             },
         }, 
         dispatch: mockDispatch,
