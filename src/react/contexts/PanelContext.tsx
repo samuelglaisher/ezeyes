@@ -149,9 +149,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [indicesCalculated, setIndicesCalculated] = useState(false);
   const [words, setWords] = useState<string[]>([]);
   const [hasLoaded, setHasLoaded] = useState<number>(0);
-
-  const { settings } = useContext(SettingsContext);
-
   const [curWordSequence, setCurWordSequence] = useState<string>(defaultContextValue.curWordSequence);
   const [textContent, setTextContent] = useState<string>(defaultContextValue.textContent);
   const [isPlaying, setIsPlaying] = useState<boolean>(defaultContextValue.isPlaying);

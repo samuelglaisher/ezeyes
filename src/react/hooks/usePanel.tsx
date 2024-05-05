@@ -70,7 +70,7 @@ export const usePanel = () => {
   ]);
 
   const { settings } = useContext(SettingsContext);
-  const speed = 1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60);
+  //const speed = 1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60);
 
   const backToTop = () => {
     setCurWordSequenceIndex(0);
