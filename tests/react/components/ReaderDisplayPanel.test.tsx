@@ -38,6 +38,8 @@ const mockPanelContext: PanelContextType = {
   wordIndices: [],
   setWordIndices: jest.fn(),
   generateWordSequenceIndicesFromIndex: jest.fn(),
+  speed: 0,
+  setSpeed: jest.fn(),
 };
 
 

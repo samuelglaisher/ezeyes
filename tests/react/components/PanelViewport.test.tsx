@@ -5,6 +5,7 @@ import { PanelContext, PanelContextType } from '../../../src/react/contexts/Pane
 import { PanelType, PanelViewportContext } from '../../../src/react/contexts/PanelViewportContext';
 import { Provider, defaultTheme } from '@adobe/react-spectrum';
 import { PanelDisplayType } from '../../../src/react/SettingsSchema';
+import '@testing-library/jest-dom';
 
 const mockPanelContext: PanelContextType = {
     curWordSequence: '',
@@ -38,6 +39,8 @@ const mockPanelContext: PanelContextType = {
     wordIndices: [],
     setWordIndices: jest.fn(),
     generateWordSequenceIndicesFromIndex: jest.fn(),
+    speed: 0,
+    setSpeed: jest.fn(),
   };
 
   const renderWithProviders = (
