@@ -13,6 +13,15 @@ export const useSearchBar = () => {
 
     const searchFunction = () => {
         const element = document.getElementById('find');
+        if (element.style.display === "block") {
+            closeSearch();
+        } else {
+            startSearch();
+        };
+    };
+
+    const startSearch = () => {
+        const element = document.getElementById('find');
         element.style.display = "block";
     };
 
