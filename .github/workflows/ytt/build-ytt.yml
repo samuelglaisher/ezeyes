@@ -3,7 +3,7 @@
 #@ def generate_build_cmds(deployment):
 #@     result = ""
 #@     for arch in deployment.arch:
-#@         result += "yarn build --os=" + deployment.os + " --arch=" + arch + "\n"
+#@         result += "yarn make --os=" + deployment.os + " --arch=" + arch + "\n"
 #@     end
 #@     return result
 #@ end
@@ -30,9 +30,6 @@ jobs:
 
       - name: "Install Dependencies"
         run: "yarn install"
-
-      - name: "Build and Package Application"
-        run: "yarn make"
 
       - name: "Get Release by Tag"
         id: get_release
