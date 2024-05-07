@@ -31,6 +31,7 @@ export interface Keybindings {
     nextWord: string;
     prevWord: string;
     openSettings: string;
+    openHelp: string;
     switchView: string;
     importFile: string;
     prevParagraph: string;
@@ -141,6 +142,7 @@ export const initialSettings: Settings = {
         nextWord: 'right',
         prevWord: 'left',
         openSettings: 's',
+        openHelp: 'h',
         switchView: 'd',
         importFile: 'q',
         prevParagraph: "shift+up",

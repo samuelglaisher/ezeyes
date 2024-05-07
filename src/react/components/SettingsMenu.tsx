@@ -144,6 +144,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                                 <KeybindInput key="nextWord" keycode="nextWord" label="Next word" keyValue={settings.keybindings.nextWord}/>
                                 <KeybindInput key="prevWord" keycode="prevWord" label="Previous word" keyValue={settings.keybindings.prevWord}/>
                                 <KeybindInput key="openSettings" keycode="openSettings" label="Open settings" keyValue={settings.keybindings.openSettings}/>
+                                <KeybindInput key="openHelp" keycode="openHelp" label="Open help/tutorial" keyValue={settings.keybindings.openHelp}/>
                                 <KeybindInput key="switchView" keycode="switchView" label="Switch panel view" keyValue={settings.keybindings.switchView}/>
                                 <KeybindInput key="importFile" keycode="importFile" label="Import file menu" keyValue={settings.keybindings.importFile}/>
                                 <KeybindInput key="prevParagraph" keycode="prevParagraph" label="Previous paragraph" keyValue={settings.keybindings.prevParagraph}/>
