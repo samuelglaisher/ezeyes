@@ -48,6 +48,7 @@ jobs:
               core.setOutput('upload_url', release.data.upload_url);
 
       - name: Build
+        shell: bash
         run: |
           if [[ ${{ matrix.os }} == 'ubuntu-latest' ]]; then
             yarn make --platform=linux --arch=x64
