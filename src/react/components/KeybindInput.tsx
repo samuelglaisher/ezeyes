@@ -40,6 +40,7 @@ export const KeybindInput: React.FC<KeybindInputProps> = ({ keycode, label, keyV
     if (isEditing) {
       inputElement.focus();
       inputElement.addEventListener('keydown', handleSpaceBar);
+      inputElement.addEventListener('focusout', () => setIsEditing(false));
       Mousetrap.record((sequence: string[]) => handleRecord(keycode, dispatch, settings.keybindings, setIsEditing, sequence));
 
       return () => {
