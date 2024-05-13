@@ -24,9 +24,6 @@ jobs:
       - name: Install Dependencies
         run: yarn install
 
-      - name: Build and Package Application
-        run: yarn make
-
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -49,6 +46,17 @@ jobs:
                 throw new Error("Release not found or upload_url missing");
               }
               core.setOutput('upload_url', release.data.upload_url);
+
+      - name: Build
+        shell: bash
+        run: |
+          if [[ ${{ matrix.os }} == 'ubuntu-latest' ]]; then
+            yarn make --platform=linux --arch=x64
+          elif [[ ${{ matrix.os }} == 'windows-latest' ]]; then
+            yarn make --platform=win32 --arch=x64
+          elif [[ ${{ matrix.os }} == 'macos-latest' ]]; then
+            yarn make --platform=darwin --arch=universal
+          fi
 
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1

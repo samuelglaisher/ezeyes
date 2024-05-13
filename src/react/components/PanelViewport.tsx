@@ -17,6 +17,7 @@ import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
 import FileMenuBar from "./FileMenuBar";
 import HelpButton from "./HelpButton";
+import SearchBar from "./SearchBar";
 
 const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
@@ -31,9 +32,10 @@ const PanelViewport: React.FC = () => {
                 <Flex position={"absolute"} right={0} zIndex={1000}>
                     <HelpButton />
                 </Flex>
-                <Flex justifyContent="center" width="100%">   
+                <Flex justifyContent="center" width="100%">
                     <SettingsButton />
                 </Flex>
+                <SearchBar/>
             </Header>
 
             <Content id="panel-viewport">
