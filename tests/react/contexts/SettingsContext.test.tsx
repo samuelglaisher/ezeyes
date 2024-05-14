@@ -331,6 +331,26 @@ describe('settingsReducer', () => {
       expect(newState.processing.wpm.normal.current).toEqual(400);
     });
 
+  it('should set delta to a valid value', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 10 });
+    expect(newState.processing.wpm.delta).toEqual(10);
+  });
+
+  it('should not update state if delta value is 0', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 0 });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
+
+  it('should not update state if delta value is negative', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: -5 });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
+
+  it('should not update state if delta value is not a number', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 'invalid' as any });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
+
   it('Set word sequence length to invalid value.', () => {
     const newState = settingsReducer(initialSettings, {
       type: 'UPDATE_WORD_SEQUENCE_LENGTH',

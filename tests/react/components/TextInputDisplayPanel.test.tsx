@@ -46,7 +46,8 @@ const mockSettingsContext = {
       wpm: {
         type: WPMType.NORMAL,
         assisted: { min: 10, max: 100, current: 50 },
-        normal: { min: 200, max: 700, current: 300 }
+        normal: { min: 200, max: 700, current: 300 },
+        delta: 1,
       },
       wordSequenceLength: 1,
     },

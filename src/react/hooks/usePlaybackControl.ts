@@ -10,6 +10,7 @@ export const usePlaybackControl = (navigateForward: () => void) => {
   const intervalId = useRef(null);
   const wpmRef = useRef(settings.processing.wpm[settings.processing.wpm.type].current);
   const typeRef = useRef(settings.processing.wpm.type);
+  const wpmDelta = useRef(settings.processing.wpm.delta);
 
   useEffect(() => {
     if (isPlaying) {
@@ -22,16 +23,19 @@ export const usePlaybackControl = (navigateForward: () => void) => {
   }, [isPlaying]);
 
   useEffect(() => {
-    wpmRef.current = settings.processing.wpm[typeRef.current].current;
-  }, [settings.processing.wpm]);
-
-  useEffect(() => {
     typeRef.current = settings.processing.wpm.type;
     wpmRef.current = settings.processing.wpm[typeRef.current].current;
+    wpmDelta.current = settings.processing.wpm.delta;
+
     if (isPlaying) {
+      if (intervalId.current) {
+        clearInterval(intervalId.current);
+      }
+
       setupWordSequencePlayback();
     }
-  }, [settings.processing.wpm.type, isPlaying]);
+
+  }, [settings.processing.wpm.type, settings.processing.wpm]);
 
   const setupWordSequencePlayback = () => {
     clearInterval(intervalId.current);
@@ -45,13 +49,13 @@ export const usePlaybackControl = (navigateForward: () => void) => {
 
   const increaseSpeed = () => {
     const type = typeRef.current;
-    const newSpeed = wpmRef.current + 1;
+    const newSpeed = wpmRef.current + wpmDelta.current;
     dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
   };
 
   const decreaseSpeed = () => {
     const type = typeRef.current;
-    const newSpeed = wpmRef.current - 1;
+    const newSpeed = wpmRef.current - wpmDelta.current;
     dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
   };
 

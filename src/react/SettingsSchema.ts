@@ -70,6 +70,7 @@ export interface WpmSettings {
     type: WPMType;
     assisted: WpmRange;
     normal: WpmRange;
+    delta: number;
 }
 
 export interface UI {
@@ -114,7 +115,8 @@ export const initialSettings: Settings = {
                 min: 200,
                 max: 700,
                 current: 300,
-            }
+            },
+            delta: 1,
         },
         wordSequenceLength: 1,
     },

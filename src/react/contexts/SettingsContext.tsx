@@ -27,6 +27,7 @@ export const SettingsContext = createContext<SettingsContextType>({
 type Action =
   | { type: 'UPDATE_WPM_TYPE'; value: WPMType }
   | { type: 'UPDATE_WPM_SETTING'; wpmType: WPMType; setting: WPMAttribute; value: number }
+  | { type: 'UPDATE_WPM_DELTA'; value: number }
   | { type: 'UPDATE_WORD_SEQUENCE_LENGTH'; value: number }
   | { type: 'UPDATE_UI_SIZE'; value: UISize }
   | { type: 'UPDATE_UI_THEME'; value: ThemeType }
@@ -113,6 +114,22 @@ type Action =
                 ...state.processing.wpm[wpmMode],
                 [action.setting]: action.value,
               },
+            },
+          },
+        };
+
+      case 'UPDATE_WPM_DELTA':
+        if (action.value <= 0 || typeof action.value !== "number") {
+          return state;
+        }
+
+        return {
+          ...state,
+          processing: {
+            ...state.processing,
+            wpm: {
+              ...state.processing.wpm,
+              delta: action.value,
             },
           },
         };
