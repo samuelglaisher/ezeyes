@@ -1,8 +1,12 @@
 import '@testing-library/jest-dom';
 import React, { useContext } from 'react';
 import { render, act, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SettingsProvider, SettingsContext, settingsReducer, loadSettings } from '../../../src/react/contexts/SettingsContext';
 import { initialSettings, Keybindings, PanelDisplayType, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
+
+console.log = jest.fn();
+console.error = jest.fn();
 
 const TestSettingsContextComponent = () => {
   const { settings, dispatch, showSettingsMenu, setShowSettingsMenu } = useContext(SettingsContext);
@@ -107,7 +111,6 @@ describe('SettingsProvider', () => {
 });
 
 describe('settingsReducer', () => {
-  // Set WPM type tests
   it('Set WPM type to valid values (normal and then assisted)', () => {
     let newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_TYPE', value: 'normal' as WPMType });
     expect(newState.processing.wpm.type).toEqual('normal');
@@ -120,7 +123,7 @@ describe('settingsReducer', () => {
     expect(state).toEqual(initialSettings);
   });
 
-  it('Set WPM setting for invalid wpm type', () => {
+  it('Set WPM min setting for invalid wpm type', () => {
     const newState = settingsReducer(initialSettings, {
       type: 'UPDATE_WPM_SETTING',
       wpmType: 'invalid' as any,
@@ -225,6 +228,16 @@ describe('settingsReducer', () => {
     expect(newState.processing.wpm.assisted.current).toEqual(initialSettings.processing.wpm.assisted.current);
   });
 
+  it('Set assisted WPM mode\'s current to valid value.', () => {
+    const newState = settingsReducer(initialSettings, {
+      type: 'UPDATE_WPM_SETTING',
+      wpmType: 'assisted' as WPMType,
+      setting: 'current' as WPMAttribute,
+      value: 70,
+    });
+    expect(newState.processing.wpm.assisted.current).toEqual(70);
+  });
+
     // Normal WPM mode min settings
     it('Set normal WPM mode\'s min to invalid smaller value.', () => {
       const newState = settingsReducer(initialSettings, {
@@ -267,6 +280,16 @@ describe('settingsReducer', () => {
       expect(newState.processing.wpm.normal.max).toEqual(initialSettings.processing.wpm.normal.max);
     });
 
+    it('Set normal WPM mode\'s max to invalid larger value.', () => {
+      const newState = settingsReducer(initialSettings, {
+        type: 'UPDATE_WPM_SETTING',
+        wpmType: 'normal' as WPMType,
+        setting: 'max' as WPMAttribute,
+        value: 9999999999999,
+      });
+      expect(newState.processing.wpm.normal.max).toEqual(initialSettings.processing.wpm.normal.max);
+    });
+
     it('Set normal WPM mode\'s max to valid value.', () => {
       const newState = settingsReducer(initialSettings, {
         type: 'UPDATE_WPM_SETTING',
@@ -296,6 +319,16 @@ describe('settingsReducer', () => {
         value: 1001,
       });
       expect(newState.processing.wpm.normal.current).toEqual(initialSettings.processing.wpm.normal.current);
+    });
+
+    it('Set normal WPM mode\'s current to valid value.', () => {
+      const newState = settingsReducer(initialSettings, {
+        type: 'UPDATE_WPM_SETTING',
+        wpmType: 'normal' as WPMType,
+        setting: 'current' as WPMAttribute,
+        value: 400,
+      });
+      expect(newState.processing.wpm.normal.current).toEqual(400);
     });
 
   it('Set word sequence length to invalid value.', () => {
@@ -436,7 +469,6 @@ describe('settingsReducer', () => {
     expect(newState.ui.hueRotate).toEqual(180);
   });
 
-
   it('Set invert to invalid value outside of lower min boundary (i.e., less than 0)', () => {
     const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_INVERT', value: -1 });
     expect(newState.ui.invert).toEqual(initialSettings.ui.invert);
@@ -503,8 +535,13 @@ describe('settingsReducer', () => {
   });
 
   it('Set overlayColor to valid color value of format "#ff00ff00"', () => {
-    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: '#ff00ff' });
-    expect(newState.ui.overlayColor).toEqual('#ff00ff');
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: '#ff00ff00' });
+    expect(newState.ui.overlayColor).toEqual('#ff00ff00');
+  });
+
+  it('Set overlayColor to valid color value of format "rgba(255, 0, 255, 0)"', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: 'rgba(255, 0, 255, 0)' });
+    expect(newState.ui.overlayColor).toEqual('rgba(255, 0, 255, 0)');
   });
 
   it('Set textInputPanel fontSize to invalid value of 0', () => {
@@ -687,6 +724,7 @@ describe('loadSettings tests', () => {
   });
 
   it('loads default settings when there are no saved settings', () => {
+    localStorage.clear();
     const loadedSettings = loadSettings();
     expect(loadedSettings).toEqual(initialSettings);
   });
@@ -710,5 +748,56 @@ describe('loadSettings tests', () => {
 
     const loadedSettings = loadSettings();
     expect(loadedSettings).toEqual(initialSettings);
+  });
+});
+
+
+describe('SettingsContext tests', () => {
+  it('Mutated settings object can be set as the new SettingsContext', async () => {
+    const { getByText, getByTestId } = render(
+      <SettingsProvider>
+        <SettingsContext.Consumer>
+          {({ settings, dispatch }) => (
+            <>
+              <span data-testid="current-theme">{settings.ui.theme}</span>
+              <button onClick={() => dispatch({ type: 'UPDATE_UI_THEME', value: ThemeType.LIGHT })}>
+                Change Theme
+              </button>
+            </>
+          )}
+        </SettingsContext.Consumer>
+      </SettingsProvider>
+    );
+
+    expect(getByTestId('current-theme').textContent).toBe('dark');
+
+    const changeThemeButton = getByText('Change Theme');
+
+    await waitFor(() => userEvent.click(changeThemeButton));
+
+    expect(getByTestId('current-theme').textContent).toBe('light');
+  });
+
+  it('Invalid settings object cannot be set as the new SettingsContext', async () => {
+    const { getByText, getByTestId } = render(
+      <SettingsProvider>
+        <SettingsContext.Consumer>
+          {({ settings, dispatch }) => (
+            <>
+              <span data-testid="current-sepia">{settings.ui.sepia}</span>
+              <button onClick={() => dispatch({ type: 'UPDATE_UI_SEPIA', value: -50 })}>
+                Change Sepia
+              </button>
+            </>
+          )}
+        </SettingsContext.Consumer>
+      </SettingsProvider>
+    );
+
+    const changeSepiaButton = getByText('Change Sepia');
+
+    await waitFor(() => userEvent.click(changeSepiaButton));
+
+    expect(getByTestId('current-sepia').textContent).toBe(initialSettings.ui.sepia.toString());
   });
 });

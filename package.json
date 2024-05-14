@@ -10,7 +10,6 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "build": "tsc && node dist/build.js",
     "lint": "eslint --ext .ts,.tsx .",
     "test": "jest --clearCache && jest --no-coverage --runInBand",
     "test:coverage": "jest --clearCache && jest --coverage --runInBand",
