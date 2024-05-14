@@ -80,7 +80,7 @@ type Action =
             return state;
           }
 
-          if (action.setting === 'max' as WPMAttribute && action.value < state.processing.wpm.normal.min) {
+          if (action.setting === 'max' as WPMAttribute && (action.value < state.processing.wpm.normal.min || action.value > state.processing.wpm.normal.max)) {
             return state;
           }
 
@@ -288,7 +288,12 @@ type Action =
 
       case 'UPDATE_UI_OVERLAY_COLOR':
         try {
-          parseColor(action.value);
+          console.log(action.value)
+          console.log(action.value.toString())
+          const color: any = parseColor(action.value);
+          if (color.alpha > 0.85){
+            throw Error();
+          }
         } catch (e) {
           return state;
         }
@@ -369,7 +374,6 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
   const getThemeObject = (theme: ThemeType): Theme => {
-    console.log("Getting theme object: ", theme)
     switch (theme) {
       case ThemeType.DARK:
         return darkTheme;
