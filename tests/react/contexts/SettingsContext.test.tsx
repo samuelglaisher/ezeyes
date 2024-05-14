@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { render, act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SettingsProvider, SettingsContext, settingsReducer, loadSettings } from '../../../src/react/contexts/SettingsContext';
-import { initialSettings, Keybindings, PanelDisplayType, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
+import { initialSettings, Keybindings, PanelDisplayType, Settings, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
 
 console.log = jest.fn();
 console.error = jest.fn();
@@ -745,6 +745,21 @@ describe('loadSettings tests', () => {
   it('handles corrupt settings gracefully and falls back to initial settings', () => {
     const corruptSettings = "not valid JSON";
     localStorage.setItem('settings', corruptSettings);
+
+    const loadedSettings = loadSettings();
+    expect(loadedSettings).toEqual(initialSettings);
+  });
+
+  it('handles saved settings with different keys by falling back to initial settings', () => {
+    const differentKeysSettings = JSON.stringify({ someOtherKey: 'someValue' });
+    localStorage.setItem('settings', differentKeysSettings);
+
+    const loadedSettings = loadSettings();
+    expect(loadedSettings).toEqual(initialSettings);
+  });
+
+  it('handles null as saved settings gracefully and falls back to initial settings', () => {
+    localStorage.setItem('settings', JSON.stringify(null));
 
     const loadedSettings = loadSettings();
     expect(loadedSettings).toEqual(initialSettings);
