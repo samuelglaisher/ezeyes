@@ -116,38 +116,23 @@ export const isValidKeybinding = (key: keyof Keybindings, value: string): boolea
  * @param saved
  * @returns
  */
-export function compare(inital: Object, saved: Object) {
-  if (saved === undefined || saved === null) {
-    return inital;
+export function compareKeys(initial: object, saved: object | null | undefined): boolean {
+  if (typeof initial !== 'object' || initial === null || typeof saved !== 'object' || saved === null) {
+    return false;
   }
 
-  const initKeys = Object.keys(inital);
+  const initialKeys = Object.keys(initial);
   const savedKeys = Object.keys(saved);
-  var obj = {};
 
-  if (typeof inital !== "object" || typeof saved !== "object") {
-    return inital;
+  if (initialKeys.length !== savedKeys.length) {
+    return false;
   }
 
-  for (var key of initKeys) {
-    if (saved.hasOwnProperty(key)){
-      Object.entries(inital).forEach(init => {
-        if (init[0] === key) {
-          Object.entries(saved).forEach(save => {
-            if (save[0] === key) {
-              Object.assign(obj, {[key]: compare(init[1], save[1])})
-            }
-          });
-        }
-      });
-    } else {
-      Object.entries(inital).forEach(init => {
-        if (init[0] === key) {
-          Object.assign(obj, {[key]: init[1]});
-        }
-      });
+  for (let key of initialKeys) {
+    if (!savedKeys.includes(key)) {
+      return false;
     }
   }
 
-  return obj;
+  return true;
 }

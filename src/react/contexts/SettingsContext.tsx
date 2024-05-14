@@ -3,7 +3,7 @@ import { Keybindings, PanelDisplayType, Settings, ThemeType, UI, UISize, WPMAttr
 import { darkTheme, lightTheme } from "@adobe/react-spectrum";
 import { parseColor } from '@react-stately/color';
 import { Theme } from "@react-types/provider";
-import { isInRange, isValidKeybinding, compare } from '../../../src/utils';
+import { isInRange, isValidKeybinding, compareKeys } from '../../../src/utils';
 
 /* istanbul ignore next */
 export interface SettingsContextType {
@@ -356,20 +356,29 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-export function loadSettings() {
+export function loadSettings(): Settings {
   try {
-    const settingObj = JSON.parse(localStorage.getItem("settings"));
-    const loaded = compare(initialSettings, settingObj);
-    return JSON.parse(JSON.stringify(loaded));
+    const settingObjStr = localStorage.getItem("settings");
+    if (!settingObjStr) {
+      return initialSettings;
+    }
+
+    const settingObj: Settings = JSON.parse(settingObjStr);
+    console.log("SettingObj: ", settingObj);
+
+    if (compareKeys(initialSettings, settingObj)) {
+      return settingObj;
+    } else {
+      return initialSettings;
+    }
   } catch (e) {
-    console.error(`Error loading settings: ${e}`);
     return initialSettings;
   }
 }
 
 /* istanbul ignore next */
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const settingsObject = localStorage.getItem("settings") ? loadSettings() : initialSettings;
+  const settingsObject = loadSettings();
   const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
 
