@@ -51,6 +51,10 @@ describe('SettingsMenu component', () => {
     expect(wpmSliderInput).toBeInTheDocument();
     expect(wpmSliderInput.value).toBe('300');
 
+    const wpmDeltaInput = within(panel).getByTestId('wpm-delta-field') as HTMLInputElement;
+    expect(wpmDeltaInput).toBeInTheDocument();
+    expect(wpmDeltaInput.value).toBe('1');
+    
     const wordSequenceInput = within(panel).getByTestId('word-sequence-length-field') as HTMLInputElement;
     expect(wordSequenceInput).toBeInTheDocument();
     expect(wordSequenceInput.value).toBe('1');

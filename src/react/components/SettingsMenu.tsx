@@ -70,6 +70,13 @@ function SettingsMenu(props: SettingsMenuProps) {
                                         minValue={1}
                                         onChange={(value) => dispatch({type: 'UPDATE_WORD_SEQUENCE_LENGTH', value: value})}
                                     />
+                                    <NumberField
+                                        data-testid="wpm-delta-field"
+                                        label="WPM Delta"
+                                        defaultValue={settings.processing.wpm.delta}
+                                        minValue={1}
+                                        onChange={(value) => dispatch({type: 'UPDATE_WPM_DELTA', value: value})}
+                                    />
                                 </Flex>
                             </View>
                         </Item>
