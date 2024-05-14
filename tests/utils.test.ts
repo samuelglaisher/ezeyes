@@ -1,7 +1,7 @@
 import { Keybindings } from '../src/react/SettingsSchema';
-import { getSmallestLargerValue, getLargestLesserValue, isInRange, isValidKeybinding, compare } from '../src/utils';
+import { getSmallestLargerValue, getLargestLesserValue, isInRange, isValidKeybinding, compareKeys } from '../src/utils';
 
-describe('getSmallestLesserValue', () => {
+describe('getSmallestLargerValue', () => {
     test('testing that smallest larger value is found for number in list', () => {
         expect(getSmallestLargerValue([0,2,90,4,1,12,123], 2)).toBe(4);
     });
@@ -91,51 +91,62 @@ describe('isValidKeybinding', () => {
         expect(isValidKeybinding(key as keyof Keybindings, 'fa')).toBeFalsy();
       });
     });
+});
+
+describe('compareKeys', () => {
+  it('returns false if either input is not an object', () => {
+    const initial = { a: 1 };
+    const saved: any = "notAnObject";
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(false);
   });
 
-  describe('compare', () => {
-    it('returns the initial object if either input is not an object', () => {
-      const initial = { a: 1 };
-      const saved = "notAnObject";
-      const result = compare(initial, saved);
-      expect(result).toEqual(initial);
-    });
-
-    it('returns the initial object for non-object initial input', () => {
-      const initial = "notAnObject";
-      const saved = { a: 1 };
-      const result = compare(initial, saved);
-      expect(result).toEqual(initial);
-    });
-
-    it('returns initial object when saved object has no matching keys', () => {
-      const initial = { a: 1, b: 2 };
-      const saved = { c: 3 };
-      const result = compare(initial, saved);
-      expect(result).toEqual(initial);
-    });
-
-    it('handles nested objects when saved object has non-matching keys', () => {
-      const initial = { a: { b: 1 } };
-      const saved = { a: { c: 2 } };
-      const result = compare(initial, saved);
-      const expected = { a: { b: 1 } };
-      expect(result).toEqual(expected);
-    });
-
-    it('handles multiple nested objects with matching and non-matching keys', () => {
-      const initial = { a: { b: 1, c: { d: 3 } } };
-      const saved = { a: { b: 2, c: { e: 4 } } };
-      const result = compare(initial, saved);
-      const expected = initial;
-      expect(result).toEqual(expected);
-    });
-
-    it('handles when saved is null', () => {
-      const initial = { a: { b: 1, c: { d: 3 } } };
-      const saved = null as any;
-      const result = compare(initial, saved as any);
-      const expected = initial;
-      expect(result).toEqual(expected);
-    });
+  it('returns false for non-object initial input', () => {
+    const initial: any = "notAnObject";
+    const saved = { a: 1 };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(false);
   });
+
+  it('returns false when saved object has no matching keys', () => {
+    const initial = { a: 1, b: 2 };
+    const saved = { c: 3 };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when saved object has different keys', () => {
+    const initial = { a: 1, b: 2 };
+    const saved = { a: 1, c: 3 };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(false);
+  });
+
+  it('returns true when both objects have the same keys', () => {
+    const initial = { a: 1, b: 2 };
+    const saved = { a: 3, b: 4 };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(true);
+  });
+
+  it('handles nested objects when keys match', () => {
+    const initial = { a: { b: 1 } };
+    const saved = { a: { b: 2 } };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(true);
+  });
+
+  it('returns true for multiple nested objects with matching keys', () => {
+    const initial = { a: { b: 1, c: { d: 3 } } };
+    const saved = { a: { b: 2, c: { d: 4 } } };
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when saved is null', () => {
+    const initial = { a: { b: 1, c: { d: 3 } } };
+    const saved: any = null;
+    const result = compareKeys(initial, saved);
+    expect(result).toBe(false);
+  });
+});
