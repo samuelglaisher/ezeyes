@@ -46,7 +46,6 @@ export const useSearchBar = () => {
     }
 
     useEffect(() => {
-        console.log(searchWord);
         if (searchWord !== "") {
             // const locations = searchFor(textContent, searchWord, 0);
             findPhrase(searchWord, "search");
