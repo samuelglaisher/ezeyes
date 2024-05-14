@@ -35,8 +35,6 @@ export interface PanelContextType {
   wordIndices: number[];
   setWordIndices: React.Dispatch<React.SetStateAction<number[]>>;
   generateWordSequenceIndicesFromIndex: (words: string[], text: string, index: number, wordSeqLen: number) => number[];
-  speed: number;
-  setSpeed: React.Dispatch<React.SetStateAction<number>>;
 }
 
 /**
@@ -139,8 +137,6 @@ const defaultContextValue: PanelContextType = {
   wordIndices: [],
   setWordIndices: () => {},
   generateWordSequenceIndicesFromIndex: generateWordSequenceIndicesFromIndex,
-  speed: 10,
-  setSpeed: () => {}
 };
 
 export const PanelContext = createContext<PanelContextType>(defaultContextValue);
@@ -165,13 +161,11 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [wordSequenceIndices, setWordSequenceIndices] = useState<number[]>(defaultContextValue.wordSequenceIndices);
   const [wordIndices, setWordIndices] = useState<number[]>(defaultContextValue.wordIndices);
   const { settings } = useContext(SettingsContext);
-  const [speed, setSpeed] = useState<number>(1000 / (settings.processing.wpm[settings.processing.wpm.type].current / 60));
-  const [lastWordSequenceLength, setLastWordSequenceLength] = useState(settings.processing.wordSequenceLength);
 
   const currentTextContentRef = useRef('');
   const lastWordSequenceLengthRef = useRef(settings.processing.wordSequenceLength);
 
-      /**
+  /**
    * Updates the list of word sequences and all
    * relative sentence, paragraph, and word sequence
    * indices.
@@ -307,7 +301,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       wordSequenceIndices, setWordSequenceIndices,
       wordIndices, setWordIndices,
       generateWordSequenceIndicesFromIndex,
-      speed, setSpeed,
     }),
     [
       curWordSequence, setCurWordSequence, 
@@ -326,7 +319,6 @@ export const PanelProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       wordSequenceIndices, setWordSequenceIndices,
       wordIndices, setWordIndices,
       generateWordSequenceIndicesFromIndex,
-      speed, setSpeed
     ],
   )
 
