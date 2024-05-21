@@ -88,6 +88,7 @@ ipcMain.handle('read-pdf', async (_, filePath) => {
   try {
       const content = fs.readFileSync(filePath);
       const res = await pdf(content);
+      console.log(res);
       return res.text;
   } catch (error) {
       console.log(error);

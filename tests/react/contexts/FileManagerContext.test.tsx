@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import React, { useContext } from 'react';
 import { render, screen, act } from '@testing-library/react';
-import { FileManagerProvider, FileManagerContext, FileManagerContextType } from '../../../src/react/contexts/FileManagerContext';
+import { FileManagerProvider, FileManagerContext } from '../../../src/react/contexts/FileManagerContext';
 
 const TestFileManagerContext = () => {
     const { currentFiles, setCurrentFiles } = useContext(FileManagerContext);
@@ -10,7 +10,7 @@ const TestFileManagerContext = () => {
         <>
             <div data-testid="currentFiles">{JSON.stringify(currentFiles)}</div>
             <button onClick={() => setCurrentFiles(["test"])}>Update Files</button>
-            <button onClick={() => setCurrentFiles(JSON.parse(localStorage.getItem("filePaths")))}>Loading Files</button>
+            <button onClick={() => setCurrentFiles(JSON.parse(localStorage.getItem("filePaths") as string))}>Loading Files</button>
         </>
     );
 };
@@ -23,7 +23,7 @@ describe('FileManagerContext', () => {
             </FileManagerProvider>
         );
 
-        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent as string);
         expect(currentFiles).toEqual([]);
     });
 
@@ -41,7 +41,7 @@ describe('FileManagerContext', () => {
             button.click();
         });
 
-        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent as string);
         expect(currentFiles).toEqual(["saved_path"]);
     });
 
@@ -57,7 +57,7 @@ describe('FileManagerContext', () => {
             button.click();
         });
 
-        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent);
+        const currentFiles = JSON.parse(screen.getByTestId('currentFiles').textContent as string);
         expect(currentFiles).toEqual(["test"]);
     });
 });
