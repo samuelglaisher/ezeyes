@@ -19,7 +19,6 @@ export const usePanel = () => {
     textContent,
     wordIndices,
     setCurWordSequenceIndex,
-    speed,
   } = useContext(PanelContext);
 
   const curWordSequenceRef = useRef(curWordSequence);
@@ -35,7 +34,6 @@ export const usePanel = () => {
   const sentenceIndicesRef = useRef(sentenceIndices);
   const wordSequenceIndicesRef = useRef(wordSequenceIndices);
   const wordIndicesRef = useRef(wordIndices);
-  const speedRef = useRef(speed);
 
   useEffect(() => {
     curWordSequenceRef.current = curWordSequence;
@@ -51,7 +49,6 @@ export const usePanel = () => {
     sentenceIndicesRef.current = sentenceIndices;
     wordSequenceIndicesRef.current = wordSequenceIndices;
     wordIndicesRef.current = wordIndices;
-    speedRef.current = speed;
   }, [
     curWordSequence,
     textContent,
@@ -66,7 +63,6 @@ export const usePanel = () => {
     wordSequenceIndices,
     sentenceIndices,
     wordIndices,
-    speed,
   ]);
 
   const { settings } = useContext(SettingsContext);

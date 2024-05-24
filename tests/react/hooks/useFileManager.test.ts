@@ -45,9 +45,7 @@ const mockPanelContext: PanelContextType = {
 	setWordSequenceIndices: jest.fn(),
 	wordIndices: [],
 	setWordIndices: jest.fn(),
-	generateWordSequenceIndicesFromIndex: jest.fn(),
-	speed: 0,
-	setSpeed: jest.fn(),
+	generateWordSequenceIndicesFromIndex: jest.fn()
   };
 
 //Encode as base 64 to circumvent typescript raw string compile-time issues

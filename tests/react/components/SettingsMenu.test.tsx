@@ -43,7 +43,8 @@ function TestSettingsMenu() {
                         min: 200,
                         max: 700,
                         current: 300,
-                    }
+                    },
+                    delta: 1,
                 },
                 wordSequenceLength: 1,
             },

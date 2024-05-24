@@ -7,6 +7,7 @@ import { PanelDisplayType, ThemeType, UISize, WPMType } from '../../../src/react
 import { useFileMenuBar } from '../../../src/react/hooks/useFileMenuBar';
 import { renderHook } from '@testing-library/react';
 import { Key } from '@adobe/react-spectrum';
+
 jest.mock('../../../src/react/hooks/useFileMenuBar');
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -50,8 +51,6 @@ const mockPanelContext: PanelContextType = {
 	wordIndices: [],
 	setWordIndices: jest.fn(),
 	generateWordSequenceIndicesFromIndex: jest.fn(),
-	speed: 0,
-	setSpeed: jest.fn(),
 };
 
 const mockSettingsContext: SettingsContextType = { 
@@ -60,7 +59,8 @@ const mockSettingsContext: SettingsContextType = {
       wpm: {
         type: WPMType.NORMAL,
         assisted: { min: 10, max: 100, current: 50 },
-        normal: { min: 200, max: 700, current: 300 }
+        normal: { min: 200, max: 700, current: 300 },
+        delta: 1,
       },
       wordSequenceLength: 1,
     },
