@@ -9,7 +9,7 @@ export const write = async (filePath: string, content: string): Promise<void> =>
     await ipcRenderer.invoke('write', filePath, content);
 };
 
-export const readDocx = async (filePath: string): Promise<Buffer | undefined> => {
+export const readDocx = async (filePath: string): Promise<string | undefined> => {
     const { ipcRenderer } = window.require('electron');
     return ipcRenderer.invoke('convert-docx-to-html', filePath);
 };
@@ -19,7 +19,7 @@ export const spawnFileDialog = async (): Promise<string | undefined> => {
     return ipcRenderer.invoke('spawn-file-dialog');
 };
 
- export const readPdf = async (filePath: string): Promise<Buffer | undefined> => {
+ export const readPdf = async (filePath: string): Promise<string | undefined> => {
     const { ipcRenderer } = window.require('electron');
     return ipcRenderer.invoke('read-pdf', filePath);
 };
