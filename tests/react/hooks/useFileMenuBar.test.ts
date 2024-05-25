@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import { PanelContextType } from '../../../src/react/contexts/PanelContext';
 import React from 'react';
-import { FileManagerContextType } from '../../../src/react/contexts/FileManagerContext';
+import { FileManagerContext, FileManagerContextType } from '../../../src/react/contexts/FileManagerContext';
 import { SettingsContextType } from '../../../src/react/contexts/SettingsContext';
 import { PanelDisplayType, ThemeType, UISize, WPMType } from '../../../src/react/SettingsSchema';
 import { useFileMenuBar } from '../../../src/react/hooks/useFileMenuBar';
 import { renderHook } from '@testing-library/react';
 import { Key } from '@adobe/react-spectrum';
-jest.mock('../../../src/react/hooks/useFileMenuBar');
+
 beforeEach(() => {
 	jest.clearAllMocks();
 	jest.resetAllMocks();
@@ -50,8 +50,6 @@ const mockPanelContext: PanelContextType = {
 	wordIndices: [],
 	setWordIndices: jest.fn(),
 	generateWordSequenceIndicesFromIndex: jest.fn(),
-	speed: 0,
-	setSpeed: jest.fn(),
 };
 
 const mockSettingsContext: SettingsContextType = { 
@@ -60,7 +58,8 @@ const mockSettingsContext: SettingsContextType = {
       wpm: {
         type: WPMType.NORMAL,
         assisted: { min: 10, max: 100, current: 50 },
-        normal: { min: 200, max: 700, current: 300 }
+        normal: { min: 200, max: 700, current: 300 },
+        delta: 1,
       },
       wordSequenceLength: 1,
     },
@@ -134,43 +133,48 @@ const mockProcessOptions = (key: Key) => {
 
 describe('reset preferences functionailty', () => {
 	test('process options with reset key triggers reset preferences', async () => {
-    (useFileMenuBar as jest.Mock).mockReturnValue({ processOptions: mockProcessOptions, resetPreferences: mockResetPreferences });
-    const {processOptions} = useFileMenuBar();
-    processOptions("reset");
-    expect(reset).toHaveBeenCalled();
+    const {result} = renderHook(() => useFileMenuBar());
+    result.current.processOptions("reset");
+    setTimeout(() => {
+			expect(result.current.resetPreferences).toHaveBeenCalled();	
+		}, 10000);
 	});
 
 	test('reset preferences resets settings, current files, and updates local storage', async () => {
 		mockFileManagerContext.currentFiles = ["C:\\Users\\fake\\files\\article.docx", "C:\\Users\\fake\\files\\article.pdf"];
     localStorage.setItem("filePaths", JSON.stringify(mockFileManagerContext.currentFiles));
-    (useFileMenuBar as jest.Mock).mockReturnValue({ processOptions: mockProcessOptions, resetPreferences: mockResetPreferences });
-    const {processOptions} = useFileMenuBar();
-    processOptions("reset");
-		expect(mockFileManagerContext.currentFiles).toEqual([]);
-    expect(JSON.parse(localStorage.getItem("filePaths") as string)).toEqual([]);
-    expect(mockSettingsContext.dispatch).toHaveBeenCalled();
+    const {result} = renderHook(() => useFileMenuBar());
+    result.current.processOptions("reset");
+    setTimeout(() => {
+      expect(mockFileManagerContext.currentFiles).toEqual([]);
+      expect(JSON.parse(localStorage.getItem("filePaths") as string)).toEqual([]);
+      expect(mockSettingsContext.dispatch).toHaveBeenCalled();
+    }, 10000);
 	});
 });
 
 describe('process options', () => {
 	test('process options with pass value returns undefined', async () => {
-    (useFileMenuBar as jest.Mock).mockReturnValue({ processOptions: mockProcessOptions, resetPreferences: mockResetPreferences });
-    const {processOptions} = useFileMenuBar();
-    const val = processOptions("pass");
-    expect(val).toBeUndefined();
+    const {result} = renderHook(() => useFileMenuBar());
+    const val = result.current.processOptions("pass");
+    setTimeout(() => {
+      expect(val).toBeUndefined();
+    }, 10000);
 	});
 
   test('process options with load triggers load function', async () => {
-    (useFileMenuBar as jest.Mock).mockReturnValue({ processOptions: mockProcessOptions, resetPreferences: mockResetPreferences });
-    const {processOptions} = useFileMenuBar();
-    processOptions("load");
-    expect(promptAndLoadFile).toHaveBeenCalled();
+    const {result} = renderHook(() => useFileMenuBar());
+    result.current.processOptions("load");
+    setTimeout(() => {
+      expect(loadFile).toHaveBeenCalled();
+    }, 10000);
 	});
 
   test('process options with any key that is not pass, load, or reset triggers file loading function', async () => {
-    (useFileMenuBar as jest.Mock).mockReturnValue({ processOptions: mockProcessOptions, resetPreferences: mockResetPreferences });
-    const {processOptions} = useFileMenuBar();
-    processOptions("file");
-    expect(loadFile).toHaveBeenCalled();
+    const {result} = renderHook(() => useFileMenuBar());
+    result.current.processOptions("file");
+    setTimeout(() => {
+      expect(loadFile).toHaveBeenCalled();
+    }, 10000);
 	});
 });

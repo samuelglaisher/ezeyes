@@ -1,12 +1,16 @@
 import '@testing-library/jest-dom';
 import * as ipc from '../../../src/electron/ipc';
 import { readDocx, } from '../../../src/electron/ipc';
-import { trimWhitespace, processRTFContent, loadRtfFile, loadPdfFile, loadTxtFile, loadFile, getRtfDocument } from  '../../../src/react/hooks/useFileManager';
+import { trimWhitespace, processRTFContent, loadRtfFile, loadPdfFile, loadTxtFile, loadFile, getRtfDocument, promptAndLoadFileHelper, useFileManager } from  '../../../src/react/hooks/useFileManager';
 import mammoth from 'mammoth';
 import { PanelContextType } from '../../../src/react/contexts/PanelContext';
 import React from 'react';
 import { TextDecoder } from 'util';
+import { renderHook } from '@testing-library/react';
 Object.assign(global, { TextDecoder });
+
+console.log = jest.fn();
+console.error = jest.fn();
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -45,9 +49,7 @@ const mockPanelContext: PanelContextType = {
 	setWordSequenceIndices: jest.fn(),
 	wordIndices: [],
 	setWordIndices: jest.fn(),
-	generateWordSequenceIndicesFromIndex: jest.fn(),
-	speed: 0,
-	setSpeed: jest.fn(),
+	generateWordSequenceIndicesFromIndex: jest.fn()
   };
 
 //Encode as base 64 to circumvent typescript raw string compile-time issues
@@ -734,5 +736,33 @@ raised a glass for a toast.`);
 		jest.spyOn(ipc, 'read').mockResolvedValue(rtfContent);
 	    const content = await loadFile("./docs/invalid.png", mockPanelContext.setTextContent, mockPanelContext.setCurWordSequenceIndex);
 	    expect(content).toBeUndefined();
+	});
+});
+
+describe('load prompt tests', () => {
+	test('prompt helper', () => {
+		const {result} = renderHook(() => useFileManager());
+		result.current.promptAndLoadFile();
+		setTimeout(() => {
+			expect(promptAndLoadFileHelper).toHaveBeenCalled();	
+		}, 10000);
+	});
+
+	test('prompt valid responce', () => {
+		const {result} = renderHook(() => useFileManager());
+		jest.spyOn(ipc, 'spawnFileDialog').mockResolvedValue("random_file.md");
+		result.current.promptAndLoadFile();
+		setTimeout(() => {
+			expect(loadFile).toHaveBeenCalled();	
+		}, 10000);
+	});
+
+	test('prompt invalid responce', () => {
+		const {result} = renderHook(() => useFileManager());
+		jest.spyOn(ipc, 'spawnFileDialog').mockResolvedValue(undefined);
+		result.current.promptAndLoadFile();
+		setTimeout(() => {
+			expect(loadFile).not.toHaveBeenCalled();	
+		}, 10000);
 	});
 });

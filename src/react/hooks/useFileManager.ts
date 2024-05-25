@@ -43,6 +43,7 @@ export const promptAndLoadFileHelper = async (addNew: Function, setTextContent: 
         return;
     }
 
+    console.log("tester");
     addNew(filePath);
     await loadFile(filePath, setTextContent, setCurWordSequenceIndex);
 };
