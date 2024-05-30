@@ -1,9 +1,106 @@
 import '@testing-library/jest-dom';
-import React, { useContext } from 'react';
-import { render, act, screen, waitFor } from '@testing-library/react';
+import React, { useContext, useEffect } from 'react';
+import { render, act, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SettingsProvider, SettingsContext, settingsReducer, loadSettings } from '../../../src/react/contexts/SettingsContext';
+import { SettingsProvider, SettingsContext, settingsReducer, loadSettings, getThemeObject } from '../../../src/react/contexts/SettingsContext';
 import { initialSettings, Keybindings, PanelDisplayType, Settings, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
+import { darkTheme, lightTheme } from "@adobe/react-spectrum";
+import { PanelContext, PanelProvider } from '../../../src/react/contexts/PanelContext';
+import { useKeybindings } from '../../../src/react/hooks/useKeybindings';
+import Mousetrap from 'mousetrap';
+
+
+jest.mock('mousetrap', () => ({
+  bind: jest.fn(),
+  unbind: jest.fn(),
+  stopCallback: jest.fn(),
+  reset: jest.fn()
+}));
+
+jest.mock('mousetrap-pause', () => jest.fn().mockImplementation(() => require('mousetrap')));
+
+const MockedPlaybackSpeedComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: 'normal' as WPMType, setting: 'current' as WPMAttribute as WPMAttribute, value: 1337 })}>
+        update_wpm_val_for_normal
+      </button>
+      <div>
+        <div data-testid="curNormalWpm">{settings.processing.wpm.normal.current}</div>
+      </div>
+    </>
+  );
+};
+
+
+const MockedWordSeqLenComponent = () => {
+  const { curWordSequence, setCurWordSequence } = useContext(PanelContext);
+  const { dispatch, settings } = useContext(SettingsContext);
+
+  setCurWordSequence("Success Is Never Final and Failure Never Fatal. It’s Courage That Counts");
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: 'UPDATE_WORD_SEQUENCE_LENGTH', value: 5 })}>
+          update_word_seq_len
+      </button>
+      <div>
+        <div data-testid="curWordSequenceLen">{settings.processing.wordSequenceLength}</div>
+      </div>
+      <div>
+        <div data-testid="curWordSequence">{curWordSequence}</div>
+      </div>
+    </>
+  );
+};
+
+
+const MousetrapTestComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+  useKeybindings(jest.fn(), 1);
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'UPDATE_KEYBINDING',
+            key: 'nextParagraph',
+            value: 'ctrl+g',
+          })
+        }
+      >
+        update_next_paragraph_keybind
+      </button>
+      <div data-testid="nextParagraphKeybind">{settings.keybindings.nextParagraph}</div>
+    </div>
+  );
+};
+
+
+const TestComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+  const { curWordSequence } = useContext(PanelContext)
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'UPDATE_WORD_SEQUENCE_LENGTH',
+            value: 2,
+          })
+        }
+      >
+        Update Word Seq Len
+      </button>
+      <div data-testid="word-seq-len">{curWordSequence}</div>
+    </div>
+  );
+};
+
 
 console.log = jest.fn();
 console.error = jest.fn();
@@ -836,3 +933,98 @@ describe('SettingsContext tests', () => {
     expect(getByTestId('current-sepia').textContent).toBe(initialSettings.ui.sepia.toString());
   });
 });
+
+describe('panel system integrations', () => {
+  it("Default theme (light theme) object is returned for an invalid theme type", () => {
+    const theme = getThemeObject('invalidTheme' as ThemeType);
+    expect(theme).toEqual(lightTheme);
+  });
+
+  it("Dark theme object is returned if the dark theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.DARK);
+    expect(theme).toEqual(darkTheme);
+  });
+
+  it("Light theme object is returned if the light theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.LIGHT);
+    expect(theme).toEqual(lightTheme);
+  });
+});
+
+describe('loadSettings tests', () => {
+  it("Default theme (light theme) object is returned for an invalid theme type", () => {
+    const theme = getThemeObject('invalidTheme' as ThemeType);
+    expect(theme).toEqual(lightTheme);
+  });
+
+  it("Dark theme object is returned if the dark theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.DARK);
+    expect(theme).toEqual(darkTheme);
+  });
+
+  it("Light theme object is returned if the light theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.LIGHT);
+    expect(theme).toEqual(lightTheme);
+  });
+});
+
+describe('panel system integrations', () => {
+  it('Update the WPM attribute in the SettingsContext and verify a change in the Panel System', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MockedPlaybackSpeedComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_wpm_val_for_normal');
+    fireEvent.click(button);
+
+    // Verify normal wpm current speed
+    waitFor(() => expect(screen.getByTestId('curNormalWpm')).toHaveTextContent('1337'));
+  });
+
+  it('Update the word sequence display length attribute in the SettingsContext and verify change in the Panel System', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MockedWordSeqLenComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_word_seq_len');
+    fireEvent.click(button);
+
+    // Verify the word sequence length was updated in settings
+    waitFor(() => expect(screen.getByTestId('curWordSequenceLen')).toHaveTextContent('5'));
+    // Verify that the length of the current word sequence in the PanelContext equals the updated word sequence length
+    const curWordSequence = screen.getByTestId('curWordSequence').textContent;
+    waitFor(() => expect(curWordSequence?.split(' ').length).toEqual(5));
+    waitFor(() => expect(curWordSequence).toEqual("Success Is Never Final and"));
+  });
+
+});
+
+describe('Keybind integrations', () => {
+  it('Update a keybind attribute in the SettingsContext and verify a keybind system update', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MousetrapTestComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_next_paragraph_keybind');
+    fireEvent.click(button);
+
+    // Verify keybinding updated in settings
+    expect(screen.getByTestId('nextParagraphKeybind')).toHaveTextContent('ctrl+g');
+
+    // Verify that Mousetrap.bind was called for the new keybinding
+    expect(Mousetrap.bind).toHaveBeenCalledWith('ctrl+g', expect.any(Function));
+  });
+});
+

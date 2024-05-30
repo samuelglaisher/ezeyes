@@ -393,22 +393,22 @@ export function loadSettings(): Settings {
   }
 }
 
+export const getThemeObject = (theme: ThemeType): Theme => {
+  switch (theme) {
+    case ThemeType.DARK:
+      return darkTheme;
+    case ThemeType.LIGHT:
+      return lightTheme;
+    default:
+      return lightTheme;
+  }
+}
+
 /* istanbul ignore next */
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
   const settingsObject = loadSettings();
   const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
-
-  const getThemeObject = (theme: ThemeType): Theme => {
-    switch (theme) {
-      case ThemeType.DARK:
-        return darkTheme;
-      case ThemeType.LIGHT:
-        return lightTheme;
-      default:
-        return lightTheme;
-    }
-  }
 
   return (
     <SettingsContext.Provider value={{ settings, showSettingsMenu, setShowSettingsMenu, dispatch, getThemeObject }}>
