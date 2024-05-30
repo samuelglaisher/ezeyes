@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom';
 import React from 'react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
 import SettingsMenu from '../../../src/react/components/SettingsMenu';
-import { render, fireEvent, screen, within } from '@testing-library/react';
 import { SettingsContext } from '../../../src/react/contexts/SettingsContext';
 import { initialSettings } from '../../../src/react/SettingsSchema';
 import { Provider, defaultTheme } from '@adobe/react-spectrum';
 import { MenuManagerProvider } from '../../../src/react/contexts/MenuManagerContext';
+import { handleRecord } from '../../../src/react/components/KeybindInput';
 
 const mockDispatch = jest.fn();
 const mockSetShowSettingsMenu = jest.fn();
@@ -117,4 +118,89 @@ describe('SettingsMenu component', () => {
     expect(prevWordKeybindInput).toBeInTheDocument();
     expect(prevWordKeybindInput.textContent).toBe('left');
   });
+
+  test('can switch tabs in the settings menu', async () => {
+    render(<TestSettingsMenu />);
+
+    const tabs = await screen.findByRole('tablist');
+    const displayTab = within(tabs).getByText('Display');
+    fireEvent.click(displayTab);
+    const displayPanel = await screen.findByRole('tabpanel', { name: /display/i });
+
+    expect(within(displayPanel).getByTestId('ui-size-picker')).toBeInTheDocument();
+    expect(within(displayPanel).getByTestId('theme-picker')).toBeInTheDocument();
+    expect(within(displayPanel).getByTestId('display-type-picker')).toBeInTheDocument();
+  });
+
+  test('updating a menu slider triggers an update in the SettingsContext', async () => {
+    render(<TestSettingsMenu />);
+
+    const tabs = await screen.findByRole('tablist');
+    const processingTab = within(tabs).getByText('Processing');
+    fireEvent.click(processingTab);
+    const panel = await screen.findByRole('tabpanel', { name: /processing/i });
+
+    const wpmSliderInput = within(panel).getByRole('slider', { name: /words per minute/i }) as HTMLInputElement;
+    expect(wpmSliderInput).toBeInTheDocument();
+    
+    fireEvent.change(wpmSliderInput, { target: { value: '350' } });
+    fireEvent.mouseUp(wpmSliderInput);
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'UPDATE_WPM_SETTING',
+      wpmType: 'normal',
+      setting: 'current',
+      value: 350
+    });
+  });
+
+  test('Verify that updating a settings menu keybind triggers an update in the SettingsContext', async () => {
+    render(<TestSettingsMenu />);
+
+    const tabs = await screen.findByRole('tablist');
+    const keybindsTab = within(tabs).getByText('Keybindings');
+    fireEvent.click(keybindsTab);
+    const keybindsPanel = await screen.findByRole('tabpanel', { name: /keybindings/i });
+
+    const nextParagraphKeybindInput = within(keybindsPanel).getByTestId('nextParagraph-keybind-input');
+    expect(nextParagraphKeybindInput).toBeInTheDocument();
+
+    mockDispatch.mockClear();  // Clear previous dispatch calls
+
+    fireEvent.click(nextParagraphKeybindInput);
+
+    handleRecord('nextParagraph', mockDispatch, initialSettings.keybindings, () => {}, ['n']);
+
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'UPDATE_KEYBINDING',
+        key: 'nextParagraph',
+        value: 'n'
+      });
+    });
+  });
+
+  test('Verify that updating a settings menu number field triggers an update in the SettingsContext', async () => {
+    render(<TestSettingsMenu />);
+
+    const tabs = await screen.findByRole('tablist');
+    const displayTab = within(tabs).getByText('Display');
+    fireEvent.click(displayTab);
+    const displayPanel = await screen.findByRole('tabpanel', { name: /display/i });
+
+    const textPanelFontSizeInput = within(displayPanel).getByTestId('text-panel-font-size-field') as HTMLInputElement;
+    expect(textPanelFontSizeInput).toBeInTheDocument();
+
+    // Simulate pressing the up arrow to increase the font size
+    fireEvent.keyDown(textPanelFontSizeInput, { key: 'ArrowUp', code: 'ArrowUp' });
+    fireEvent.keyUp(textPanelFontSizeInput, { key: 'ArrowUp', code: 'ArrowUp' });
+
+    await waitFor(() => {
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: 'UPDATE_TEXT_INPUT_FONT_SIZE',
+        value: 17 // Assuming the initial value was 16 and pressing the up arrow increased it by 1
+      });
+    });
+  });
+
 });

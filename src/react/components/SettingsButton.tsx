@@ -14,6 +14,7 @@ function SettingsButton() {
             UNSAFE_style={{
                 padding: '17px 27px'
             }}
+            data-testid='settings-button'
         >
             <SettingsIcon size='XXL'/>
         </Button>

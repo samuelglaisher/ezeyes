@@ -8,6 +8,8 @@ import { useFileMenuBar } from '../../../src/react/hooks/useFileMenuBar';
 import { renderHook } from '@testing-library/react';
 import { Key } from '@adobe/react-spectrum';
 
+console.error = jest.fn();
+
 beforeEach(() => {
 	jest.clearAllMocks();
 	jest.resetAllMocks();

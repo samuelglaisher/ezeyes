@@ -9,7 +9,7 @@ import { useFileManager } from './useFileManager';
 import { usePlaybackControl } from './usePlaybackControl';
 import { useSearchBar } from './useSearchBar';
 
-const useKeybindings = (updateFunction: () => void, speed: number) => {
+export const useKeybindings = (updateFunction: () => void, speed: number) => {
     const { settings } = useContext(SettingsContext);
 
     const { searchFunction } = useSearchBar();
