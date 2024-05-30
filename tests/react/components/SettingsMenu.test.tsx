@@ -165,7 +165,7 @@ describe('SettingsMenu component', () => {
     const nextParagraphKeybindInput = within(keybindsPanel).getByTestId('nextParagraph-keybind-input');
     expect(nextParagraphKeybindInput).toBeInTheDocument();
 
-    mockDispatch.mockClear();  // Clear previous dispatch calls
+    mockDispatch.mockClear();
 
     fireEvent.click(nextParagraphKeybindInput);
 
