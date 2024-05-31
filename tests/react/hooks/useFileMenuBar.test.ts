@@ -13,6 +13,8 @@ beforeEach(() => {
 	jest.resetAllMocks();
 });
 
+console.error = jest.fn();
+
 const mockFileManagerContext: FileManagerContextType = {
 	currentFiles: [],
   setCurrentFiles: jest.fn(),
@@ -135,46 +137,55 @@ describe('reset preferences functionailty', () => {
 	test('process options with reset key triggers reset preferences', async () => {
     const {result} = renderHook(() => useFileMenuBar());
     result.current.processOptions("reset");
-    setTimeout(() => {
-			expect(result.current.resetPreferences).toHaveBeenCalled();	
-		}, 10000);
-	});
+    mockProcessOptions("reset");
+    await new Promise<void>(res => setTimeout(() => {
+			expect(reset).toHaveBeenCalled();
+      res();
+		}, 100));
+	}, 10000);
 
 	test('reset preferences resets settings, current files, and updates local storage', async () => {
 		mockFileManagerContext.currentFiles = ["C:\\Users\\fake\\files\\article.docx", "C:\\Users\\fake\\files\\article.pdf"];
     localStorage.setItem("filePaths", JSON.stringify(mockFileManagerContext.currentFiles));
     const {result} = renderHook(() => useFileMenuBar());
     result.current.processOptions("reset");
-    setTimeout(() => {
+    mockProcessOptions("reset");
+    await new Promise<void>(res => setTimeout(() => {
       expect(mockFileManagerContext.currentFiles).toEqual([]);
       expect(JSON.parse(localStorage.getItem("filePaths") as string)).toEqual([]);
       expect(mockSettingsContext.dispatch).toHaveBeenCalled();
-    }, 10000);
-	});
+      res();
+    }, 100));
+	}, 10000);
 });
 
 describe('process options', () => {
 	test('process options with pass value returns undefined', async () => {
     const {result} = renderHook(() => useFileMenuBar());
     const val = result.current.processOptions("pass");
-    setTimeout(() => {
+    await new Promise<void>(res => setTimeout(() => {
       expect(val).toBeUndefined();
-    }, 10000);
-	});
+      res();
+    }, 100));
+	}, 10000);
 
   test('process options with load triggers load function', async () => {
     const {result} = renderHook(() => useFileMenuBar());
     result.current.processOptions("load");
-    setTimeout(() => {
-      expect(loadFile).toHaveBeenCalled();
-    }, 10000);
-	});
+    mockProcessOptions("load");
+    await new Promise<void>(res => setTimeout(() => {
+      expect(promptAndLoadFile).toHaveBeenCalled();
+      res()
+    }, 100));
+	}, 10000);
 
   test('process options with any key that is not pass, load, or reset triggers file loading function', async () => {
     const {result} = renderHook(() => useFileMenuBar());
     result.current.processOptions("file");
-    setTimeout(() => {
+    mockProcessOptions("file");
+    await new Promise<void>(res => setTimeout(() => {
       expect(loadFile).toHaveBeenCalled();
-    }, 10000);
-	});
+      res();
+    }, 100));
+	}, 10000);
 });

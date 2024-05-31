@@ -52,5 +52,5 @@ export const useSearchBar = () => {
         }
     }, [searchWord]);
 
-    return { searchFeature, navUp, closeSearch, searchFunction };
+    return { searchFeature, navUp, closeSearch, searchFunction, searchFor };
 };
