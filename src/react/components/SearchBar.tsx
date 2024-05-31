@@ -18,9 +18,9 @@ function SearchBar() {
         <Flex id='find' gap="size-100" position={'absolute'} zIndex={1000} UNSAFE_style={{display: "none"}}>
             <TextField id='search-bar' aria-label='search' onChange={(e) => {setTerm(e)}}/>
             <ButtonGroup>
-                <Button type="button" variant="secondary" onPress={searchWordUpdate}>Find</Button>
-                <Button type="button" variant="secondary" onPress={navUp}><ChevronDownIcon/></Button>
-                <Button type="button" variant="secondary" onPress={closeSearch}><CloseIcon/></Button>
+                <Button id="search-button" type="button" variant="secondary" onPress={searchWordUpdate}>Find</Button>
+                <Button id="search-down" type="button" variant="secondary" onPress={navUp}><ChevronDownIcon/></Button>
+                <Button id="search-close" type="button" variant="secondary" onPress={closeSearch}><CloseIcon/></Button>
             </ButtonGroup>
         </Flex>
     );

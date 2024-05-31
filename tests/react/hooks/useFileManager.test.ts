@@ -7,9 +7,9 @@ import { PanelContextType } from '../../../src/react/contexts/PanelContext';
 import React from 'react';
 import { TextDecoder } from 'util';
 import { renderHook } from '@testing-library/react';
+import { Mock } from 'node:test';
 Object.assign(global, { TextDecoder });
 
-console.log = jest.fn();
 console.error = jest.fn();
 
 beforeEach(() => {
@@ -740,29 +740,38 @@ raised a glass for a toast.`);
 });
 
 describe('load prompt tests', () => {
-	test('prompt helper', () => {
+	test('prompt helper', async () => {
 		const {result} = renderHook(() => useFileManager());
+		const mockSpawn = jest.fn();
+		jest.spyOn(ipc, 'spawnFileDialog').mockImplementation(mockSpawn);
 		result.current.promptAndLoadFile();
-		setTimeout(() => {
-			expect(promptAndLoadFileHelper).toHaveBeenCalled();	
-		}, 10000);
-	});
+    	await new Promise<void>(res => setTimeout(() => {
+			expect(mockSpawn).toHaveBeenCalled();
+			res();
+		}, 100));
+	}, 10000);
 
-	test('prompt valid responce', () => {
+	test('prompt valid responce', async () => {
 		const {result} = renderHook(() => useFileManager());
-		jest.spyOn(ipc, 'spawnFileDialog').mockResolvedValue("random_file.md");
+		const mockInvalid= jest.fn();
+		jest.spyOn(console, 'log').mockImplementation(mockInvalid);
+		jest.spyOn(ipc, 'spawnFileDialog').mockResolvedValue("random_file.txt");
 		result.current.promptAndLoadFile();
-		setTimeout(() => {
-			expect(loadFile).toHaveBeenCalled();	
-		}, 10000);
-	});
+		await new Promise<void>(res => setTimeout(() => {
+			expect(mockInvalid).not.toHaveBeenCalled();	
+			res();
+		}, 100));
+	}, 10000);
 
-	test('prompt invalid responce', () => {
+	test('prompt invalid responce', async () => {
 		const {result} = renderHook(() => useFileManager());
+		const mockLoad = jest.fn();
+		jest.spyOn(result.current, 'loadFile').mockImplementation(mockLoad);
 		jest.spyOn(ipc, 'spawnFileDialog').mockResolvedValue(undefined);
 		result.current.promptAndLoadFile();
-		setTimeout(() => {
-			expect(loadFile).not.toHaveBeenCalled();	
-		}, 10000);
-	});
+		await new Promise<void>(res => setTimeout(() => {
+			expect(mockLoad).not.toHaveBeenCalled();
+			res();
+		}, 100));
+	}, 10000);
 });
