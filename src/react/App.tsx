@@ -13,29 +13,33 @@ import { FileManagerProvider } from "./contexts/FileManagerContext";
 import "./styles/index.css";
 import UIProvider from "./components/UIProvider";
 import { SearchBarProvider } from "./contexts/SearchBarContext";
+import { WPMProvider } from './contexts/SliderVisibilityContext';
+import WPMSliderManager from './components/WPMSliderManager';
 
 const App: React.FC = () => {
   return (
     <SettingsProvider>
       <UIProvider>
         <ErrorBoundary FallbackComponent={SystemErrorModal}>
-        <PanelViewportProvider>
-        <PanelProvider>
-          <SearchBarProvider>
-          <FileManagerProvider>        
-              <MenuManagerProvider>
-              <PanelViewport />
-              <KeybindingManager />
-              <FocusManager />
-              </MenuManagerProvider>
-          </FileManagerProvider>
-          </SearchBarProvider>
-        </PanelProvider>
-        </PanelViewportProvider>
+          <PanelViewportProvider>
+            <PanelProvider>
+              <SearchBarProvider>
+                <FileManagerProvider>        
+                  <MenuManagerProvider>
+                    <WPMProvider>
+                      <PanelViewport />
+                      <KeybindingManager />
+                      <FocusManager />
+                      <WPMSliderManager />
+                    </WPMProvider>
+                  </MenuManagerProvider>
+                </FileManagerProvider>
+              </SearchBarProvider>
+            </PanelProvider>
+          </PanelViewportProvider>
         </ErrorBoundary>
       </UIProvider>
     </SettingsProvider>
-
   );
 };
 
