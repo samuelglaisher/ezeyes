@@ -3,11 +3,11 @@ import { PanelContext } from '../contexts/PanelContext';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { WPMAttribute } from '../SettingsSchema';
 
-export const usePlaybackControl = (navigateForward: () => void) => {
+export const usePlaybackControl = (callback: () => void) => {
   const { isPlaying, setIsPlaying } = useContext(PanelContext);
   const { settings, dispatch } = useContext(SettingsContext);
 
-  const intervalId = useRef(null);
+  const intervalId = useRef<number | null>(null);
   const wpmRef = useRef(settings.processing.wpm[settings.processing.wpm.type].current);
   const typeRef = useRef(settings.processing.wpm.type);
   const wpmDelta = useRef(settings.processing.wpm.delta);
@@ -34,13 +34,12 @@ export const usePlaybackControl = (navigateForward: () => void) => {
 
       setupWordSequencePlayback();
     }
-
   }, [settings.processing.wpm.type, settings.processing.wpm]);
 
   const setupWordSequencePlayback = () => {
     clearInterval(intervalId.current);
     const speed = 1000 / (wpmRef.current / 60);
-    intervalId.current = window.setInterval(() => navigateForward(), speed);
+    intervalId.current = window.setInterval(() => callback(), speed);
   };
 
   const togglePlayPause = () => {
@@ -49,14 +48,20 @@ export const usePlaybackControl = (navigateForward: () => void) => {
 
   const increaseSpeed = () => {
     const type = typeRef.current;
-    const newSpeed = wpmRef.current + wpmDelta.current;
-    dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
+    const newSpeed = Math.min(wpmRef.current + wpmDelta.current, settings.processing.wpm[type].max);
+
+    if (newSpeed !== wpmRef.current) {
+      dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
+    }
   };
 
   const decreaseSpeed = () => {
     const type = typeRef.current;
-    const newSpeed = wpmRef.current - wpmDelta.current;
-    dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
+    const newSpeed = Math.max(wpmRef.current - wpmDelta.current, settings.processing.wpm[type].min);
+
+    if (newSpeed !== wpmRef.current) {
+      dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
+    }
   };
 
   return { togglePlayPause, increaseSpeed, decreaseSpeed };
