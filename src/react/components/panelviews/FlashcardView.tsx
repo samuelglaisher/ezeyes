@@ -10,7 +10,7 @@ const FlashcardView = () => {
   const { activeFlashcard } = React.useContext(PanelViewportContext);
 
   return (
-    <div id="flashcard-container" data-testid="flashcard-container" className={activeFlashcard === PanelType.READER ? "" : "flipped"}>
+    <div id="flashcard-container" data-testid="flashcard-container-test-id" className={activeFlashcard === PanelType.READER ? "" : "flipped"}>
       <ReaderDisplayPanel />
       <TextInputDisplayPanel />
     </div>
