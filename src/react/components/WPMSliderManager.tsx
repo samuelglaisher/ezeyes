@@ -26,14 +26,14 @@ const WPMSliderManager: React.FC = () => {
   });
 
   const increaseWPM = () => {
-    if (!isPlaying || !textContent) return; 
+    if (!textContent) return;
     setWpm(prevWpm => prevWpm + settings.processing.wpm.delta);
     increaseSpeed();
     showSlider();
   };
 
   const decreaseWPM = () => {
-    if (!isPlaying || !textContent) return; 
+    if (!textContent) return;
     setWpm(prevWpm => prevWpm - settings.processing.wpm.delta);
     decreaseSpeed();
     showSlider();
