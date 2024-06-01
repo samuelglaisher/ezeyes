@@ -21,7 +21,6 @@ const MockSettingsProvider: React.FC<MockSettingsProviderProps> = ({ children })
     keybindings: {
       ...initialSettings.keybindings,
       play: ' ',
-      // Other keybindings if necessary
     },
   };
 
