@@ -109,7 +109,7 @@ const renderWithProviders = (component: React.ReactNode) => {
 describe('TextInputDisplayPanel', () => {
   it('renders without any text content initially', async () => {
     renderWithProviders(<TextInputDisplayPanel />);
-    const textInputPanel = await screen.findByTestId('text-input-panel');
+    const textInputPanel = await screen.findByTestId('text-input-panel-test-id');
     expect(textInputPanel).toHaveTextContent('');
   });
 
@@ -139,7 +139,7 @@ describe('TextInputDisplayPanel', () => {
 
   it('handles paste events correctly', async () => {
     const { getByTestId } = renderWithProviders(<TextInputDisplayPanel />);
-    const textInputPanel = getByTestId('text-input-panel');
+    const textInputPanel = getByTestId('text-input-panel-test-id');
 
     fireEvent.paste(textInputPanel, {
       clipboardData: { getData: () => 'Pasted text' }

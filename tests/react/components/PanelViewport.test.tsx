@@ -1,12 +1,14 @@
 import React, { useContext, useState, ReactNode, ReactElement } from 'react';
 import PanelViewport from '../../../src/react/components/PanelViewport';
-import { render, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, fireEvent, waitFor, act, getByTestId } from '@testing-library/react';
 import { PanelContext, PanelContextType } from '../../../src/react/contexts/PanelContext';
 import { PanelType, PanelViewportContext, PanelViewportContextType } from '../../../src/react/contexts/PanelViewportContext';
-import { Provider, defaultTheme } from '@adobe/react-spectrum';
-import { PanelDisplayType } from '../../../src/react/SettingsSchema';
+import { Provider, defaultTheme, lightTheme } from '@adobe/react-spectrum';
+import { initialSettings, PanelDisplayType } from '../../../src/react/SettingsSchema';
 import '@testing-library/jest-dom';
 import { usePanel } from '../../../src/react/hooks/usePanel';
+import TextInputDisplayPanel from '../../../src/react/components/TextInputDisplayPanel';
+import { SettingsContext, SettingsContextType } from '../../../src/react/contexts/SettingsContext';
 
 /**
  * Mocked component to test play state functionality
@@ -79,6 +81,15 @@ const MockedPanelContextProvider: React.FC<MockedPanelContextProviderProps> = ({
 
   return <PanelContext.Provider value={mockPanelContext}>{children}</PanelContext.Provider>;
 };
+
+const mockSettingsContextDefaults: SettingsContextType = {
+    settings: initialSettings,
+    showSettingsMenu: false,
+    setShowSettingsMenu: jest.fn(),
+    dispatch: jest.fn(),
+    getThemeObject: jest.fn(),
+};
+
 
 /**
  * Interface representing the props for the mocked PanelViewportContext component
@@ -310,4 +321,80 @@ describe('PanelViewport component', () => {
     waitFor(() => expect(panelContainer).toBeInTheDocument());
     waitFor(() => expect(panelContainer?.textContent).toContain(text));
   });
+
+//   it('Attempt to set word sequence length to 2 sets highlighting to 2', async () => {
+//     const updatedText = "Hello world, this is a test.";
+//     const updatedMockPanelContext = {
+//       ...mockPanelContextDefaults,
+//       textContent: updatedText,
+//       wordIndices: [0, 6, 13, 18, 21, 23, 28] // Indices for each word
+//     };
+
+//     const { getByTestId, rerender } = render(
+//       <SettingsContext.Provider value={mockSettingsContextDefaults}>
+//         <PanelContext.Provider value={updatedMockPanelContext}>
+//           <TextInputDisplayPanel />
+//         </PanelContext.Provider>
+//       </SettingsContext.Provider>
+//     );
+
+//     act(() => {
+//       mockSettingsContextDefaults.settings.processing.wordSequenceLength = 2;
+//       mockSettingsContextDefaults.dispatch({ type: 'UPDATE_WORD_SEQUENCE_LENGTH', value: 2 });
+//     });
+
+//     rerender(
+//       <SettingsContext.Provider value={mockSettingsContextDefaults}>
+//         <PanelContext.Provider value={updatedMockPanelContext}>
+//           <TextInputDisplayPanel />
+//         </PanelContext.Provider>
+//       </SettingsContext.Provider>
+//     );
+
+//     await waitFor(() => {
+//       expect(mockSettingsContextDefaults.settings.processing.wordSequenceLength).toBe(2);
+//     });
+
+//     await waitFor(() => {
+//       const textInputDisplayPanel = getByTestId('text-input-panel-test-id');
+//       console.log(textInputDisplayPanel.innerHTML); // Add this line to debug the actual content
+//       const highlightedWords = textInputDisplayPanel.querySelectorAll('.highlight');
+
+//       expect(highlightedWords.length).toBe(2);
+//       expect(highlightedWords[0].textContent).toBe('Hello');
+//       expect(highlightedWords[1].textContent).toBe('world');
+//     });
+//   });
+
+
+  it('Flashcard view flips between ReaderDisplayPanel and TextInputDisplayPanel', () => {
+    const { getByTestId } = renderWithProviders(<PanelViewport />, {}, { activeView: PanelDisplayType.FLASHCARD });
+    const flashcardContainer = getByTestId('flashcard-container-test-id');
+
+    waitFor(() => expect(flashcardContainer).not.toHaveClass('flipped'));
+
+    fireEvent.click(flashcardContainer);
+    waitFor(() => expect(flashcardContainer).toHaveClass('flipped'));
+
+    fireEvent.click(flashcardContainer);
+    waitFor(() => expect(flashcardContainer).not.toHaveClass('flipped'));
+  });
+
+
+  it('Reader panel is able to display special characters', async () => {
+    const specialCharacters = String.raw`!"#$%&'()*+,44-./01234567🗼🗽🗾🗿128🤠🤡🤢🤣129315🤤🤥🤦🤧🤨🤩🤪🤫🤬🤭🤮🤯129327🤰🤹🤺🤻129339🤼🤽🤾🤿🥀🥁🥂🥃🥄🥅🥆🥇1🥍🥎🥏🥐🥥🥦🥧🥨🥩🥪🥫129387🥬🥭🥮🥯🥰🥱🥲🥳🥴🥵🥶🥷129399🥸🥹/Map (U+1F🚍🚎59🛸🛹🛺🛻🛼🛽🛾🛿128767٤`;
+    const { container, getByTestId } = renderWithProviders(
+      <PanelViewport />,
+      { textContent: specialCharacters },
+      { activeView: PanelDisplayType.HORIZONTAL }
+    );
+
+    const readerDisplayPanel = getByTestId("reader-display-panel-test-id");
+    const textInputDisplayPanel = getByTestId("text-input-panel-test-id");
+
+    waitFor(() => expect(textInputDisplayPanel.textContent).toEqual(specialCharacters));
+    waitFor(() => expect(specialCharacters).toContain(readerDisplayPanel.textContent));
+    expect(container).toBeTruthy();
+  });
+
 });

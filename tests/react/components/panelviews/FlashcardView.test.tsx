@@ -49,7 +49,7 @@ describe('FlashcardView', () => {
       </PanelViewportContext.Provider>
     );
 
-    const flashcardContainer = screen.getByTestId('flashcard-container');
+    const flashcardContainer = screen.getByTestId('flashcard-container-test-id');
     expect(flashcardContainer).toHaveClass('flipped');
   });
 });

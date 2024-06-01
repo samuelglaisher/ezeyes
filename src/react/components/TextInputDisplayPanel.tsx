@@ -109,7 +109,7 @@ const TextInputDisplayPanel: React.FC<TextInputProps> = ({ style }) => {
   };
 
   return (
-    <div id="text-input-panel" data-testid="text-input-panel" style={style} onPaste={handlePaste} tabIndex={0}>
+    <div id="text-input-panel" data-testid="text-input-panel-test-id" style={style} onPaste={handlePaste} tabIndex={0}>
       <View>{renderHtml}</View>
     </div>
   );
