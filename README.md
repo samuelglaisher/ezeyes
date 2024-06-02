@@ -77,3 +77,30 @@ To generate a code coverage report, use the command: `yarn test:coverage`
 
 #### Building
 To build the executable, use the command: `yarn make`
+
+## Installation
+1. Navigate to https://github.com/asdf57/ezeyes/releases
+2. Click on a release version
+3. Download the zip file corresponding to your computer’s operating system
+4. Unzip the file and locate the EZEyes application. Launch the application using the mechanism provided by your operating system.
+
+### Windows Troubleshooting
+For Windows users, a one-time setup process may be required if the following popup occurs when attempting to launch the EZEyes application:
+
+<img width="372" alt="Screenshot 2024-06-02 at 16 00 18" src="https://github.com/asdf57/ezeyes/assets/53836417/5fc5228c-96ce-43b5-8fea-56c677f55bd4">
+
+If this popup occurs for you, click on the More Info text in the popup and then select the Run Now option.
+### macOS Troubleshooting
+For macOS users, a one-time setup process may be required if the following popup occurs when attempting to launch the EZEyes application:
+
+<img width="200" alt="Screenshot 2024-06-02 at 15 39 28" src="https://github.com/asdf57/ezeyes/assets/53836417/052b5a71-181e-4a52-8466-ad835c2d1c32">
+
+If this occurs for you, first click Cancel and then hold the Control key on your keyboard and single-click on the EZEyes application file again. This should prompt you with a series of menu options like in the image below:
+
+<img width="372" alt="Screenshot 2024-06-02 at 15 42 36" src="https://github.com/asdf57/ezeyes/assets/53836417/579cf194-ad85-4b6d-a026-c9e9146c4d9e">
+
+Click on Open, which should then bring up a pop-up like in the below image:
+
+<img width="372" alt="Screenshot 2024-06-02 at 15 45 14" src="https://github.com/asdf57/ezeyes/assets/53836417/40d014c9-750e-4aba-a4ff-d41c72373d2d">
+
+Finally, click on the Open option of this popup menu and the application should launch.
