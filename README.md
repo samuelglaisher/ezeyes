@@ -2,7 +2,48 @@
 
 EZEyes is a reader app made for TBI survivors. By playing a slideshow of words at a fixed point on the screen, EZEyes reduces saccadic eye movement, allowing TBI patients to read longer and with less effort. EZEyes is not intended as therapy - it is an accessibility tool first and foremost.
 
-EZEyes is early in development, and is not intended for use at this time.
+## Deliverable Contents
+### Implemented Features
+- Text Input Display Panel
+- Reader Display Panel
+- Text Importation
+  - Clipboard importation
+  - File importation
+    - PDF
+    - DOCX
+    - RTF
+    - TXT 
+- Four Panel Views
+  - Flashcard View
+  - Vertical View
+  - Horizontal View
+  - Zoom View
+- Keybinding System
+  - Play/pause
+  - Next word
+  - Previous word
+  - Open settings
+  - Switch panel view
+  - Import file menu
+  - Previous paragraph
+  - Next paragraph
+  - Previous sentence
+  - Next sentence
+  - Flip flashcard
+  - Back to top
+  - Search
+  - Increase WPM speed
+  - Decrease WPM speed
+  - Selecting Start Location within Text
+- Text Highlighting and Tracking
+- Cross-Platform Functionality
+  - Application builds for macOS, Windows, and GNU/Linux
+
+### Non-implemented Features
+- None
+### Known & Open Issues
+- Keybindings suppressed with a menu open
+  - Hitting a key to open a different menu does not close the existing menu. For example, if I have the tutorial open and hit "s" to open the settings menu, nothing happens. This is only an issue on the incoming "tutorial" feature branch.
 
 ## Structure
 
@@ -24,7 +65,16 @@ After node.js is installed, install yarn through [their recommended method](http
 Note: electron-forge can only package executables for the platorm it's being run on - this means you need to build on Windows to get an .exe, or Mac to get a .dmg. We plan to set up automatic packaging in our pipeline in the future.
 
 ### Commands
+To run all commands, first navigate to the root directory of the EZEyes repository. If you did not install the project dependencies yet, type `yarn install`.
 
-To run the application: `yarn install && yarn start`
+#### Running the development build
+To run the development build, use the command: `yarn start`
 
-To build the executable: `yarn install && yarn make`
+#### Running tests
+To run the unit tests, use the command: `yarn test`
+
+#### Building
+To build the executable, use the command: `yarn make`
+
+#### Creating a production build
+To create a production build, use the command: `yarn build`
