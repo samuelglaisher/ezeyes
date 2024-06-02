@@ -75,6 +75,3 @@ To run the unit tests, use the command: `yarn test`
 
 #### Building
 To build the executable, use the command: `yarn make`
-
-#### Creating a production build
-To create a production build, use the command: `yarn build`
