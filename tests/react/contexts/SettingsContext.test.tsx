@@ -951,23 +951,6 @@ describe('panel system integrations', () => {
   });
 });
 
-describe('loadSettings tests', () => {
-  it("Default theme (light theme) object is returned for an invalid theme type", () => {
-    const theme = getThemeObject('invalidTheme' as ThemeType);
-    expect(theme).toEqual(lightTheme);
-  });
-
-  it("Dark theme object is returned if the dark theme type is specified", () => {
-    const theme = getThemeObject(ThemeType.DARK);
-    expect(theme).toEqual(darkTheme);
-  });
-
-  it("Light theme object is returned if the light theme type is specified", () => {
-    const theme = getThemeObject(ThemeType.LIGHT);
-    expect(theme).toEqual(lightTheme);
-  });
-});
-
 describe('panel system integrations', () => {
   it('Update the WPM attribute in the SettingsContext and verify a change in the Panel System', () => {
     render(

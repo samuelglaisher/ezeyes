@@ -132,7 +132,7 @@ describe('SettingsMenu component', () => {
     expect(within(displayPanel).getByTestId('display-type-picker')).toBeInTheDocument();
   });
 
-  test('updating a menu slider triggers an update in the SettingsContext', async () => {
+  test('updating a menu slider triggers an update in the SettingsContext (SettingsMenu updates SettingsContext on user interaction)', async () => {
     render(<TestSettingsMenu />);
 
     const tabs = await screen.findByRole('tablist');
