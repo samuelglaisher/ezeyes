@@ -94,12 +94,18 @@ export interface Processing {
     wordSequenceLength: number;
 }
 
+export interface Flags {
+    // ms since UNIX epoch, timezone-independent. Number type for serializability
+    lastOpened: number
+}
+
 export interface Settings {
     processing: Processing;
     ui: UI;
     textInputPanel: TextInputPanelSettings;
     readerPanel: ReaderPanelSettings;
     keybindings: Keybindings;
+    flags: Flags;
 }
 
 export const initialSettings: Settings = {
@@ -158,4 +164,7 @@ export const initialSettings: Settings = {
         decreaseSpeed: 'shift+left',
         search: "ctrl+f",
     },
+    flags: {
+        lastOpened: 0
+    }
 };

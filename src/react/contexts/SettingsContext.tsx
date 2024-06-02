@@ -44,6 +44,7 @@ type Action =
   | { type: 'UPDATE_TEXT_INPUT_FONT_SIZE'; value: number }
   | { type: 'UPDATE_READER_PANEL_FONT_SIZE'; value: number }
   | { type: 'UPDATE_KEYBINDING'; key: keyof Keybindings; value: string }
+  | { type: 'UPDATE_LAST_OPENED'}
   | { type: 'RESET_SETTINGS'}
 
   export function settingsReducer(state: Settings, action: Action): Settings {
@@ -339,9 +340,24 @@ type Action =
             [action.key]: action.value,
           },
         };
+        
+      case 'UPDATE_LAST_OPENED':
+        return {
+          ...state,
+          flags: {
+            ...state.flags,
+            lastOpened: Date.now(),
+          },
+        };
 
       case 'RESET_SETTINGS':
-        return initialSettings;
+        return {
+          ...initialSettings,
+          flags: {
+            ...initialSettings.flags,
+            lastOpened: Date.now(),
+          },
+        };
 
       default:
         throw new Error("Unhandled!");

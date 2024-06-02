@@ -24,7 +24,6 @@ interface HelpMenuProps {
 
 function HelpMenu(props: HelpMenuProps) {
     const { settings, dispatch } = useContext(SettingsContext);
-    const { closeMenu } = useMenuManager();
     let [section, setSection] = React.useState<Key>('basics');
 
     return (
@@ -104,7 +103,7 @@ function HelpMenu(props: HelpMenuProps) {
                 </Tabs>
             </Content>
             <ButtonGroup>
-                <Button variant="secondary" onPress={closeMenu}>Close</Button>
+                <Button variant="secondary" onPress={props.onClose}>Close</Button>
             </ButtonGroup>
         </>
     );

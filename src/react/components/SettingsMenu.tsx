@@ -29,7 +29,6 @@ interface SettingsMenuProps {
 
 function SettingsMenu(props: SettingsMenuProps) {
     const { settings, dispatch } = useContext(SettingsContext);
-    const { closeMenu } = useMenuManager();
 
     return (
         <>
@@ -160,7 +159,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                 </Tabs>
             </Content>
             <ButtonGroup>
-                <Button variant="secondary" onPress={closeMenu}>Cancel</Button>
+                <Button variant="secondary" onPress={props.onClose}>Close</Button>
             </ButtonGroup>
         </>
     );
