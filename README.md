@@ -73,5 +73,7 @@ To run the development build, use the command: `yarn start`
 #### Running tests
 To run the unit tests, use the command: `yarn test`
 
+To generate a code coverage report, use the command: `yarn test:coverage`
+
 #### Building
 To build the executable, use the command: `yarn make`
