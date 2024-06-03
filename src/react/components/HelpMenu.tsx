@@ -23,6 +23,8 @@ import {ColorArea, ColorSlider} from '@react-spectrum/color';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from '../hooks/useMenuManager';
 import type {Key} from '@adobe/react-spectrum';
+import ChevronDoubleRight from '@spectrum-icons/workflow/ChevronDoubleRight';
+import ChevronDoubleLeft from '@spectrum-icons/workflow/ChevronDoubleLeft';
 
 interface HelpMenuProps {
     onClose: () => void;
@@ -60,7 +62,7 @@ function HelpMenu(props: HelpMenuProps) {
                                     <Flex gap='size-150' marginTop={'size-150'}>
                                         <Button variant='primary' onPress={e => setSection('extra')}>
                                             Next Page
-                                            <ArrowRightIcon size='XXL'/>
+                                            <ChevronDoubleRight/>
                                         </Button>
                                     </Flex>
                                 </Flex>
@@ -80,12 +82,12 @@ function HelpMenu(props: HelpMenuProps) {
 
                                     <Flex gap='size-150' marginTop={'size-150'}>
                                         <Button variant='primary' onPress={e => setSection('basics')}>
-                                            <ArrowLeftIcon size='XXL'/>
+                                            <ChevronDoubleLeft/>
                                             Previous Page
                                         </Button>
                                         <Button variant='primary' onPress={e => setSection('wizard')}>
                                             Next Page
-                                            <ArrowRightIcon size='XXL'/>
+                                            <ChevronDoubleRight/>
                                         </Button>
                                     </Flex>
                                 </Flex>
@@ -156,7 +158,7 @@ function HelpMenu(props: HelpMenuProps) {
                                     </fieldset>
                                     <Flex gap='size-150' marginTop={'size-150'}>
                                         <Button variant='primary' onPress={e => setSection('extra')}>
-                                            <ArrowLeftIcon size='XXL'/>
+                                            <ChevronDoubleLeft/>
                                             Previous Page
                                         </Button>
                                     </Flex>
