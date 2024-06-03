@@ -38,8 +38,6 @@ const mockPanelContext: PanelContextType = {
   wordIndices: [],
   setWordIndices: jest.fn(),
   generateWordSequenceIndicesFromIndex: jest.fn(),
-  speed: 0,
-  setSpeed: jest.fn(),
 };
 
 const mockSettingsContext = {
@@ -48,7 +46,8 @@ const mockSettingsContext = {
       wpm: {
         type: WPMType.NORMAL,
         assisted: { min: 10, max: 100, current: 50 },
-        normal: { min: 200, max: 700, current: 300 }
+        normal: { min: 200, max: 700, current: 300 },
+        delta: 1,
       },
       wordSequenceLength: 1,
     },
@@ -78,6 +77,7 @@ const mockSettingsContext = {
       nextWord: 'right',
       prevWord: 'left',
       openSettings: 's',
+      openHelp: 'h',
       switchView: 'd',
       importFile: 'q',
       prevParagraph: "shift+up",
@@ -90,6 +90,9 @@ const mockSettingsContext = {
       increaseSpeed: 'shift+right',
       decreaseSpeed: 'shift+left',
     },
+    flags: {
+      lastOpened: 0
+    }
   }, 
   dispatch: jest.fn(),
   showSettingsMenu: false,
@@ -110,7 +113,7 @@ const renderWithProviders = (component: React.ReactNode) => {
 describe('TextInputDisplayPanel', () => {
   it('renders without any text content initially', async () => {
     renderWithProviders(<TextInputDisplayPanel />);
-    const textInputPanel = await screen.findByTestId('text-input-panel');
+    const textInputPanel = await screen.findByTestId('text-input-panel-test-id');
     expect(textInputPanel).toHaveTextContent('');
   });
 
@@ -140,7 +143,7 @@ describe('TextInputDisplayPanel', () => {
 
   it('handles paste events correctly', async () => {
     const { getByTestId } = renderWithProviders(<TextInputDisplayPanel />);
-    const textInputPanel = getByTestId('text-input-panel');
+    const textInputPanel = getByTestId('text-input-panel-test-id');
 
     fireEvent.paste(textInputPanel, {
       clipboardData: { getData: () => 'Pasted text' }

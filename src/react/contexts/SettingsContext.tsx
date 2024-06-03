@@ -3,7 +3,7 @@ import { Keybindings, PanelDisplayType, Settings, ThemeType, UI, UISize, WPMAttr
 import { darkTheme, lightTheme } from "@adobe/react-spectrum";
 import { parseColor } from '@react-stately/color';
 import { Theme } from "@react-types/provider";
-import { isInRange, isValidKeybinding, compare } from '../../../src/utils';
+import { isInRange, isValidKeybinding, compareKeys } from '../../../src/utils';
 
 /* istanbul ignore next */
 export interface SettingsContextType {
@@ -27,6 +27,7 @@ export const SettingsContext = createContext<SettingsContextType>({
 type Action =
   | { type: 'UPDATE_WPM_TYPE'; value: WPMType }
   | { type: 'UPDATE_WPM_SETTING'; wpmType: WPMType; setting: WPMAttribute; value: number }
+  | { type: 'UPDATE_WPM_DELTA'; value: number }
   | { type: 'UPDATE_WORD_SEQUENCE_LENGTH'; value: number }
   | { type: 'UPDATE_UI_SIZE'; value: UISize }
   | { type: 'UPDATE_UI_THEME'; value: ThemeType }
@@ -81,7 +82,7 @@ type Action =
             return state;
           }
 
-          if (action.setting === 'max' as WPMAttribute && action.value < state.processing.wpm.normal.min) {
+          if (action.setting === 'max' as WPMAttribute && (action.value < state.processing.wpm.normal.min || action.value > state.processing.wpm.normal.max)) {
             return state;
           }
 
@@ -114,6 +115,22 @@ type Action =
                 ...state.processing.wpm[wpmMode],
                 [action.setting]: action.value,
               },
+            },
+          },
+        };
+
+      case 'UPDATE_WPM_DELTA':
+        if (action.value <= 0 || typeof action.value !== "number") {
+          return state;
+        }
+
+        return {
+          ...state,
+          processing: {
+            ...state.processing,
+            wpm: {
+              ...state.processing.wpm,
+              delta: action.value,
             },
           },
         };
@@ -289,7 +306,12 @@ type Action =
 
       case 'UPDATE_UI_OVERLAY_COLOR':
         try {
-          parseColor(action.value);
+          console.log(action.value)
+          console.log(action.value.toString())
+          const color: any = parseColor(action.value);
+          if (color.alpha > 0.85){
+            throw Error();
+          }
         } catch (e) {
           return state;
         }
@@ -367,34 +389,42 @@ interface SettingsProviderProps {
   children: React.ReactNode;
 }
 
-export function loadSettings() {
+export function loadSettings(): Settings {
   try {
-    const settingObj = JSON.parse(localStorage.getItem("settings"));
-    const loaded = compare(initialSettings, settingObj);
-    return JSON.parse(JSON.stringify(loaded));
+    const settingObjStr = localStorage.getItem("settings");
+    if (!settingObjStr) {
+      return initialSettings;
+    }
+
+    const settingObj: Settings = JSON.parse(settingObjStr);
+    console.log("SettingObj: ", settingObj);
+
+    if (compareKeys(initialSettings, settingObj)) {
+      return settingObj;
+    } else {
+      return initialSettings;
+    }
   } catch (e) {
-    console.error(`Error loading settings: ${e}`);
     return initialSettings;
+  }
+}
+
+export const getThemeObject = (theme: ThemeType): Theme => {
+  switch (theme) {
+    case ThemeType.DARK:
+      return darkTheme;
+    case ThemeType.LIGHT:
+      return lightTheme;
+    default:
+      return lightTheme;
   }
 }
 
 /* istanbul ignore next */
 export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) => {
-  const settingsObject = localStorage.getItem("settings") ? loadSettings() : initialSettings;
+  const settingsObject = loadSettings();
   const [settings, dispatch] = useReducer(settingsReducer, settingsObject);
   const [showSettingsMenu, setShowSettingsMenu] = useState<boolean>(false);
-
-  const getThemeObject = (theme: ThemeType): Theme => {
-    console.log("Getting theme object: ", theme)
-    switch (theme) {
-      case ThemeType.DARK:
-        return darkTheme;
-      case ThemeType.LIGHT:
-        return lightTheme;
-      default:
-        return lightTheme;
-    }
-  }
 
   return (
     <SettingsContext.Provider value={{ settings, showSettingsMenu, setShowSettingsMenu, dispatch, getThemeObject }}>

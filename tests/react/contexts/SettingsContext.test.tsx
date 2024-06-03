@@ -1,8 +1,109 @@
 import '@testing-library/jest-dom';
-import React, { useContext } from 'react';
-import { render, act, screen, waitFor } from '@testing-library/react';
-import { SettingsProvider, SettingsContext, settingsReducer, loadSettings } from '../../../src/react/contexts/SettingsContext';
-import { initialSettings, Keybindings, PanelDisplayType, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
+import React, { useContext, useEffect } from 'react';
+import { render, act, screen, waitFor, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SettingsProvider, SettingsContext, settingsReducer, loadSettings, getThemeObject } from '../../../src/react/contexts/SettingsContext';
+import { initialSettings, Keybindings, PanelDisplayType, Settings, ThemeType, UISize, WPMAttribute, WPMType } from '../../../src/react/SettingsSchema';
+import { darkTheme, lightTheme } from "@adobe/react-spectrum";
+import { PanelContext, PanelProvider } from '../../../src/react/contexts/PanelContext';
+import { useKeybindings } from '../../../src/react/hooks/useKeybindings';
+import Mousetrap from 'mousetrap';
+
+
+jest.mock('mousetrap', () => ({
+  bind: jest.fn(),
+  unbind: jest.fn(),
+  stopCallback: jest.fn(),
+  reset: jest.fn()
+}));
+
+jest.mock('mousetrap-pause', () => jest.fn().mockImplementation(() => require('mousetrap')));
+
+const MockedPlaybackSpeedComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: 'normal' as WPMType, setting: 'current' as WPMAttribute as WPMAttribute, value: 1337 })}>
+        update_wpm_val_for_normal
+      </button>
+      <div>
+        <div data-testid="curNormalWpm">{settings.processing.wpm.normal.current}</div>
+      </div>
+    </>
+  );
+};
+
+
+const MockedWordSeqLenComponent = () => {
+  const { curWordSequence, setCurWordSequence } = useContext(PanelContext);
+  const { dispatch, settings } = useContext(SettingsContext);
+
+  setCurWordSequence("Success Is Never Final and Failure Never Fatal. It’s Courage That Counts");
+
+  return (
+    <>
+      <button onClick={() => dispatch({ type: 'UPDATE_WORD_SEQUENCE_LENGTH', value: 5 })}>
+          update_word_seq_len
+      </button>
+      <div>
+        <div data-testid="curWordSequenceLen">{settings.processing.wordSequenceLength}</div>
+      </div>
+      <div>
+        <div data-testid="curWordSequence">{curWordSequence}</div>
+      </div>
+    </>
+  );
+};
+
+
+const MousetrapTestComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+  useKeybindings(jest.fn(), 1);
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'UPDATE_KEYBINDING',
+            key: 'nextParagraph',
+            value: 'ctrl+g',
+          })
+        }
+      >
+        update_next_paragraph_keybind
+      </button>
+      <div data-testid="nextParagraphKeybind">{settings.keybindings.nextParagraph}</div>
+    </div>
+  );
+};
+
+
+const TestComponent = () => {
+  const { dispatch, settings } = useContext(SettingsContext);
+  const { curWordSequence } = useContext(PanelContext)
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          dispatch({
+            type: 'UPDATE_WORD_SEQUENCE_LENGTH',
+            value: 2,
+          })
+        }
+      >
+        Update Word Seq Len
+      </button>
+      <div data-testid="word-seq-len">{curWordSequence}</div>
+    </div>
+  );
+};
+
+
+console.log = jest.fn();
+console.error = jest.fn();
 
 const TestSettingsContextComponent = () => {
   const { settings, dispatch, showSettingsMenu, setShowSettingsMenu } = useContext(SettingsContext);
@@ -107,7 +208,6 @@ describe('SettingsProvider', () => {
 });
 
 describe('settingsReducer', () => {
-  // Set WPM type tests
   it('Set WPM type to valid values (normal and then assisted)', () => {
     let newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_TYPE', value: 'normal' as WPMType });
     expect(newState.processing.wpm.type).toEqual('normal');
@@ -120,7 +220,7 @@ describe('settingsReducer', () => {
     expect(state).toEqual(initialSettings);
   });
 
-  it('Set WPM setting for invalid wpm type', () => {
+  it('Set WPM min setting for invalid wpm type', () => {
     const newState = settingsReducer(initialSettings, {
       type: 'UPDATE_WPM_SETTING',
       wpmType: 'invalid' as any,
@@ -225,6 +325,16 @@ describe('settingsReducer', () => {
     expect(newState.processing.wpm.assisted.current).toEqual(initialSettings.processing.wpm.assisted.current);
   });
 
+  it('Set assisted WPM mode\'s current to valid value.', () => {
+    const newState = settingsReducer(initialSettings, {
+      type: 'UPDATE_WPM_SETTING',
+      wpmType: 'assisted' as WPMType,
+      setting: 'current' as WPMAttribute,
+      value: 70,
+    });
+    expect(newState.processing.wpm.assisted.current).toEqual(70);
+  });
+
     // Normal WPM mode min settings
     it('Set normal WPM mode\'s min to invalid smaller value.', () => {
       const newState = settingsReducer(initialSettings, {
@@ -267,6 +377,16 @@ describe('settingsReducer', () => {
       expect(newState.processing.wpm.normal.max).toEqual(initialSettings.processing.wpm.normal.max);
     });
 
+    it('Set normal WPM mode\'s max to invalid larger value.', () => {
+      const newState = settingsReducer(initialSettings, {
+        type: 'UPDATE_WPM_SETTING',
+        wpmType: 'normal' as WPMType,
+        setting: 'max' as WPMAttribute,
+        value: 9999999999999,
+      });
+      expect(newState.processing.wpm.normal.max).toEqual(initialSettings.processing.wpm.normal.max);
+    });
+
     it('Set normal WPM mode\'s max to valid value.', () => {
       const newState = settingsReducer(initialSettings, {
         type: 'UPDATE_WPM_SETTING',
@@ -297,6 +417,36 @@ describe('settingsReducer', () => {
       });
       expect(newState.processing.wpm.normal.current).toEqual(initialSettings.processing.wpm.normal.current);
     });
+
+    it('Set normal WPM mode\'s current to valid value.', () => {
+      const newState = settingsReducer(initialSettings, {
+        type: 'UPDATE_WPM_SETTING',
+        wpmType: 'normal' as WPMType,
+        setting: 'current' as WPMAttribute,
+        value: 400,
+      });
+      expect(newState.processing.wpm.normal.current).toEqual(400);
+    });
+
+  it('should set delta to a valid value', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 10 });
+    expect(newState.processing.wpm.delta).toEqual(10);
+  });
+
+  it('should not update state if delta value is 0', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 0 });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
+
+  it('should not update state if delta value is negative', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: -5 });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
+
+  it('should not update state if delta value is not a number', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_WPM_DELTA', value: 'invalid' as any });
+    expect(newState.processing.wpm.delta).toEqual(initialSettings.processing.wpm.delta);
+  });
 
   it('Set word sequence length to invalid value.', () => {
     const newState = settingsReducer(initialSettings, {
@@ -436,7 +586,6 @@ describe('settingsReducer', () => {
     expect(newState.ui.hueRotate).toEqual(180);
   });
 
-
   it('Set invert to invalid value outside of lower min boundary (i.e., less than 0)', () => {
     const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_INVERT', value: -1 });
     expect(newState.ui.invert).toEqual(initialSettings.ui.invert);
@@ -503,8 +652,13 @@ describe('settingsReducer', () => {
   });
 
   it('Set overlayColor to valid color value of format "#ff00ff00"', () => {
-    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: '#ff00ff' });
-    expect(newState.ui.overlayColor).toEqual('#ff00ff');
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: '#ff00ff00' });
+    expect(newState.ui.overlayColor).toEqual('#ff00ff00');
+  });
+
+  it('Set overlayColor to valid color value of format "rgba(255, 0, 255, 0)"', () => {
+    const newState = settingsReducer(initialSettings, { type: 'UPDATE_UI_OVERLAY_COLOR', value: 'rgba(255, 0, 255, 0)' });
+    expect(newState.ui.overlayColor).toEqual('rgba(255, 0, 255, 0)');
   });
 
   it('Set textInputPanel fontSize to invalid value of 0', () => {
@@ -687,6 +841,7 @@ describe('loadSettings tests', () => {
   });
 
   it('loads default settings when there are no saved settings', () => {
+    localStorage.clear();
     const loadedSettings = loadSettings();
     expect(loadedSettings).toEqual(initialSettings);
   });
@@ -711,4 +866,148 @@ describe('loadSettings tests', () => {
     const loadedSettings = loadSettings();
     expect(loadedSettings).toEqual(initialSettings);
   });
+
+  it('handles saved settings with different keys by falling back to initial settings', () => {
+    const differentKeysSettings = JSON.stringify({ someOtherKey: 'someValue' });
+    localStorage.setItem('settings', differentKeysSettings);
+
+    const loadedSettings = loadSettings();
+    expect(loadedSettings).toEqual(initialSettings);
+  });
+
+  it('handles null as saved settings gracefully and falls back to initial settings', () => {
+    localStorage.setItem('settings', JSON.stringify(null));
+
+    const loadedSettings = loadSettings();
+    expect(loadedSettings).toEqual(initialSettings);
+  });
 });
+
+
+describe('SettingsContext tests', () => {
+  it('Mutated settings object can be set as the new SettingsContext', async () => {
+    const { getByText, getByTestId } = render(
+      <SettingsProvider>
+        <SettingsContext.Consumer>
+          {({ settings, dispatch }) => (
+            <>
+              <span data-testid="current-theme">{settings.ui.theme}</span>
+              <button onClick={() => dispatch({ type: 'UPDATE_UI_THEME', value: ThemeType.LIGHT })}>
+                Change Theme
+              </button>
+            </>
+          )}
+        </SettingsContext.Consumer>
+      </SettingsProvider>
+    );
+
+    expect(getByTestId('current-theme').textContent).toBe('dark');
+
+    const changeThemeButton = getByText('Change Theme');
+
+    await waitFor(() => userEvent.click(changeThemeButton));
+
+    expect(getByTestId('current-theme').textContent).toBe('light');
+  });
+
+  it('Invalid settings object cannot be set as the new SettingsContext', async () => {
+    const { getByText, getByTestId } = render(
+      <SettingsProvider>
+        <SettingsContext.Consumer>
+          {({ settings, dispatch }) => (
+            <>
+              <span data-testid="current-sepia">{settings.ui.sepia}</span>
+              <button onClick={() => dispatch({ type: 'UPDATE_UI_SEPIA', value: -50 })}>
+                Change Sepia
+              </button>
+            </>
+          )}
+        </SettingsContext.Consumer>
+      </SettingsProvider>
+    );
+
+    const changeSepiaButton = getByText('Change Sepia');
+
+    await waitFor(() => userEvent.click(changeSepiaButton));
+
+    expect(getByTestId('current-sepia').textContent).toBe(initialSettings.ui.sepia.toString());
+  });
+});
+
+describe('panel system integrations', () => {
+  it("Default theme (light theme) object is returned for an invalid theme type", () => {
+    const theme = getThemeObject('invalidTheme' as ThemeType);
+    expect(theme).toEqual(lightTheme);
+  });
+
+  it("Dark theme object is returned if the dark theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.DARK);
+    expect(theme).toEqual(darkTheme);
+  });
+
+  it("Light theme object is returned if the light theme type is specified", () => {
+    const theme = getThemeObject(ThemeType.LIGHT);
+    expect(theme).toEqual(lightTheme);
+  });
+});
+
+describe('panel system integrations', () => {
+  it('Update the WPM attribute in the SettingsContext and verify a change in the Panel System', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MockedPlaybackSpeedComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_wpm_val_for_normal');
+    fireEvent.click(button);
+
+    // Verify normal wpm current speed
+    waitFor(() => expect(screen.getByTestId('curNormalWpm')).toHaveTextContent('1337'));
+  });
+
+  it('Update the word sequence display length attribute in the SettingsContext and verify change in the Panel System', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MockedWordSeqLenComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_word_seq_len');
+    fireEvent.click(button);
+
+    // Verify the word sequence length was updated in settings
+    waitFor(() => expect(screen.getByTestId('curWordSequenceLen')).toHaveTextContent('5'));
+    // Verify that the length of the current word sequence in the PanelContext equals the updated word sequence length
+    const curWordSequence = screen.getByTestId('curWordSequence').textContent;
+    waitFor(() => expect(curWordSequence?.split(' ').length).toEqual(5));
+    waitFor(() => expect(curWordSequence).toEqual("Success Is Never Final and"));
+  });
+
+});
+
+describe('Keybind integrations', () => {
+  it('Update a keybind attribute in the SettingsContext and verify a keybind system update', () => {
+    render(
+      <SettingsProvider>
+        <PanelProvider>
+          <MousetrapTestComponent />
+        </PanelProvider>
+      </SettingsProvider>
+    );
+
+    const button = screen.getByText('update_next_paragraph_keybind');
+    fireEvent.click(button);
+
+    // Verify keybinding updated in settings
+    expect(screen.getByTestId('nextParagraphKeybind')).toHaveTextContent('ctrl+g');
+
+    // Verify that Mousetrap.bind was called for the new keybinding
+    expect(Mousetrap.bind).toHaveBeenCalledWith('ctrl+g', expect.any(Function));
+  });
+});
+

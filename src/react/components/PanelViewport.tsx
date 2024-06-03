@@ -65,16 +65,16 @@ const PanelViewport: React.FC = () => {
             <Footer>
                 <Flex justifyContent="center" width="100%">
                     <ButtonGroup justifySelf="center" alignSelf="center" align="center" margin="size-100">
-                        <Button variant="secondary" onPress={navigateBackward}>
+                        <Button variant="secondary" onPress={navigateBackward} data-testid="navigate-backward-btn-test-id">
                             <ChevronDoubleLeft UNSAFE_style={{padding: '17px 27px'}}/>
                         </Button>
-                        <Button variant="secondary" onPress={togglePlayPause} autoFocus>
+                        <Button variant="secondary" onPress={togglePlayPause} data-testid="play-btn-test-id" autoFocus>
                             {isPlaying 
                             ? <Pause size='XXL' UNSAFE_style={{padding: '17px 27px'}}/>
                             : <Play size='XXL' UNSAFE_style={{padding: '17px 27px'}}/>
                             }
                         </Button>
-                        <Button variant="secondary" onPress={navigateForward} autoFocus>
+                        <Button variant="secondary" onPress={navigateForward} data-testid="navigate-forward-btn-test-id" autoFocus>
                             <ChevronDoubleRight UNSAFE_style={{padding: '17px 27px'}}/>
                         </Button>
                     </ButtonGroup>

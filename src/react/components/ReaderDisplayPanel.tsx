@@ -18,7 +18,7 @@ const ReaderDisplay: React.FC<ReaderDisplayProps> = ({ style }) => {
     }
 
     return (
-        <div id="reader-display-panel" style={style}>
+        <div id="reader-display-panel" data-testid="reader-display-panel-test-id" style={style}>
             <View>
                 <Text UNSAFE_className="text reader-text">{curWordSequence}</Text>
             </View>

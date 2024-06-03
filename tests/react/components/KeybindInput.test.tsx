@@ -32,7 +32,8 @@ describe('KeybindInput', () => {
                         min: 200,
                         max: 700,
                         current: 300,
-                    }
+                    },
+                    delta: 1,
                 },
                 wordSequenceLength: 1,
             },
@@ -62,6 +63,7 @@ describe('KeybindInput', () => {
                 nextWord: 'right',
                 prevWord: 'left',
                 openSettings: 's',
+                openHelp: 'h',
                 switchView: 'd',
                 importFile: 'q',
                 prevParagraph: "shift+up",
@@ -74,6 +76,9 @@ describe('KeybindInput', () => {
                 increaseSpeed: 'shift+right',
                 decreaseSpeed: 'shift+left',
             },
+            flags: {
+                lastOpened: 0
+            }
         }, 
         dispatch: mockDispatch,
         showSettingsMenu: false,
@@ -122,6 +127,7 @@ describe('handleRecord', () => {
         nextWord: 'right',
         prevWord: 'left',
         openSettings: 's',
+        openHelp: 'h',
         switchView: 'd',
         importFile: 'q',
         prevParagraph: 'shift+up',

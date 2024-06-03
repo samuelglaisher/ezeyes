@@ -30,6 +30,7 @@ const config: Config = {
   ],
   coveragePathIgnorePatterns: [
     "./src/electron/main.ts",
+    "./src/electron/ipc.ts",
   ],
   testPathIgnorePatterns: [
     "./tests/e2e",

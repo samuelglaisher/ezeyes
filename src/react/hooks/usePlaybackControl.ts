@@ -1,26 +1,20 @@
 import { useRef, useEffect, useContext } from 'react';
 import { PanelContext } from '../contexts/PanelContext';
+import { SettingsContext } from '../contexts/SettingsContext';
+import { WPMAttribute } from '../SettingsSchema';
 
-export const usePlaybackControl = (navigateForward: () => void) => {
+export const usePlaybackControl = (callback: () => void) => {
   const { isPlaying, setIsPlaying } = useContext(PanelContext);
-  const { speed, setSpeed } = useContext(PanelContext);
-  const speedRef = useRef(speed);
-  const navigateForwardRef = useRef(navigateForward);
+  const { settings, dispatch } = useContext(SettingsContext);
 
-  useEffect(() => {
-    speedRef.current = speed;
-    if (isPlaying) {
-      setupInterval();
-    }
-  }, [speed]);
-
-  useEffect(() => {
-    navigateForwardRef.current = navigateForward;
-  }, [navigateForward]);
+  const intervalId = useRef<number | null>(null);
+  const wpmRef = useRef(settings.processing.wpm[settings.processing.wpm.type].current);
+  const typeRef = useRef(settings.processing.wpm.type);
+  const wpmDelta = useRef(settings.processing.wpm.delta);
 
   useEffect(() => {
     if (isPlaying) {
-      setupInterval();
+      setupWordSequencePlayback();
     } else {
       clearInterval(intervalId.current);
     }
@@ -28,12 +22,24 @@ export const usePlaybackControl = (navigateForward: () => void) => {
     return () => clearInterval(intervalId.current);
   }, [isPlaying]);
 
-  const intervalId = useRef(null);
+  useEffect(() => {
+    typeRef.current = settings.processing.wpm.type;
+    wpmRef.current = settings.processing.wpm[typeRef.current].current;
+    wpmDelta.current = settings.processing.wpm.delta;
 
-  const setupInterval = () => {
+    if (isPlaying) {
+      if (intervalId.current) {
+        clearInterval(intervalId.current);
+      }
+
+      setupWordSequencePlayback();
+    }
+  }, [settings.processing.wpm.type, settings.processing.wpm]);
+
+  const setupWordSequencePlayback = () => {
     clearInterval(intervalId.current);
-    const interval = (60 / speedRef.current) * 1000;
-    intervalId.current = window.setInterval(() => navigateForwardRef.current(), interval);
+    const speed = 1000 / (wpmRef.current / 60);
+    intervalId.current = window.setInterval(() => callback(), speed);
   };
 
   const togglePlayPause = () => {
@@ -41,17 +47,20 @@ export const usePlaybackControl = (navigateForward: () => void) => {
   };
 
   const increaseSpeed = () => {
-    const newSpeed = speedRef.current + 10;
-    setSpeed(newSpeed);
+    const type = typeRef.current;
+    const newSpeed = Math.min(wpmRef.current + wpmDelta.current, settings.processing.wpm[type].max);
+
+    if (newSpeed !== wpmRef.current) {
+      dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
+    }
   };
 
   const decreaseSpeed = () => {
-    const newSpeed = speedRef.current - 10;
+    const type = typeRef.current;
+    const newSpeed = Math.max(wpmRef.current - wpmDelta.current, settings.processing.wpm[type].min);
 
-    if (newSpeed <= 0) {
-      // do nothing
-    } else {
-      setSpeed(newSpeed);
+    if (newSpeed !== wpmRef.current) {
+      dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: type, setting: WPMAttribute.CURRENT, value: newSpeed });
     }
   };
 

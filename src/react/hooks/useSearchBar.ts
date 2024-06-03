@@ -46,12 +46,11 @@ export const useSearchBar = () => {
     }
 
     useEffect(() => {
-        console.log(searchWord);
         if (searchWord !== "") {
             // const locations = searchFor(textContent, searchWord, 0);
             findPhrase(searchWord, "search");
         }
     }, [searchWord]);
 
-    return { searchFeature, navUp, closeSearch, searchFunction };
+    return { searchFeature, navUp, closeSearch, searchFunction, searchFor };
 };

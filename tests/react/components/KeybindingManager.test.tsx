@@ -1,6 +1,6 @@
 import React from 'react';
-import KeybindingManager from '../../../src/react/components/KeybindingManager';
 import { render } from '@testing-library/react';
+import KeybindingManager from '../../../src/react/components/KeybindingManager';
 
 jest.mock('../../../src/react/hooks/useKeybindings', () => ({
   __esModule: true,

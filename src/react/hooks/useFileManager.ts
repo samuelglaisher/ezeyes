@@ -78,7 +78,7 @@ export const loadFile = async (filePath: string, setTextContent: Function, setCu
     setCurWordSequenceIndex(0);
 }
 
-const loadTxtFile = async (filePath: string): Promise<string | undefined> => {
+export const loadTxtFile = async (filePath: string): Promise<any> => {
     return await read(filePath, "utf8");
 };
 
