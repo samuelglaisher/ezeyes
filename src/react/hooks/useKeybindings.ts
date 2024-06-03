@@ -50,6 +50,8 @@ export const useKeybindings = (updateFunction: () => void, speed: number) => {
         });
 
         Mousetrap.bind(settings.keybindings.openSettings, () => openMenu(MenuType.SETTINGS));
+        
+        Mousetrap.bind(settings.keybindings.openHelp, () => openMenu(MenuType.HELP));
 
         Mousetrap.bind(settings.keybindings.play, () => {
             togglePlayPause();

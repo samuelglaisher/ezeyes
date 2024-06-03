@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import HorizontalPanel from "./panelviews/HorizontalPanel";
 import ZoomView from "./panelviews/ZoomView";
 import FlashcardView from "./panelviews/FlashcardView";
 import VerticalPanel from "./panelviews/VerticalPanel";
 import { PanelDisplayType } from "../SettingsSchema";
 import { usePanel } from '../hooks/usePanel';
+import { useMenuManager } from '../hooks/useMenuManager';
 import { PanelContext } from "../contexts/PanelContext";
 import { PanelViewportContext } from "../contexts/PanelViewportContext";
 import "../styles/index.css";
@@ -16,18 +17,37 @@ import ChevronDoubleLeft from '@spectrum-icons/workflow/ChevronDoubleLeft';
 import Play from '@spectrum-icons/workflow/Play';
 import Pause from '@spectrum-icons/workflow/Pause';
 import FileMenuBar from "./FileMenuBar";
+import HelpButton from "./HelpButton";
 import SearchBar from "./SearchBar";
+import { SettingsContext } from "../contexts/SettingsContext";
+import { MenuType } from '../contexts/MenuManagerContext';
 
 const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
     const { activeView } = useContext(PanelViewportContext);
+    const { settings, dispatch } = useContext(SettingsContext);
 
     const { togglePlayPause, navigateForward, navigateBackward} = usePanel();
+    const { openMenu } = useMenuManager();
+
+    useEffect(() => {
+        const month = 2628000
+        let sinceLastOpened = Date.now()  - settings.flags.lastOpened;
+
+        if (sinceLastOpened > month) {
+            openMenu(MenuType.HELP)
+        }
+
+        dispatch({ type: 'UPDATE_LAST_OPENED' });
+    }, []) // fire once on load
 
     return (
         <div id="layout">
             <Header margin="size-100">
                 <FileMenuBar />
+                <Flex position={"absolute"} right={0} zIndex={1000}>
+                    <HelpButton />
+                </Flex>
                 <Flex justifyContent="center" width="100%">
                     <SettingsButton />
                 </Flex>

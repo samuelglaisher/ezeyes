@@ -56,8 +56,8 @@ const mockPanelContext: PanelContextType = {
 	generateWordSequenceIndicesFromIndex: jest.fn(),
 };
 
-const mockSettingsContext: SettingsContextType = { 
-	settings: {
+const mockSettingsContext = {
+  settings: {
     processing: {
       wpm: {
         type: WPMType.NORMAL,
@@ -93,6 +93,7 @@ const mockSettingsContext: SettingsContextType = {
       nextWord: 'right',
       prevWord: 'left',
       openSettings: 's',
+      openHelp: 'h',
       switchView: 'd',
       importFile: 'q',
       prevParagraph: "shift+up",
@@ -105,6 +106,9 @@ const mockSettingsContext: SettingsContextType = {
       increaseSpeed: 'shift+right',
       decreaseSpeed: 'shift+left',
     },
+    flags: {
+      lastOpened: 0
+    }
   }, 
   dispatch: jest.fn(),
   showSettingsMenu: false,

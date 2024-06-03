@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export enum MenuType {
     SETTINGS = 1,
+    HELP = 2
 };
 
 /**

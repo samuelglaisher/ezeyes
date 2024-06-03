@@ -77,6 +77,7 @@ const mockSettingsContext = {
       nextWord: 'right',
       prevWord: 'left',
       openSettings: 's',
+      openHelp: 'h',
       switchView: 'd',
       importFile: 'q',
       prevParagraph: "shift+up",
@@ -89,6 +90,9 @@ const mockSettingsContext = {
       increaseSpeed: 'shift+right',
       decreaseSpeed: 'shift+left',
     },
+    flags: {
+      lastOpened: 0
+    }
   }, 
   dispatch: jest.fn(),
   showSettingsMenu: false,

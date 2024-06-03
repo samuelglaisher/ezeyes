@@ -110,7 +110,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                                         <Item key={PanelDisplayType.HORIZONTAL}>Horizontal</Item>
                                         <Item key={PanelDisplayType.VERTICAL}>Vertical</Item>
                                         <Item key={PanelDisplayType.ZOOM}>Zoom</Item>
-                                        <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
+                                            <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
                                     </Picker>
                                     <NumberField
                                         data-testid="text-panel-font-size-field"
@@ -269,6 +269,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                                     <KeybindInput key="nextWord" keycode="nextWord" label="Next word" keyValue={settings.keybindings.nextWord} data-testid="nextWord-keybind-input" />
                                     <KeybindInput key="prevWord" keycode="prevWord" label="Previous word" keyValue={settings.keybindings.prevWord} data-testid="prevWord-keybind-input" />
                                     <KeybindInput key="openSettings" keycode="openSettings" label="Open settings" keyValue={settings.keybindings.openSettings} data-testid="openSettings-keybind-input" />
+                                    <KeybindInput key="openHelp" keycode="openHelp" label="Open help/tutorial" keyValue={settings.keybindings.openHelp}  data-testid="openHelp-keybind-input" />
                                     <KeybindInput key="switchView" keycode="switchView" label="Switch panel view" keyValue={settings.keybindings.switchView} data-testid="switchView-keybind-input" />
                                     <KeybindInput key="importFile" keycode="importFile" label="Import file menu" keyValue={settings.keybindings.importFile} data-testid="importFile-keybind-input" />
                                     <KeybindInput key="prevParagraph" keycode="prevParagraph" label="Previous paragraph" keyValue={settings.keybindings.prevParagraph} data-testid="prevParagraph-keybind-input" />

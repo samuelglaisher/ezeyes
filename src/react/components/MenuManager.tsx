@@ -2,12 +2,15 @@ import React, { useContext } from 'react';
 import { Dialog, DialogContainer, Heading } from '@adobe/react-spectrum';
 import { MenuManagerContext, MenuType } from '../contexts/MenuManagerContext';
 import SettingsMenu from './SettingsMenu';
+import HelpMenu from './HelpMenu';
 import { useMenuManager } from '../hooks/useMenuManager';
 
 export const renderModalContent = (currentMenu: MenuType, closeMenu: () => void) => {
   switch (currentMenu) {
     case MenuType.SETTINGS:
       return <SettingsMenu onClose={closeMenu} />;
+    case MenuType.HELP:
+      return <HelpMenu onClose={closeMenu} />;
   }
 };
 
