@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import HorizontalPanel from "./panelviews/HorizontalPanel";
 import ZoomView from "./panelviews/ZoomView";
 import FlashcardView from "./panelviews/FlashcardView";
@@ -10,7 +10,7 @@ import { PanelContext } from "../contexts/PanelContext";
 import { PanelViewportContext } from "../contexts/PanelViewportContext";
 import "../styles/index.css";
 import SettingsButton from "./SettingsButton";
-import { MenuManager } from './MenuManager'
+import { MenuManager } from './MenuManager';
 import { Button, ButtonGroup, Content, Flex, Footer, Header } from "@adobe/react-spectrum";
 import ChevronDoubleRight from '@spectrum-icons/workflow/ChevronDoubleRight';
 import ChevronDoubleLeft from '@spectrum-icons/workflow/ChevronDoubleLeft';
@@ -22,24 +22,34 @@ import SearchBar from "./SearchBar";
 import { SettingsContext } from "../contexts/SettingsContext";
 import { MenuType } from '../contexts/MenuManagerContext';
 
+const MONTH = 2592000000;
+
 const PanelViewport: React.FC = () => {
     const { isPlaying } = useContext(PanelContext);
     const { activeView } = useContext(PanelViewportContext);
     const { settings, dispatch } = useContext(SettingsContext);
 
-    const { togglePlayPause, navigateForward, navigateBackward} = usePanel();
+    const { togglePlayPause, navigateForward, navigateBackward } = usePanel();
     const { openMenu } = useMenuManager();
 
-    useEffect(() => {
-        const month = 2628000
-        let sinceLastOpened = Date.now()  - settings.flags.lastOpened;
+    // Check if it's been a month since the last time the app was opened
+    // This ensures we only run on application initialization and after the settings system has loaded in
+    const [hasRunInitDateCheck, setHasRunInitDateCheck] = useState(false);
 
-        if (sinceLastOpened > month) {
-            openMenu(MenuType.HELP)
+    useEffect(() => {
+        //If we've already run the check, exit early
+        if (hasRunInitDateCheck)
+            return;
+
+        const sinceLastOpened = Date.now() - settings.flags.lastOpened;
+
+        if (sinceLastOpened > MONTH) {
+            openMenu(MenuType.HELP);
         }
 
         dispatch({ type: 'UPDATE_LAST_OPENED' });
-    }, []) // fire once on load
+        setHasRunInitDateCheck(true);
+    }, [settings.flags.lastOpened]);
 
     return (
         <div id="layout">
