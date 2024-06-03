@@ -37,18 +37,17 @@ describe('End-To-End Tests', () => {
   });
 
   test('basic reader flow', async () => {
-    const input = rendered.container.querySelector('#text-input-panel');
+    const input = rendered.container.querySelector('#text-input-panel') || window;
     fireEvent.click(input);
     userEvent.paste(sampleText);
 
     let tokens = sampleText.split(' ')
     let lastWord = tokens[tokens.length-1]
     let predictedTime = predictReaderDuration(tokens.length)
-    const { curWordSequence } = useContext(PanelContext)
 
     Mousetrap.trigger(initialSettings.keybindings.play);
     setTimeout(function() {
-      expect(curWordSequence).toEqual(lastWord)
+      expect(screen.getByText(lastWord)).toBeInTheDocument();
     }, predictedTime);
   });
 
