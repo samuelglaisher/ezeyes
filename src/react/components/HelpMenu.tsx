@@ -5,15 +5,21 @@ import {
   ButtonGroup,
   Button,
   Flex,
+  Slider,
+  Picker,
   Item,
   TabList,
   TabPanels,
   Tabs,
+  NumberField,
   View,
+  Grid
 } from '@adobe/react-spectrum';
+import { PanelDisplayType, ThemeType, UISize, WPMAttribute, WPMType } from '../SettingsSchema';
 import ArrowLeftIcon from '@spectrum-icons/workflow/ArrowLeft';
 import ArrowRightIcon from '@spectrum-icons/workflow/ArrowRight';
 
+import {ColorArea, ColorSlider} from '@react-spectrum/color';
 import { SettingsContext } from '../contexts/SettingsContext';
 import { useMenuManager } from '../hooks/useMenuManager';
 import type {Key} from '@adobe/react-spectrum';
@@ -87,9 +93,67 @@ function HelpMenu(props: HelpMenuProps) {
                         </Item>
                         <Item key="wizard">
                             <View height="size-3600" overflow="auto">
-                                <Flex direction="column" marginTop={'size-150'}>
+                                <Flex direction="column" marginTop={'size-150'} gap="size-150">
                                     EZEyes is very customizable. Here are a few of the key options with explanations of what they do:
-                
+                                    <br/><br/>
+
+                                    This setting changes how fast the reader advances. Speed mode adjusts the range of reader speeds - choose normal for fast speeds, and assisted for more relaxed speeds, or if you have issues with processing speed.
+                                    <Picker
+                                        defaultSelectedKey={WPMType.NORMAL}
+                                        label="Speed Mode"
+                                        selectedKey={settings.processing.wpm.type}
+                                        onSelectionChange={(value) => dispatch({ type: 'UPDATE_WPM_TYPE', value: value as WPMType })}>
+                                        <Item key={WPMType.NORMAL}>Normal</Item>
+                                        <Item key={WPMType.ASSISTED}>Assisted</Item>
+                                    </Picker>
+                                    <Slider
+                                        label={`Words Per Minute`}
+                                        minValue={settings.processing.wpm[settings.processing.wpm.type].min}
+                                        maxValue={settings.processing.wpm[settings.processing.wpm.type].max}
+                                        value={settings.processing.wpm[settings.processing.wpm.type].current}
+                                        onChange={(value) => dispatch({ type: 'UPDATE_WPM_SETTING', wpmType: settings.processing.wpm.type, setting: 'current' as WPMAttribute, value: value})}
+                                    />
+                                    <br/>
+
+                                    Switch this to "Large" to increase the size of all buttons.
+                                    <Picker
+                                        defaultSelectedKey={UISize.LARGE}
+                                        label="UI Size"
+                                        selectedKey={settings.ui.size}
+                                        onSelectionChange={(value) => dispatch({type: 'UPDATE_UI_SIZE', value: value as UISize})}>
+                                        <Item key={UISize.MEDIUM}>Medium</Item>
+                                        <Item key={UISize.LARGE}>Large</Item>
+                                    </Picker>
+                                    <br/>
+
+                                    This controls the size of words in the reader. Increase it if you have trouble making out the words.
+                                    <NumberField label="Reader Panel Font Size" defaultValue={settings.readerPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_READER_PANEL_FONT_SIZE', value: value})}/>
+                                    <br/>
+
+                                    This controls the size of words in the text input panel, where you can click to navigate through the document.
+                                    <NumberField label="Text Panel Font Size" defaultValue={settings.textInputPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_TEXT_INPUT_FONT_SIZE', value: value})}/>
+                                    <br/>
+                                    
+                                    This determines which display mode shows when EZEyes starts up. To see what each of these displays looks like, press "{settings.keybindings.switchView}" to cycle through them.
+                                    <Picker
+                                        defaultSelectedKey={PanelDisplayType.HORIZONTAL}
+                                        label="Default Display Type"
+                                        selectedKey={settings.ui.defaultDisplayType}
+                                        onSelectionChange={(value) => dispatch({type: 'UPDATE_UI_DEFAULT_DISPLAY', value: value as PanelDisplayType})}>
+                                        <Item key={PanelDisplayType.HORIZONTAL}>Horizontal</Item>
+                                        <Item key={PanelDisplayType.VERTICAL}>Vertical</Item>
+                                        <Item key={PanelDisplayType.ZOOM}>Zoom</Item>
+                                        <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
+                                    </Picker>
+                                    <br/>
+                                    
+                                    Use the 3 color sliders to change the color and increase the alpha to add a color overlay to EZEyes. This is especially useful if you have Irlen Syndrome.
+                                    <fieldset style={{ border: 0 }}>
+                                        <ColorSlider defaultValue="#ff0000" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="red" />
+                                        <ColorSlider defaultValue="#00ff00" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="green" />
+                                        <ColorSlider defaultValue="#0000ff" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} channel="blue" />
+                                        <ColorSlider channel="alpha" value={settings.ui.overlayColor} onChange={(value) => dispatch({type: 'UPDATE_UI_OVERLAY_COLOR', value: value.toString('css')})} />
+                                    </fieldset>
                                     <Flex gap='size-150' marginTop={'size-150'}>
                                         <Button variant='primary' onPress={e => setSection('extra')}>
                                             <ArrowLeftIcon size='XXL'/>

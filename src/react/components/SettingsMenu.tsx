@@ -92,7 +92,7 @@ function SettingsMenu(props: SettingsMenuProps) {
                                         <Item key={PanelDisplayType.HORIZONTAL}>Horizontal</Item>
                                         <Item key={PanelDisplayType.VERTICAL}>Vertical</Item>
                                         <Item key={PanelDisplayType.ZOOM}>Zoom</Item>
-                                    <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
+                                        <Item key={PanelDisplayType.FLASHCARD}>Flashcard</Item>
                                     </Picker>
                                     <NumberField label="Text Panel Font Size" defaultValue={settings.textInputPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_TEXT_INPUT_FONT_SIZE', value: value})}/>
                                     <NumberField label="Reader Panel Font Size" defaultValue={settings.readerPanel.fontSize} minValue={1} onChange={(value) => dispatch({type: 'UPDATE_READER_PANEL_FONT_SIZE', value: value})}/>
