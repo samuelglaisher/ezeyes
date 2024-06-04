@@ -46,13 +46,7 @@ const createWindow = (): void => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-// app.on('ready', createWindow);
-app.whenReady().then(createWindow);
-
-let isSingleInstance = app.requestSingleInstanceLock()
-if (!isSingleInstance) {
-  app.quit()
-}
+app.on('ready', createWindow);
 
 // Behaviour on second instance for parent process- Pretty much optional
 app.on('second-instance', (event, argv, cwd) => {
