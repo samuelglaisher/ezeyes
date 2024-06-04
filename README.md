@@ -22,7 +22,7 @@ EZEyes is a reader app made for TBI survivors. By playing a slideshow of words a
   - Play/pause
   - Next word
   - Previous word
-  - Open settings
+  - Open settings menu
   - Switch panel view
   - Import file menu
   - Previous paragraph
@@ -35,6 +35,7 @@ EZEyes is a reader app made for TBI survivors. By playing a slideshow of words a
   - Increase WPM speed
   - Decrease WPM speed
   - Selecting Start Location within Text
+  - Open help menu
 - Text Highlighting and Tracking
 - Cross-Platform Functionality
   - Application builds for macOS, Windows, and GNU/Linux
