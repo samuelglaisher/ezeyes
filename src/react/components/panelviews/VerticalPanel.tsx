@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TextInputDisplayPanel from "../TextInputDisplayPanel";
 import ReaderDisplayPanel from "../ReaderDisplayPanel";
 
+const MIN_HEIGHT = 200;
+
 const VerticalPanel: React.FC = () => {
     const [topHeight, setTopHeight] = useState(50);
     const [isResizing, setIsResizing] = useState(false);
@@ -37,7 +39,7 @@ const VerticalPanel: React.FC = () => {
         <div id="vertical-panel-container">
             <ReaderDisplayPanel style={{ height: `${topHeight}%` }} />
             <div className="resize-bar-horizontal" onMouseDown={handleMouseDown} data-testid="resize-bar-horizontal-test-id" />
-            <TextInputDisplayPanel style={{ height: `${100 - topHeight}%` }} />
+            <TextInputDisplayPanel style={{ height: `${100 - topHeight}%`, minHeight: `${MIN_HEIGHT}px` }} />
         </div>
     );
 };
