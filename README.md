@@ -84,7 +84,7 @@ To build the executable, use the command: `yarn make`
 ## Installation
 1. Navigate to https://github.com/asdf57/ezeyes/releases
 2. Click on a release version (e.g., v0.0.1)
-3. Download the zip file corresponding to your computer’s operating system
+3. Download the zip file corresponding to your computer’s operating system beneath the `Assets` section of the release.
 4. Unzip the file and locate the EZEyes application. Launch the application using the mechanism provided by your operating system.
 
 ### Windows Troubleshooting
