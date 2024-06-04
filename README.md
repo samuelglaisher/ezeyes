@@ -3,7 +3,7 @@
 EZEyes is a reader app made for TBI survivors. By playing a slideshow of words at a fixed point on the screen, EZEyes reduces saccadic eye movement, allowing TBI patients to read longer and with less effort. EZEyes is not intended as therapy - it is an accessibility tool first and foremost.
 
 ## Application Manual
-A application manual (titled `ezeyes_application_manual.pdf`) exists to provide non-technical users an overview of the EZEyes application, what it does, how it works, and how to use it. Detailed installation instructions are also provided in this manual.
+An [application manual](https://github.com/asdf57/ezeyes/blob/dev/ezeyes_application_manual.pdf) exists to provide non-technical users an overview of the EZEyes application, specifically in what it does, how it works, and how to use it. Detailed installation instructions are also provided in this manual.
 
 ## Deliverable Contents
 ### Implemented Features
