@@ -397,7 +397,6 @@ export function loadSettings(): Settings {
     }
 
     const settingObj: Settings = JSON.parse(settingObjStr);
-    console.log("SettingObj: ", settingObj);
 
     if (compareKeys(initialSettings, settingObj)) {
       return settingObj;
