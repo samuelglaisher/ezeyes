@@ -45,6 +45,8 @@ EZEyes is a reader app made for TBI survivors. By playing a slideshow of words a
 ### Known & Open Issues
 - Keybindings suppressed with a menu open
   - Hitting a key to open a different menu does not close the existing menu. For example, if I have the tutorial open and hit "s" to open the settings menu, nothing happens. This is only an issue on the incoming "tutorial" feature branch.
+- Performance
+  - The EZEyes application as it currently stands struggles to handle very large passages of text (e.g., a novel). In it's current form, it supports its primary target of reading materials which are article-length text passages. This is a known limitation and something that we did not have enough time to address during our development. Please note that loading in large passages of text will result in long loading times (e.g., 5 minutes) and will result in slow text highlighting.
 
 ## Structure
 
